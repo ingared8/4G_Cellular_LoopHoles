@@ -6,6 +6,8 @@ package edu.osu.cse5469.hackcellular;
 
 import android.app.Service;
 import android.content.Intent;
+import android.net.TrafficStats;
+import android.net.Uri;
 import android.os.Binder;
 import android.os.IBinder;
 
@@ -16,13 +18,38 @@ import android.content.Intent;
 import android.os.Binder;
 import android.os.IBinder;
 
+import static android.support.v4.app.ActivityCompat.startActivity;
+
 /**
  * Created by GJ on 10/8/2015.
  */
 public class DataService extends Service {
-    Thread querythread=new Thread();
+    private long local_data;
+    private long operator_data;
+    private final String AttQueryCode = "*3282#";
+
     DataSet datausage=new DataSet();
     DataServiceIBinder dataserviceIBinder=new DataServiceIBinder();
+
+    // Thread to query data usage in local and operator
+    Thread querythread=new Thread( new Runnable(){
+
+        @Override
+        public void run() {
+            while(true){
+                long timeStamp = System.currentTimeMillis();
+                local_data = getLocalData();
+                getOperatorData();
+                try {
+                    wait(10000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                VolumeData tmpData = new VolumeData(timeStamp, local_data, operator_data);
+                datausage.addData(tmpData);
+            }
+        }
+    });
 
     public class DataServiceIBinder extends Binder {
         public DataService getService() {
@@ -41,6 +68,25 @@ public class DataService extends Service {
         super.onCreate();
 
         ToastUtils.makeText(this, "show media player").show();
+    }
+
+    // Send USSD code to query ATT post-paid data usage
+    private void sendUSSDCode(String ussdCode) {
+        String encodedHash = Uri.encode("#");
+        ussdCode = ussdCode.replaceAll("#", encodedHash);
+        Intent ussdIntent =new Intent("android.intent.action.CALL", Uri.parse("tel:" + ussdCode));
+        ussdIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(ussdIntent);
+    }
+
+    // Get data usage from operator
+    private void getOperatorData() {
+        sendUSSDCode(AttQueryCode);
+    }
+
+    // Get data usage from local
+    private long getLocalData() {
+        return (TrafficStats.getMobileTxBytes()+TrafficStats.getMobileRxBytes());
     }
 
     public VolumeData get() {
