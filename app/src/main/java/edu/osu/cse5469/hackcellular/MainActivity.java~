@@ -46,7 +46,7 @@ public class MainActivity extends AppCompatActivity {
   
         @Override  
         public void onServiceConnected(ComponentName name, IBinder service) {       //connect Service  
-            dataService = ((DataService.DataServiceIBinder) (service)).getService();  
+            dataService = ((BindMusicService.MyBinder) (service)).getService();  
 
         }  
           
