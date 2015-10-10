@@ -49,5 +49,12 @@
 
     </LinearLayout>
 
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="18dp"
+        android:text="@string/ttl_hint"
+        android:id="@+id/textHint" />
+
 
 </LinearLayout>
