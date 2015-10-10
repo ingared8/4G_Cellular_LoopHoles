@@ -1,8 +1,7 @@
 package edu.osu.cse5469.hackcellular;
 
-import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -21,7 +20,7 @@ public class TTLActivity extends AppCompatActivity implements View.OnClickListen
     private int portNum;
     private int ttl;
 
-    private Socket client =null;
+    private Socket client = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

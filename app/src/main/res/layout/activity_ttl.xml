@@ -2,50 +2,50 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
-    android:orientation="vertical"
     tools:context="edu.osu.cse5469.hackcellular.TTLActivity">
 
 
     <LinearLayout
-        android:orientation="horizontal"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
         <EditText
+            android:id="@+id/edited_ip"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="3"
-            android:id="@+id/edited_ip"
-            android:hint="@string/ip"
-            />
+            android:hint="@string/ip" />
 
         <EditText
+            android:id="@+id/edited_port"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/edited_port"
             android:layout_weight="5"
-            android:hint="@string/port"/>
+            android:hint="@string/port" />
 
     </LinearLayout>
 
     <LinearLayout
-        android:orientation="horizontal"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
 
         <EditText
+            android:id="@+id/edited_ttl"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="3"
-            android:id="@+id/edited_ttl"
-            android:hint="@string/ttlhint"/>
+            android:hint="@string/ttlhint" />
 
         <Button
+            android:id="@+id/sendButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/send"
-            android:id="@+id/sendButton" />
+            android:text="@string/send" />
 
     </LinearLayout>
 

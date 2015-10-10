@@ -1,13 +1,38 @@
 package edu.osu.cse5469.hackcellular;
 
-import android.support.v7.app.AppCompatActivity;
+import android.app.Activity;
+import android.content.ComponentName;
+import android.content.Context;
+import android.content.Intent;
+import android.content.ServiceConnection;
 import android.os.Bundle;
+import android.os.IBinder;
+import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 
-public class MainActivity extends AppCompatActivity {
-    
+
+public class MainActivity extends Activity {
+
     private DataService dataService;
+
+    private ServiceConnection dataServiceConnection = new ServiceConnection() {
+
+        @Override
+        public void onServiceConnected(ComponentName name, IBinder service) {                        //connect Service
+            dataService = ((DataService.DataServiceIBinder) (service)).getService();
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName name) {                 //disconnect Service
+            dataService = null;
+        }
+    };
+
+    private void bindService() {                                                                     //call onBind() in Service
+        Intent intent = new Intent("com.homer.bind.bindService");
+        bindService(intent, dataServiceConnection, Context.BIND_AUTO_CREATE);                    // bindService
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,23 +62,5 @@ public class MainActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-   private void bindService(){								//call onBind() in Service
-   	Intent intent = new Intent("com.homer.bind.bindService");  
-        bindService(intent, dataServiceConnection, Context.BIND_AUTO_CREATE);          // bindService
-   }
-
-   private ServiceConnection dataServiceConnection = new ServiceConnection() {  
-  
-        @Override  
-        public void onServiceConnected(ComponentName name, IBinder service) {       //connect Service  
-            dataService = ((DataService.DataServiceIBinder) (service)).getService();  
-
-        }  
-          
-        @Override  
-        public void onServiceDisconnected(ComponentName name) {                 //disconnect Service  
-            dataService = null;  
-        }  
-   };  
 
 }

@@ -12,26 +12,28 @@ public class DataSet {
     private List<VolumeData> list;
     private int size;
 
-    public DataSet(){
+    public DataSet() {
         list = new ArrayList<VolumeData>();
         size = 0;
     }
 
-    public void addData(VolumeData tmpData){
+    public void addData(VolumeData tmpData) {
         list.add(tmpData);
         size++;
     }
 
-    public int size() { return size; }
+    public int size() {
+        return size;
+    }
 
-    public VolumeData getData(){
+    public VolumeData getData() {
         if (!list.isEmpty())
-            return list.get(size-1);
+            return list.get(size - 1);
         else return null;
     }
 
-    public VolumeData getData(int index){
-        if(size>index)
+    public VolumeData getData(int index) {
+        if (size > index)
             return list.get(index);
         else return null;
     }

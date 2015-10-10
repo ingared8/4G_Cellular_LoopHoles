@@ -10,7 +10,8 @@ public class VolumeData {
     private long local_data;
     private long operator_data;
 
-    public VolumeData(){}
+    public VolumeData() {
+    }
 
     public VolumeData(long timeStamp, long local_data, long operator_data) {
         this.timeStamp = timeStamp;
@@ -23,20 +24,20 @@ public class VolumeData {
         return timeStamp;
     }
 
-    public long getLocal_data() {
-        return local_data;
-    }
-
-    public long getOperator_data() {
-        return operator_data;
-    }
-
     public void setTimeStamp(long timeStamp) {
         this.timeStamp = timeStamp;
     }
 
+    public long getLocal_data() {
+        return local_data;
+    }
+
     public void setLocal_data(long local_data) {
         this.local_data = local_data;
+    }
+
+    public long getOperator_data() {
+        return operator_data;
     }
 
     public void setOperator_data(long operator_data) {

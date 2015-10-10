@@ -13,30 +13,20 @@ import android.os.IBinder;
 
 package jasperg.demodataservice;
 
-import android.app.Service;
-import android.content.Intent;
-import android.os.Binder;
-import android.os.IBinder;
-
-import static android.support.v4.app.ActivityCompat.startActivity;
-
 /**
  * Created by GJ on 10/8/2015.
  */
 public class DataService extends Service {
-    private long local_data;
-    private long operator_data;
     private final String AttQueryCode = "*3282#";
-
-    DataSet datausage=new DataSet();
-    DataServiceIBinder dataserviceIBinder=new DataServiceIBinder();
-
+    DataSet datausage = new DataSet();
+    DataServiceIBinder dataserviceIBinder = new DataServiceIBinder();
+    private long local_data;
     // Thread to query data usage in local and operator
-    Thread querythread=new Thread( new Runnable(){
+    Thread querythread = new Thread(new Runnable() {
 
         @Override
         public void run() {
-            while(true){
+            while (true) {
                 long timeStamp = System.currentTimeMillis();
                 local_data = getLocalData();
                 getOperatorData();
@@ -50,17 +40,9 @@ public class DataService extends Service {
             }
         }
     });
+    private long operator_data;
 
-    public class DataServiceIBinder extends Binder {
-        public DataService getService() {
-////            MyServiceActivity.vh.sendMessage(MyServiceActivity.createMessage(
-////                    MyServiceActivity.UPDATE_VIEW,
-////                    "BindServiceWithIBinder.MyIBinder.getService()"));
-            return DataService.this;
-        }
-    }
-
-    public IBinder onBind(Intent intent){
+    public IBinder onBind(Intent intent) {
         return dataserviceIBinder;
     }
 
@@ -74,7 +56,7 @@ public class DataService extends Service {
     private void sendUSSDCode(String ussdCode) {
         String encodedHash = Uri.encode("#");
         ussdCode = ussdCode.replaceAll("#", encodedHash);
-        Intent ussdIntent =new Intent("android.intent.action.CALL", Uri.parse("tel:" + ussdCode));
+        Intent ussdIntent = new Intent("android.intent.action.CALL", Uri.parse("tel:" + ussdCode));
         ussdIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(ussdIntent);
     }
@@ -86,7 +68,7 @@ public class DataService extends Service {
 
     // Get data usage from local
     private long getLocalData() {
-        return (TrafficStats.getMobileTxBytes()+TrafficStats.getMobileRxBytes());
+        return (TrafficStats.getMobileTxBytes() + TrafficStats.getMobileRxBytes());
     }
 
     public VolumeData get() {
@@ -95,5 +77,14 @@ public class DataService extends Service {
 
     public DataSet play() {
         return datausage;
+    }
+
+    public class DataServiceIBinder extends Binder {
+        public DataService getService() {
+////            MyServiceActivity.vh.sendMessage(MyServiceActivity.createMessage(
+////                    MyServiceActivity.UPDATE_VIEW,
+////                    "BindServiceWithIBinder.MyIBinder.getService()"));
+            return DataService.this;
+        }
     }
 }
