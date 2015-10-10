@@ -5,6 +5,7 @@
     <string name="port">Port Number</string>
     <string name="send">Send</string>
     <string name="ttlhint">TTL time (i.e. 28)</string>
+    <string name="ttl_hint">Please send your TTL</string>
 
     <string name="action_settings">Settings</string>
     <string name="title_activity_ttl">TTLActivity</string>
