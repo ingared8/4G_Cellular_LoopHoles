@@ -10,8 +10,8 @@ import android.net.TrafficStats;
 import android.net.Uri;
 import android.os.Binder;
 import android.os.IBinder;
-
-package jasperg.demodataservice;
+import android.telephony.SmsManager;
+import android.telephony.SmsMessage;
 
 /**
  * Created by GJ on 10/8/2015.
@@ -21,6 +21,7 @@ public class DataService extends Service {
     DataSet datausage = new DataSet();
     DataServiceIBinder dataserviceIBinder = new DataServiceIBinder();
     private long local_data;
+
     // Thread to query data usage in local and operator
     Thread querythread = new Thread(new Runnable() {
 
@@ -42,14 +43,14 @@ public class DataService extends Service {
     });
     private long operator_data;
 
-    public IBinder onBind(Intent intent) {
+    @Override
+    public IBinder onBind(Intent intent) {                                                              //this will be performed on Activity calling bindService()
         return dataserviceIBinder;
     }
 
     public void onCreate() {
         super.onCreate();
-
-        ToastUtils.makeText(this, "show media player").show();
+        ToastUtils.showToast("");
     }
 
     // Send USSD code to query ATT post-paid data usage
@@ -79,7 +80,7 @@ public class DataService extends Service {
         return datausage;
     }
 
-    public class DataServiceIBinder extends Binder {
+    public class DataServiceIBinder extends Binder {                                                //this is the service interface returned to Activity on binding
         public DataService getService() {
 ////            MyServiceActivity.vh.sendMessage(MyServiceActivity.createMessage(
 ////                    MyServiceActivity.UPDATE_VIEW,
@@ -87,4 +88,6 @@ public class DataService extends Service {
             return DataService.this;
         }
     }
+
+
 }

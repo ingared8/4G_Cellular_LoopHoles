@@ -29,7 +29,7 @@ public class MainActivity extends Activity {
         }
     };
 
-    private void bindService() {                                                                     //call onBind() in Service
+    private void bindService() {                                                                     //bind service and call onBind() in Service
         Intent intent = new Intent("com.homer.bind.bindService");
         bindService(intent, dataServiceConnection, Context.BIND_AUTO_CREATE);                    // bindService
     }

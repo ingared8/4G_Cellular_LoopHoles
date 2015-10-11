@@ -27,7 +27,7 @@ public class TTLActivity extends AppCompatActivity implements View.OnClickListen
     private int ttl;
     private String result = "";
 
-    private Socket client =null;
+    //private Socket client =null;
 
     private DatagramSocket client;
     private final int listenPort = 5501;
