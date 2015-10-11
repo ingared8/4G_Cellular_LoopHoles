@@ -50,7 +50,7 @@ public class DataService extends Service {
 
     public void onCreate() {
         super.onCreate();
-        ToastUtils.showToast("");
+      //  ToastUtils.showToast("");
     }
 
     // Send USSD code to query ATT post-paid data usage

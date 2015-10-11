@@ -8,13 +8,21 @@ import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
 
 
 public class MainActivity extends Activity {
 
     private DataService dataService;
+
+    EditText ttl_value;
+    Button set_ttl;
+    int read_ttl_value;
 
     private ServiceConnection dataServiceConnection = new ServiceConnection() {
 
@@ -38,7 +46,25 @@ public class MainActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        set_ttl=(Button)findViewById(R.id.set_ttl);
+        ttl_value = (EditText)findViewById(R.id.ttl_value);
+
+        set_ttl.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                String str = ttl_value.getText().toString();
+                if (str.length()!=0) {
+                    read_ttl_value = Integer.parseInt(str);
+                } else {
+                    read_ttl_value = 0;
+                }
+                Log.d("debug", "" + read_ttl_value);
+            }
+        });
+
     }
+
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
