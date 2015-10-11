@@ -10,11 +10,14 @@ import android.os.IBinder;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Button;
 
 
 public class MainActivity extends Activity {
 
     private DataService dataService;
+
+    Button set_ttl=(Button)findViewById(R.id.)
 
     private ServiceConnection dataServiceConnection = new ServiceConnection() {
 
