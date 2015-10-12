@@ -18,7 +18,7 @@ import android.widget.EditText;
 
 
 public class MainActivity extends Activity {
-
+ 
     private DataService dataService;
 
     EditText ttl_value;
