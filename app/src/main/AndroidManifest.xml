@@ -29,6 +29,9 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="edu.osu.cse5469.hackcellular.MainActivity" />
         </activity>
+        <service
+            android:name="edu.osu.cse5469.hackcellular.DataService" >
+        </service>
     </application>
 
 </manifest>
