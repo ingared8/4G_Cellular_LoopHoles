@@ -16,6 +16,7 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.telephony.SmsManager;
 import android.telephony.SmsMessage;
+import android.util.Log;
 
 import java.util.Date;
 
@@ -34,8 +35,8 @@ public class DataService extends Service {
         @Override
         public void run() {
             while (true) {
-                long timeStamp = System.currentTimeMillis();
-                local_data = getLocalData();
+                //long timeStamp = System.currentTimeMillis();
+                //local_data = getLocalData();
                 getOperatorData();
                 try {
                     wait(10000);
@@ -98,11 +99,15 @@ public class DataService extends Service {
         Date date=new Date();
         long operatorData= (long) (Float.parseFloat(smsData.substring(smsData.indexOf("[You]:")+6,smsData.indexOf('\n',smsData.indexOf("[You]:"))-1))*1024*1024);
         long localData=(TrafficStats.getMobileTxBytes()+TrafficStats.getMobileRxBytes());
-        datausage.addData(new VolumeData(date.getTime(),localData,operatorData));
+        datausage.addData(new VolumeData(date.getTime(), localData, operatorData));
+       // ToastUtils.showToast(MainActivity.this,"" + localData+operatorData,100);
+        Log.d("usage", "" + localData + "###" + operatorData);
     }
 
     @Override
     public IBinder onBind(Intent intent) {                                                              //this will be performed on Activity calling bindService()
+        registerReceiver();
+        querythread.start();
         return dataserviceIBinder;
     }
 
