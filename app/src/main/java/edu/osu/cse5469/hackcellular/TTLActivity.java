@@ -2,6 +2,7 @@ package edu.osu.cse5469.hackcellular;
 
 import android.os.AsyncTask;
 import android.os.Handler;
+import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -32,23 +33,30 @@ public class TTLActivity extends AppCompatActivity implements View.OnClickListen
     private String serverAddr;
     private int portNum;
     private int ttl;
-    private String result = "";
+    private final static int SERVER_MSG = 1;
 
     //private Socket client =null;
 
     private DatagramSocket client;
     private final int listenPort = 5501;
 
+    /*
+     * Handler for info exchange between UI and Thread
+     */
+    private Handler handler = new Handler(){
+
+        @Override
+        public void handleMessage(Message msg) {
+            if(msg.what == SERVER_MSG){
+                textHint.setText((String) msg.obj);
+            }
+        }
+    };
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_ttl);
-//        Handler writetextHandle = new Handler(){
-//                public void run(){
-//
-//            }
-//        };
-//        writetextHandle.
 
         sendSocketButton = (Button) findViewById(R.id.sendButton);
         desIP = (EditText) findViewById(R.id.edited_ip);
@@ -58,11 +66,14 @@ public class TTLActivity extends AppCompatActivity implements View.OnClickListen
 
         sendSocketButton.setOnClickListener(this);
 
-        // Listen to the response msg
+        /*
+         * Listen to the response msg
+         */
         new Thread(){
             @Override
             public void run() {
                 super.run();
+                String result = "";
                 while(true) {
                     try {
                         DatagramSocket listener = new DatagramSocket(listenPort);
@@ -71,7 +82,10 @@ public class TTLActivity extends AppCompatActivity implements View.OnClickListen
                         listener.receive(inPacket);
                         result = new String(inPacket.getData(), inPacket.getOffset(), inPacket.getLength());
                         if (result.length() > 0) {
-                            textHint.setText("Please reduce your TTL");
+                            Message msg = Message.obtain();                                         // Using Handler to exchange message to UI
+                            msg.obj = "Please reduce your TTL";
+                            msg.what = SERVER_MSG;
+                            handler.sendMessage(msg);
                         }
                     } catch (IOException e) {
                         e.printStackTrace();
