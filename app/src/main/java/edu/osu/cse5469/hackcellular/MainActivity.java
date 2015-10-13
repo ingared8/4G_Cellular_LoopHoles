@@ -39,7 +39,7 @@ public class MainActivity extends Activity {
     };
 
     private void bindService() {                                                                     //bind service and call onBind() in Service
-        Intent intent = new Intent("com.homer.bind.bindService");
+        final Intent intent = new Intent(this,DataService.class);
         bindService(intent, dataServiceConnection, Context.BIND_AUTO_CREATE);                    // bindService
     }
 

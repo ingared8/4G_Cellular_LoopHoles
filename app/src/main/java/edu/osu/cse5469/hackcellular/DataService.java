@@ -33,16 +33,23 @@ public class DataService extends Service {
     Thread querythread = new Thread(new Runnable() {
 
         @Override
-        public void run() {
+        public void  run() {
             while (true) {
                 //long timeStamp = System.currentTimeMillis();
                 //local_data = getLocalData();
                 getOperatorData();
+                synchronized(this){
+//                try {
+//                    wait(10000);
+//                } catch (InterruptedException e) {
+//                    e.printStackTrace();
+//                }}
                 try {
-                    wait(10000);
+                    Thread.sleep(10000);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
-                }
+                }}
+
 //              VolumeData tmpData = new VolumeData(timeStamp, local_data, operator_data);
 //                datausage.addData(tmpData);
             }
