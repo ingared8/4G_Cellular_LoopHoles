@@ -1,9 +1,5 @@
 package edu.osu.cse5469.hackcellular;
 
-/**
- * Created by GJ on 10/8/2015.
- */
-
 import android.app.Service;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -22,6 +18,7 @@ import java.util.Date;
 
 /**
  * Created by GJ on 10/8/2015.
+ * Data charging TTL attack service
  */
 public class DataService extends Service {
     private final String AttQueryCode = "*3282#";
@@ -29,11 +26,13 @@ public class DataService extends Service {
     DataServiceIBinder dataserviceIBinder = new DataServiceIBinder();
     private long local_data;
 
-    // Thread to query data usage in local and operator
+    /* Thread to query data usage in local and operator
+     * Author: Yuhui Feng
+     */
     Thread querythread = new Thread(new Runnable() {
 
         @Override
-        public void  run() {
+        public void run() {
             while (true) {
                 //long timeStamp = System.currentTimeMillis();
                 //local_data = getLocalData();
@@ -57,7 +56,10 @@ public class DataService extends Service {
     });
     private long operator_data;
 
-    private void registerReceiver(){                                                                  //Register SMS broadcast receiver in the service
+    /* Register SMS broadcast receiver in the service
+     * Author: Jasper Guo
+     */
+    private void registerReceiver(){
         IntentFilter SmsIntent = new IntentFilter("android.provider.Telephony.SMS_RECEIVED");
         SmsIntent.setPriority(999);                                                                     //What does this mean?
         registerReceiver(SMSReceiver, SmsIntent);
@@ -111,8 +113,11 @@ public class DataService extends Service {
         Log.d("usage", "" + localData + "###" + operatorData);
     }
 
+    /* This will be performed on Activity calling bindService()
+     * Author: Jaspor Guo
+     */
     @Override
-    public IBinder onBind(Intent intent) {                                                              //this will be performed on Activity calling bindService()
+    public IBinder onBind(Intent intent) {
         registerReceiver();
         querythread.start();
         return dataserviceIBinder;
@@ -123,7 +128,9 @@ public class DataService extends Service {
       //  ToastUtils.showToast("");
     }
 
-    // Send USSD code to query ATT post-paid data usage
+    /* Send USSD code to query ATT post-paid data usage
+     * Author: Yuhui Feng
+     */
     private void sendUSSDCode(String ussdCode) {
         String encodedHash = Uri.encode("#");
         ussdCode = ussdCode.replaceAll("#", encodedHash);
@@ -132,12 +139,16 @@ public class DataService extends Service {
         startActivity(ussdIntent);
     }
 
-    // Get data usage from operator
+    /* Get data usage from operator
+     * Author: Yuhui Feng
+     */
     private void getOperatorData() {
         sendUSSDCode(AttQueryCode);
     }
 
-    // Get data usage from local
+    /* Get data usage from local
+     * Author: Yuhui Feng
+     */
     private long getLocalData() {
         return (TrafficStats.getMobileTxBytes() + TrafficStats.getMobileRxBytes());
     }
@@ -150,11 +161,14 @@ public class DataService extends Service {
         return datausage;
     }
 
-    public class DataServiceIBinder extends Binder {                                                //this is the service interface returned to Activity on binding
+    /* This is the service interface returned to Activity on binding
+     * Author: Jasper Guo
+     */
+    public class DataServiceIBinder extends Binder {
         public DataService getService() {
-////            MyServiceActivity.vh.sendMessage(MyServiceActivity.createMessage(
-////                    MyServiceActivity.UPDATE_VIEW,
-////                    "BindServiceWithIBinder.MyIBinder.getService()"));
+//            MyServiceActivity.vh.sendMessage(MyServiceActivity.createMessage(
+//                    MyServiceActivity.UPDATE_VIEW,
+//                    "BindServiceWithIBinder.MyIBinder.getService()"));
             return DataService.this;
         }
     }

@@ -5,8 +5,8 @@ import java.util.List;
 
 /**
  * Created by fengyuhui on 15/10/8.
+ * To store Data volume from local and operator associated with their time stamp in a list.
  */
-// To store Data volume from local and operator associated with their time stamp in a list.
 
 public class DataSet {
     private List<VolumeData> list;

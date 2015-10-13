@@ -6,10 +6,11 @@ import android.os.Looper;
 import android.widget.Toast;
 
 /**
- * Toast工具类
+ * Toast tool
  * @author WikerYong   Email:<a href="#">yw_312@foxmail.com</a>
  * @version 2012-5-21 下午9:21:01
  */
+
 public class ToastUtils {
 
     private static Toast mToast;

@@ -2,8 +2,8 @@ package edu.osu.cse5469.hackcellular;
 
 /**
  * Created by fengyuhui on 15/10/8.
+ * Data structure for each data in data charging issue
  */
-// Data structure for each data in data charging issue
 
 public class VolumeData {
     private long timeStamp;

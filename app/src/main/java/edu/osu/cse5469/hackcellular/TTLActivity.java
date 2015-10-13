@@ -15,6 +15,11 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 
+/**
+ * Created by fengyuhui on 15/10/9.
+ * Data charging activity to show the TTL attack
+ */
+
 public class TTLActivity extends AppCompatActivity implements View.OnClickListener {
 
     private Button sendSocket;

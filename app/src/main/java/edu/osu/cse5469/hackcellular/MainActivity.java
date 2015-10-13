@@ -28,7 +28,7 @@ public class MainActivity extends Activity {
     private ServiceConnection dataServiceConnection = new ServiceConnection() {
 
         @Override
-        public void onServiceConnected(ComponentName name, IBinder service) {                        //connect Service
+        public void onServiceConnected(ComponentName name, IBinder service) {                       //connect Service
             dataService = ((DataService.DataServiceIBinder) (service)).getService();
         }
 
@@ -38,9 +38,9 @@ public class MainActivity extends Activity {
         }
     };
 
-    private void bindService() {                                                                     //bind service and call onBind() in Service
+    private void bindService() {                                                                    //bind service and call onBind() in Service
         final Intent intent = new Intent(this,DataService.class);
-        bindService(intent, dataServiceConnection, Context.BIND_AUTO_CREATE);                    // bindService
+        bindService(intent, dataServiceConnection, Context.BIND_AUTO_CREATE);                       // bindService
     }
 
     @Override
