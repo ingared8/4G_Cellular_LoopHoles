@@ -49,10 +49,10 @@ public class TTLActivity extends AppCompatActivity implements View.OnClickListen
         textHint = (TextView) findViewById(R.id.textHint);
 
         ipAddr = desIP.getText().toString();
-        String tmp = desPort.getText().toString();
-        portNum = Integer.parseInt(tmp);
-        tmp = ttlTime.getText().toString();
-        ttl = Integer.parseInt(tmp);
+        String tmp = desPort.getText().toString().trim();
+        portNum = toInt(tmp);
+        tmp = ttlTime.getText().toString().trim();
+        ttl = toInt(tmp);
 
         sendSocket.setOnClickListener(this);
 
@@ -76,6 +76,20 @@ public class TTLActivity extends AppCompatActivity implements View.OnClickListen
 
             }
         }.start();
+    }
+
+    /*
+     * Convert String to int
+     */
+    public int toInt(String s){
+        int result=0;
+        for(int i=0; i<s.length(); i++){
+            if(s.charAt(i)>=48 && s.charAt(i)<=57){
+                result = result*10 + (s.charAt(i)-48);
+            }
+            else return 0;
+        }
+        return result;
     }
 
     @Override
