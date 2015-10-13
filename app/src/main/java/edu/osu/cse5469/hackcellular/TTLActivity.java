@@ -1,8 +1,10 @@
 package edu.osu.cse5469.hackcellular;
 
-import android.content.Intent;
+import android.os.AsyncTask;
+import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -22,12 +24,12 @@ import java.net.InetAddress;
 
 public class TTLActivity extends AppCompatActivity implements View.OnClickListener {
 
-    private Button sendSocket;
+    private Button sendSocketButton;
     private EditText desIP;
     private EditText desPort;
     private EditText ttlTime;
     private TextView textHint;
-    private String ipAddr;
+    private String serverAddr;
     private int portNum;
     private int ttl;
     private String result = "";
@@ -41,37 +43,39 @@ public class TTLActivity extends AppCompatActivity implements View.OnClickListen
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_ttl);
+//        Handler writetextHandle = new Handler(){
+//                public void run(){
+//
+//            }
+//        };
+//        writetextHandle.
 
-        sendSocket = (Button) findViewById(R.id.sendButton);
+        sendSocketButton = (Button) findViewById(R.id.sendButton);
         desIP = (EditText) findViewById(R.id.edited_ip);
         desPort = (EditText) findViewById(R.id.edited_port);
         ttlTime = (EditText) findViewById(R.id.edited_ttl);
         textHint = (TextView) findViewById(R.id.textHint);
 
-        ipAddr = desIP.getText().toString();
-        String tmp = desPort.getText().toString().trim();
-        portNum = toInt(tmp);
-        tmp = ttlTime.getText().toString().trim();
-        ttl = toInt(tmp);
-
-        sendSocket.setOnClickListener(this);
+        sendSocketButton.setOnClickListener(this);
 
         // Listen to the response msg
         new Thread(){
             @Override
             public void run() {
                 super.run();
-                try {
-                    DatagramSocket listener = new DatagramSocket(listenPort);
-                    byte[] inData = new byte[1024];
-                    DatagramPacket inPacket = new DatagramPacket(inData, inData.length);
-                    listener.receive(inPacket);
-                    result = new String(inPacket.getData(), inPacket.getOffset(), inPacket.getLength());
-                    if(result.length()>0){
-                        textHint.setText("Please reduce your TTL");
+                while(true) {
+                    try {
+                        DatagramSocket listener = new DatagramSocket(listenPort);
+                        byte[] inData = new byte[1024];
+                        DatagramPacket inPacket = new DatagramPacket(inData, inData.length);
+                        listener.receive(inPacket);
+                        result = new String(inPacket.getData(), inPacket.getOffset(), inPacket.getLength());
+                        if (result.length() > 0) {
+                            textHint.setText("Please reduce your TTL");
+                        }
+                    } catch (IOException e) {
+                        e.printStackTrace();
                     }
-                } catch (IOException e) {
-                    e.printStackTrace();
                 }
 
             }
@@ -94,17 +98,42 @@ public class TTLActivity extends AppCompatActivity implements View.OnClickListen
 
     @Override
     public void onClick(View v) {
-        try {
-            // Send UDP packet
-            client = new DatagramSocket();
-            InetAddress serverAddr = InetAddress.getByName(ipAddr);
-            byte[] sendData = intToByteArray(ttl);
-            byte[] receiveData = new byte[1024];
-            DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length, serverAddr, portNum);
-            client.send(sendPacket);
-            textHint.setText("Msg has been sent");
-        } catch (IOException e) {
-            e.printStackTrace();
+        serverAddr = desIP.getText().toString();
+        Log.d("debug", " "+serverAddr);
+        String tmp = desPort.getText().toString();
+        portNum = toInt(tmp);
+        tmp = ttlTime.getText().toString();
+        ttl = toInt(tmp);
+
+        Log.d("debug", ""+tmp);
+
+        new SendfeedbackJob().execute();
+        textHint.setText("Msg has been sent");
+    }
+
+    /*
+     * To protect prevent the error of network operating on main thread.
+     */
+    private class SendfeedbackJob extends AsyncTask<String, Void, String>{
+
+        @Override
+        protected String doInBackground(String... params) {
+            try {
+                // Send UDP packet
+                client = new DatagramSocket();
+                InetAddress intetServerAddr = InetAddress.getByName(serverAddr);
+                String sendData = Integer.toString(ttl);
+                System.out.print(sendData);
+                DatagramPacket sendPacket = new DatagramPacket(sendData.getBytes(), sendData.length(), intetServerAddr, portNum);
+                Log.d("debug", " " + sendData );
+                Log.d("debug", " " + sendData.length() );
+                Log.d("debug", " " + portNum );
+                Log.d("debug", " " + serverAddr);
+                client.send(sendPacket);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return null;
         }
     }
 
