@@ -50,7 +50,7 @@ public class MainActivity extends Activity {
 
         set_ttl=(Button)findViewById(R.id.set_ttl);
         ttl_value = (EditText)findViewById(R.id.ttl_value);
-
+        bindService();
         set_ttl.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
 //                String str = ttl_value.getText().toString();
@@ -60,7 +60,7 @@ public class MainActivity extends Activity {
 //                    read_ttl_value = 0;
 //                }
 //                Log.d("debug", "" + read_ttl_value);
-                bindService();
+                dataService.show();
             }
         });
 
