@@ -32,7 +32,7 @@ public class TTLActivity extends AppCompatActivity implements View.OnClickListen
     private TextView textHint;
     private String serverAddr;
     private int portNum;
-    private int ttl;
+    private String ttl;
     private final static int SERVER_MSG = 1;
 
     //private Socket client =null;
@@ -116,8 +116,7 @@ public class TTLActivity extends AppCompatActivity implements View.OnClickListen
         Log.d("debug", " "+serverAddr);
         String tmp = desPort.getText().toString();
         portNum = toInt(tmp);
-        tmp = ttlTime.getText().toString();
-        ttl = toInt(tmp);
+        ttl = ttlTime.getText().toString();
 
         Log.d("debug", ""+tmp);
 
@@ -136,29 +135,13 @@ public class TTLActivity extends AppCompatActivity implements View.OnClickListen
                 // Send UDP packet
                 client = new DatagramSocket();
                 InetAddress intetServerAddr = InetAddress.getByName(serverAddr);
-                String sendData = Integer.toString(ttl);
-                System.out.print(sendData);
-                DatagramPacket sendPacket = new DatagramPacket(sendData.getBytes(), sendData.length(), intetServerAddr, portNum);
-                Log.d("debug", " " + sendData );
-                Log.d("debug", " " + sendData.length() );
-                Log.d("debug", " " + portNum );
-                Log.d("debug", " " + serverAddr);
+                DatagramPacket sendPacket = new DatagramPacket(ttl.getBytes(), ttl.length(), intetServerAddr, portNum);
                 client.send(sendPacket);
             } catch (IOException e) {
                 e.printStackTrace();
             }
             return null;
         }
-    }
-
-    // Convert int to byte
-    public static byte[] intToByteArray(int i) {
-        byte[] result = new byte[4];
-        result[0] = (byte)((i >> 24) & 0xFF);
-        result[1] = (byte)((i >> 16) & 0xFF);
-        result[2] = (byte)((i >> 8) & 0xFF);
-        result[3] = (byte)(i & 0xFF);
-        return result;
     }
 
     @Override

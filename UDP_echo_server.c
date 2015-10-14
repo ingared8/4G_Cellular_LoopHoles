@@ -38,7 +38,7 @@ void echo_UDP(int server_socket)
 
     while (1) {
       /* read a datagram from the socket (put result in bufin) */
-      n=recvfrom(server_socket,(char *)bufin,MSS,0,(struct sockaddr *)&remote,&len);
+      n=recvfrom(server_socket,bufin,sizeof(bufin),0,(struct sockaddr *)&remote,&len);
 
       /* print out the address of the sender */
       printf("Server: Got a datagram from %d port %d\n",inet_ntoa(remote.sin_addr), ntohs(remote.sin_port));
@@ -49,14 +49,15 @@ void echo_UDP(int server_socket)
         printf("GOT %d BYTES\n",n);
 		
         /* Got something, just send it back */
-	memcpy(ttl_pointer, bufin+16,4);
+	//memcpy(ttl_pointer, bufin, n);
+	strcpy(ttl_pointer, bufin);
 	ttl = atoi(ttl_pointer) ;
+	printf("BUFIN is %s\n", bufin);
 	printf("Server: The value of TTL string is %s \n", ttl_pointer);
 	printf("Server: The value of TTL mentioned in the packet is %d\n", ttl);
 
 	/* Set ttl to the value mentioned */	
 	
-	ttl = 100;
 	if (!(setsockopt(server_socket, IPPROTO_IP, IP_TTL, &ttl, sizeof(ttl)))) {
     		printf("Server: TTL set successfully to %d\n",ttl);
 	} else {
