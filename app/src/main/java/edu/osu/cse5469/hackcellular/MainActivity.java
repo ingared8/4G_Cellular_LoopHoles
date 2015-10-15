@@ -24,7 +24,6 @@ public class MainActivity extends Activity {
     EditText ttl_value;
     Button set_ttl;
     int read_ttl_value;
-    boolean btt1=false;
 
     private ServiceConnection dataServiceConnection = new ServiceConnection() {
 
@@ -51,39 +50,24 @@ public class MainActivity extends Activity {
 
         set_ttl=(Button)findViewById(R.id.set_ttl);
         ttl_value = (EditText)findViewById(R.id.ttl_value);
-
-        setButtonclick();
-    }
-
-    /*
-     * Set button onclick here
-     */
-    void setButtonclick(){
-        set_ttl.setOnClickListener(new textOnClick());
-
-    }
-
-    class textOnClick implements View.OnClickListener{
-        public void onClick(View v){
-            if(!btt1){
-            String str = ttl_value.getText().toString();
-                if (str.length()!=0) {
-                    read_ttl_value = Integer.parseInt(str);
-                } else {
-                    read_ttl_value = 0;
-                }
-                bindService();
-                btt1=true;
-                }
-
-            else{
-                Log.d("debug", "" + );
+        bindService();
+        set_ttl.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+//                String str = ttl_value.getText().toString();
+//                if (str.length()!=0) {
+//                    read_ttl_value = Integer.parseInt(str);
+//                } else {
+//                    read_ttl_value = 0;
+//                }
+//                Log.d("debug", "" + read_ttl_value);
+                dataService.show();
             }
+        });
 
 
-        }
+
     }
-    ;
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.

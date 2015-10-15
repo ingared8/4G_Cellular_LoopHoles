@@ -120,6 +120,8 @@ public class DataService extends Service {
         return dataserviceIBinder;
     }
 
+    public void show(){Log.d("aaaaaaaa","bbbbbbbbbbbb");}
+
     public void onCreate() {
         super.onCreate();
       //  ToastUtils.showToast("");

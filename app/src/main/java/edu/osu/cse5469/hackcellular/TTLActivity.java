@@ -1,7 +1,12 @@
 package edu.osu.cse5469.hackcellular;
 
+import android.content.ComponentName;
+import android.content.Context;
+import android.content.Intent;
+import android.content.ServiceConnection;
 import android.os.AsyncTask;
 import android.os.Handler;
+import android.os.IBinder;
 import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -34,6 +39,7 @@ public class TTLActivity extends AppCompatActivity implements View.OnClickListen
     private int portNum;
     private String ttl;
     private final static int SERVER_MSG = 1;
+    private DataService dataService;
 
     //private Socket client =null;
 
@@ -53,6 +59,24 @@ public class TTLActivity extends AppCompatActivity implements View.OnClickListen
         }
     };
 
+    private ServiceConnection dataServiceConnection = new ServiceConnection() {
+
+        @Override
+        public void onServiceConnected(ComponentName name, IBinder service) {                       //connect Service
+            dataService = ((DataService.DataServiceIBinder) (service)).getService();
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName name) {                 //disconnect Service
+            dataService = null;
+        }
+    };
+
+    private void bindService() {                                                                    //bind service and call onBind() in Service
+        final Intent intent = new Intent(this,DataService.class);
+        bindService(intent, dataServiceConnection, Context.BIND_AUTO_CREATE);                       // bindService
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -63,6 +87,8 @@ public class TTLActivity extends AppCompatActivity implements View.OnClickListen
         desPort = (EditText) findViewById(R.id.edited_port);
         ttlTime = (EditText) findViewById(R.id.edited_ttl);
         textHint = (TextView) findViewById(R.id.textHint);
+
+        bindService();
 
         sendSocketButton.setOnClickListener(this);
 
