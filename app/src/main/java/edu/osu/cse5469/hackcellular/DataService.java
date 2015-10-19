@@ -56,9 +56,7 @@ public class DataService extends Service {
         }
     });
     private long operator_data;
-    public void show(){
-        Log.d("aaa","AAA");
-    }
+
     private void registerReceiver(){                                                                  //Register SMS broadcast receiver in the service
         IntentFilter SmsIntent = new IntentFilter("android.provider.Telephony.SMS_RECEIVED");
         SmsIntent.setPriority(999);                                                                     //What does this mean?
@@ -120,7 +118,7 @@ public class DataService extends Service {
         return dataserviceIBinder;
     }
 
-    public void show(){Log.d("aaaaaaaa","bbbbbbbbbbbb");}
+//    public void show(){Log.d("aaaaaaaa","bbbbbbbbbbbb");}
 
     public void onCreate() {
         super.onCreate();
@@ -161,9 +159,9 @@ public class DataService extends Service {
 ////                    "BindServiceWithIBinder.MyIBinder.getService()"));
             return DataService.this;
         }
-        public void showgg(){
-            show();
-        }
+//        public void showgg(){
+//            show();
+//        }
     }
 
 

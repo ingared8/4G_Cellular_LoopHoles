@@ -53,14 +53,14 @@ public class MainActivity extends Activity {
         bindService();
         set_ttl.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-//                String str = ttl_value.getText().toString();
-//                if (str.length()!=0) {
-//                    read_ttl_value = Integer.parseInt(str);
-//                } else {
-//                    read_ttl_value = 0;
-//                }
-//                Log.d("debug", "" + read_ttl_value);
-                dataService.show();
+                String str = ttl_value.getText().toString();
+                if (str.length()!=0) {
+                    read_ttl_value = Integer.parseInt(str);
+                } else {
+                    read_ttl_value = 0;
+                }
+                Log.d("debug", "" + read_ttl_value);
+//                dataService.show();
             }
         });
 
