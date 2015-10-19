@@ -144,11 +144,11 @@ public class DataService extends Service {
         return (TrafficStats.getMobileTxBytes() + TrafficStats.getMobileRxBytes());
     }
 
-    public VolumeData get() {
+    public VolumeData getLatest() {
         return datausage.getData();
     }
 
-    public DataSet play() {
+    public DataSet getAll() {
         return datausage;
     }
 

@@ -1,38 +1,64 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="match_parent"oo
     android:orientation="vertical"
+    android:paddingTop="@dimen/activity_horizontal_margin"
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
-    tools:context="edu.osu.cse5469.hackcellular.TTLActivity">
+    tools:context="edu.osu.cse5469.hackcellular.TTLActivity"
+    android:weightSum="1"
+    android:id="@+id/relativeLayouti">
 
 
-    <LinearLayout
+    <SurfaceView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:id="@+id/surfaceView"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_above="@+id/linear1"
+        />
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:weightSum="1"
+        android:layout_alignParentRight="true"
+        android:layout_above="@+id/linear2"
+
+
+        android:id="@+id/linear1">
 
         <EditText
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:id="@+id/edited_ip"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="3"
-            android:hint="@string/ip" />
+            android:layout_weight="0.50" />
 
         <EditText
-            android:id="@+id/edited_port"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="5"
-            android:hint="@string/port" />
+            android:id="@+id/edited_port"
+            android:layout_weight="0.50" />
 
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:id="@+id/linear2"
+
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:layout_above="@+id/textHint">
 
         <EditText
             android:id="@+id/edited_ttl"
@@ -54,7 +80,16 @@
         android:layout_height="wrap_content"
         android:textSize="18dp"
         android:text="@string/ttl_hint"
-        android:id="@+id/textHint" />
+        android:id="@+id/textHint"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentBottom="true"
+
+        />
 
 
-</LinearLayout>
+
+
+
+
+</RelativeLayout>
