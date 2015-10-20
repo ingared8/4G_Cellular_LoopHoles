@@ -27,6 +27,7 @@ import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
+import java.net.SocketException;
 
 /**
  * Created by fengyuhui on 15/10/9.
@@ -118,9 +119,14 @@ public class TTLActivity extends AppCompatActivity  {
             public void run() {
                 super.run();
                 String result = "";
+                DatagramSocket listener = null;
+                try {
+                    listener = new DatagramSocket(listenPort);
+                } catch (SocketException e) {
+                    e.printStackTrace();
+                }
                 while(true) {
                     try {
-                        DatagramSocket listener = new DatagramSocket(listenPort);
                         byte[] inData = new byte[1024];
                         DatagramPacket inPacket = new DatagramPacket(inData, inData.length);
                         listener.receive(inPacket);
@@ -233,9 +239,6 @@ public class TTLActivity extends AppCompatActivity  {
 //            }
 //        });
 
-
-
-
     }
 
     /*
@@ -264,7 +267,7 @@ public class TTLActivity extends AppCompatActivity  {
             portNum = toInt(tmp);
             ttl = ttlTime.getText().toString();
 
-            Log.d("debug", "" + tmp);
+            Log.d("debug", " TTL is " + ttl);
 
             new SendfeedbackJob().execute();
             textHint.setText("Msg has been sent");

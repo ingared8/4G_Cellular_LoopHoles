@@ -38,13 +38,15 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/edited_ip"
-            android:layout_weight="0.50" />
+            android:hint="@string/ip"
+            android:layout_weight="0.8" />
 
         <EditText
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/edited_port"
-            android:layout_weight="0.50" />
+            android:text="@string/port"
+            android:layout_weight="0.2" />
 
     </LinearLayout>
 

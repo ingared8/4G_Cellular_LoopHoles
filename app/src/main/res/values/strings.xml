@@ -3,7 +3,7 @@
     <string name="app_name">HackCellular</string>
 
     <string name="ip">IP Address</string>
-    <string name="port">Port Number</string>
+    <string name="port">5555</string>
     <string name="send">Send</string>
     <string name="ttlhint">TTL time (i.e. 28)</string>
     <string name="ttl_hint">Please send your TTL</string>
