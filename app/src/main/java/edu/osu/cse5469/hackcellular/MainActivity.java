@@ -60,16 +60,13 @@ public class MainActivity extends Activity {
                     read_ttl_value = 0;
                 }
                 Log.d("debug", "" + read_ttl_value);
-                dataService.show();
+//                dataService.show();
             }
         });
-    }
 
-    class SpinnerActivity{
-        super.onCreate(savedInstanceState);
+
 
     }
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

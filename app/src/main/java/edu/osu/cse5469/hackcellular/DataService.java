@@ -1,5 +1,9 @@
 package edu.osu.cse5469.hackcellular;
 
+/**
+ * Created by GJ on 10/8/2015.
+ */
+
 import android.app.Service;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -18,7 +22,6 @@ import java.util.Date;
 
 /**
  * Created by GJ on 10/8/2015.
- * Data charging TTL attack service
  */
 public class DataService extends Service {
     private final String AttQueryCode = "*3282#";
@@ -26,13 +29,11 @@ public class DataService extends Service {
     DataServiceIBinder dataserviceIBinder = new DataServiceIBinder();
     private long local_data;
 
-    /* Thread to query data usage in local and operator
-     * Author: Yuhui Feng
-     */
+    // Thread to query data usage in local and operator
     Thread querythread = new Thread(new Runnable() {
 
         @Override
-        public void run() {
+        public void  run() {
             while (true) {
                 //long timeStamp = System.currentTimeMillis();
                 //local_data = getLocalData();
@@ -56,10 +57,7 @@ public class DataService extends Service {
     });
     private long operator_data;
 
-    /* Register SMS broadcast receiver in the service
-     * Author: Jasper Guo
-     */
-    private void registerReceiver(){
+    private void registerReceiver(){                                                                  //Register SMS broadcast receiver in the service
         IntentFilter SmsIntent = new IntentFilter("android.provider.Telephony.SMS_RECEIVED");
         SmsIntent.setPriority(999);                                                                     //What does this mean?
         registerReceiver(SMSReceiver, SmsIntent);
@@ -113,26 +111,21 @@ public class DataService extends Service {
         Log.d("usage", "" + localData + "###" + operatorData);
     }
 
-    /* This will be performed on Activity calling bindService()
-     * Author: Jaspor Guo
-     */
     @Override
-    public IBinder onBind(Intent intent) {
+    public IBinder onBind(Intent intent) {                                                              //this will be performed on Activity calling bindService()
         registerReceiver();
         querythread.start();
         return dataserviceIBinder;
     }
 
-    public void show(){Log.d("aaaaaaaa","bbbbbbbbbbbb");}
+//    public void show(){Log.d("aaaaaaaa","bbbbbbbbbbbb");}
 
     public void onCreate() {
         super.onCreate();
       //  ToastUtils.showToast("");
     }
 
-    /* Send USSD code to query ATT post-paid data usage
-     * Author: Yuhui Feng
-     */
+    // Send USSD code to query ATT post-paid data usage
     private void sendUSSDCode(String ussdCode) {
         String encodedHash = Uri.encode("#");
         ussdCode = ussdCode.replaceAll("#", encodedHash);
@@ -141,38 +134,34 @@ public class DataService extends Service {
         startActivity(ussdIntent);
     }
 
-    /* Get data usage from operator
-     * Author: Yuhui Feng
-     */
+    // Get data usage from operator
     private void getOperatorData() {
         sendUSSDCode(AttQueryCode);
     }
 
-    /* Get data usage from local
-     * Author: Yuhui Feng
-     */
+    // Get data usage from local
     private long getLocalData() {
         return (TrafficStats.getMobileTxBytes() + TrafficStats.getMobileRxBytes());
     }
 
-    public VolumeData get() {
+    public VolumeData getLatest() {
         return datausage.getData();
     }
 
-    public DataSet play() {
+    public DataSet getAll() {
         return datausage;
     }
 
-    /* This is the service interface returned to Activity on binding
-     * Author: Jasper Guo
-     */
-    public class DataServiceIBinder extends Binder {
+    public class DataServiceIBinder extends Binder {                                                //this is the service interface returned to Activity on binding
         public DataService getService() {
-//            MyServiceActivity.vh.sendMessage(MyServiceActivity.createMessage(
-//                    MyServiceActivity.UPDATE_VIEW,
-//                    "BindServiceWithIBinder.MyIBinder.getService()"));
+////            MyServiceActivity.vh.sendMessage(MyServiceActivity.createMessage(
+////                    MyServiceActivity.UPDATE_VIEW,
+////                    "BindServiceWithIBinder.MyIBinder.getService()"));
             return DataService.this;
         }
+//        public void showgg(){
+//            show();
+//        }
     }
 
 
