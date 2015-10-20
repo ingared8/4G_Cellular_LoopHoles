@@ -59,7 +59,9 @@ public class TTLActivity extends AppCompatActivity  {
     private int heightCanvas;
     private int widthCanvas;
 
-
+//    EditText ttl_value;
+//    Button set_ttl;
+//    int read_ttl_value;
 
 
     /*
@@ -200,6 +202,17 @@ public class TTLActivity extends AppCompatActivity  {
         });
     }
 
+//    private int readTTLvalue (EditText myedittext, int myint){
+//        String str = myedittext.getText().toString();
+//        if (str.length()!=0) {
+//            myint = Integer.parseInt(str);
+//        } else {
+//            myint = 0;
+//        }
+//        Log.d("debug", "" + myint);
+//        return myint;
+//    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -209,7 +222,16 @@ public class TTLActivity extends AppCompatActivity  {
         //bindService();
         startListenerThread();
 
-
+//        set_ttl=(Button)findViewById(R.id.set_ttl);
+//        ttl_value = (EditText)findViewById(R.id.ttl_value);
+//        bindService();
+//
+//        set_ttl.setOnClickListener(new View.OnClickListener() {
+//            public void onClick(View v) {
+//                readTTLvalue(ttl_value,read_ttl_value);
+////                dataService.show();
+//            }
+//        });
 
 
 

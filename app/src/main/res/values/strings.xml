@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">HackCellular</string>
 
@@ -10,6 +11,25 @@
     <string name="action_settings">Settings</string>
     <string name="title_activity_ttl">TTLActivity</string>
     <string name="set_ttl">SET</string>
-    <string name="data_attack">1. data attack</string>
+
+    <string name="data_attack">1. DATA ATTACK</string>
+    <string-array name="datachoose">
+        <item>TTL ATTACK</item>
+        <item>ATTACK 2</item>
+    </string-array>
+
+    <string name="voice_attack">2. VOICE ATTACK</string>
+    <string-array name="voicechoose">
+        <item>ATTACK 1</item>
+        <item>ATTACK 2</item>
+    </string-array>
+
+    <string name="protocol_attack">3. PROTOCOL ATTACK</string>
+    <string-array name="protocolchoose">
+        <item>ATTACK 1</item>
+        <item>ATTACK 2</item>
+    </string-array>
+
+    <string name="startattack">START ATTACK</string>
 
 </resources>
