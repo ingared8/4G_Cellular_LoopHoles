@@ -4,6 +4,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:paddingTop="@dimen/activity_horizontal_margin"
+    android:paddingBottom="@dimen/activity_horizontal_margin"
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     tools:context="edu.osu.cse5469.hackcellular.TTLActivity"
@@ -38,13 +39,16 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/edited_ip"
-            android:layout_weight="0.50" />
+            android:layout_weight="0.50"
+            android:hint="@string/ip"
+            android:gravity="start|end" />
 
         <EditText
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/edited_port"
-            android:layout_weight="0.50" />
+            android:layout_weight="0.50"
+            android:hint="@string/port" />
 
     </LinearLayout>
 

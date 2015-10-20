@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.os.AsyncTask;
@@ -27,6 +28,8 @@ import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
+import java.util.Timer;
+import java.util.TimerTask;
 
 /**
  * Created by fengyuhui on 15/10/9.
@@ -48,17 +51,31 @@ public class TTLActivity extends AppCompatActivity  {
     //private Socket client =null;
     private DatagramSocket client;
     private final int listenPort = 5501;
+    private ServiceConnection dataServiceConnection = new ServiceConnection() {
+
+        @Override
+        public void onServiceConnected(ComponentName name, IBinder service) {                       //connect Service
+            dataService = ((DataService.DataServiceIBinder) (service)).getService();
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName name) {                 //disconnect Service
+            dataService = null;
+        }
+    };
 
     /*
     Variables for drawing
      */
     private SurfaceHolder surfaceHolder;
     private SurfaceView surface;
-    private Paint dataPaint,dataoldPaint;
+    private Paint localdataPaint=new Paint(),opdataPaint=new Paint(),axisPaint=new Paint();
     private Matrix bgMatrix;
     private int heightCanvas;
     private int widthCanvas;
-
+    private int offsetAxis;
+    private Timer timer = new Timer();
+    TimerTask task;
 
 
 
@@ -74,18 +91,25 @@ public class TTLActivity extends AppCompatActivity  {
         }
     };
 
-    private ServiceConnection dataServiceConnection = new ServiceConnection() {
-
-        @Override
-        public void onServiceConnected(ComponentName name, IBinder service) {                       //connect Service
-            dataService = ((DataService.DataServiceIBinder) (service)).getService();
+    private void drawAxies(Paint axisPaint,Canvas canvas){
+        canvas.drawLine(offsetAxis, offsetAxis, offsetAxis, heightCanvas/2-offsetAxis, axisPaint);
+        canvas.drawLine(offsetAxis, heightCanvas/2-offsetAxis,widthCanvas-offsetAxis, heightCanvas/2-offsetAxis, axisPaint);
+        int lengthAxis=widthCanvas-2*offsetAxis;
+        for (int i=0;i<=30;i++){
+            canvas.drawLine(offsetAxis+lengthAxis/30*i, heightCanvas/2-offsetAxis,offsetAxis+lengthAxis/30*i, heightCanvas/2-2*offsetAxis, axisPaint);
         }
+    }
 
-        @Override
-        public void onServiceDisconnected(ComponentName name) {                 //disconnect Service
-            dataService = null;
+    private void drawData(Paint localdataPaint,Paint opdataPaint,Canvas canvas){
+        DataSet dataSet=dataService.datausage;
+        if(dataSet.size()>1);
+        for(int i=2; i<=dataSet.size();i++)
+        {
+            canvas.drawCircle(,,,);
+            canvas.drawCircle(,,,);
         }
-    };
+    }
+
 
     private void bindService() {                                                                    //bind service and call onBind() in Service
         final Intent intent = new Intent(this,DataService.class);
@@ -145,10 +169,13 @@ public class TTLActivity extends AppCompatActivity  {
         public void run(){
             Canvas canvas = null;
             synchronized (holder) {
-                canvas = holder.lockCanvas();// 锁定画布，一般在锁定后就可以通过其返回的画布对象Canvas，在其上面画图等操作了。
+                canvas = holder.lockCanvas();// lock canvas for drawing and retrieving params
                 heightCanvas=canvas.getHeight();
                 widthCanvas=canvas.getWidth();
                 holder.unlockCanvasAndPost(canvas);
+                offsetAxis=widthCanvas/80;
+
+
 
 //                canvas = holder.lockCanvas();
 //                int[] buffer=new int[32];
@@ -175,6 +202,7 @@ public class TTLActivity extends AppCompatActivity  {
 
 
                 // drawBack(surfaceHolder);
+
                 Log.v("Canvas", heightCanvas+" "+widthCanvas);
 
             }}};
@@ -200,6 +228,7 @@ public class TTLActivity extends AppCompatActivity  {
         });
     }
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -209,7 +238,19 @@ public class TTLActivity extends AppCompatActivity  {
         //bindService();
         startListenerThread();
 
-
+        task = new TimerTask(){
+            public void run() {
+                Canvas canvas = null;
+                synchronized (surfaceHolder) {
+                    canvas = surfaceHolder.lockCanvas();
+                    axisPaint.setColor(Color.argb(255, 255, 255, 255));
+                    axisPaint.setStrokeWidth(3);
+                    drawAxies(axisPaint,canvas);
+                    surfaceHolder.unlockCanvasAndPost(canvas);
+                }
+            }
+        };
+        timer.schedule(task, 1000,1000);
 
 
 
