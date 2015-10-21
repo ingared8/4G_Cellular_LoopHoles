@@ -76,17 +76,17 @@ public class TTLActivity extends AppCompatActivity  {
     private int xSplit=30;
     private int lengthXAxis;
     private int lengthYAxis;
-<<<<<<< HEAD
+
     private int offsetAxis;
     private Timer timer = new Timer();
     TimerTask task;
 
-=======
+
 
 //    EditText ttl_value;
 //    Button set_ttl;
 //    int read_ttl_value;
->>>>>>> origin/master
+
 
 
     /*
@@ -254,8 +254,8 @@ public class TTLActivity extends AppCompatActivity  {
         });
     }
 
-<<<<<<< HEAD
-=======
+
+
 //    private int readTTLvalue (EditText myedittext, int myint){
 //        String str = myedittext.getText().toString();
 //        if (str.length()!=0) {
@@ -266,7 +266,7 @@ public class TTLActivity extends AppCompatActivity  {
 //        Log.d("debug", "" + myint);
 //        return myint;
 //    }
->>>>>>> origin/master
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -277,7 +277,7 @@ public class TTLActivity extends AppCompatActivity  {
         //bindService();
         startListenerThread();
 
-<<<<<<< HEAD
+
         task = new TimerTask(){
             public void run() {
                 Canvas canvas = null;
@@ -295,7 +295,7 @@ public class TTLActivity extends AppCompatActivity  {
             }
         };
         timer.schedule(task, 1000,1000);
-=======
+
 //        set_ttl=(Button)findViewById(R.id.set_ttl);
 //        ttl_value = (EditText)findViewById(R.id.ttl_value);
 //        bindService();
@@ -306,7 +306,7 @@ public class TTLActivity extends AppCompatActivity  {
 ////                dataService.show();
 //            }
 //        });
->>>>>>> origin/master
+
 
 
 
