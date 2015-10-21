@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.os.AsyncTask;
@@ -29,7 +30,6 @@ import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.util.Timer;
 import java.util.TimerTask;
-import java.net.SocketException;
 
 /**
  * Created by fengyuhui on 15/10/9.
@@ -73,13 +73,20 @@ public class TTLActivity extends AppCompatActivity  {
     private Matrix bgMatrix;
     private int heightCanvas;
     private int widthCanvas;
+    private int xSplit=30;
+    private int lengthXAxis;
+    private int lengthYAxis;
+<<<<<<< HEAD
     private int offsetAxis;
     private Timer timer = new Timer();
     TimerTask task;
 
+=======
+
 //    EditText ttl_value;
 //    Button set_ttl;
 //    int read_ttl_value;
+>>>>>>> origin/master
 
 
     /*
@@ -97,19 +104,33 @@ public class TTLActivity extends AppCompatActivity  {
     private void drawAxies(Paint axisPaint,Canvas canvas){
         canvas.drawLine(offsetAxis, offsetAxis, offsetAxis, heightCanvas/2-offsetAxis, axisPaint);
         canvas.drawLine(offsetAxis, heightCanvas/2-offsetAxis,widthCanvas-offsetAxis, heightCanvas/2-offsetAxis, axisPaint);
-        int lengthAxis=widthCanvas-2*offsetAxis;
-        for (int i=0;i<=30;i++){
-            canvas.drawLine(offsetAxis+lengthAxis/30*i, heightCanvas/2-offsetAxis,offsetAxis+lengthAxis/30*i, heightCanvas/2-2*offsetAxis, axisPaint);
+
+        for (int i=0;i<=xSplit;i++){
+            canvas.drawLine(offsetAxis+lengthXAxis/xSplit*i, heightCanvas/2-offsetAxis,offsetAxis+lengthXAxis/xSplit*i, heightCanvas/2-2*offsetAxis, axisPaint);
         }
     }
 
     private void drawData(Paint localdataPaint,Paint opdataPaint,Canvas canvas){
+        DataSet tmpDataSet=new DataSet();
         DataSet dataSet=dataService.datausage;
+        long largestData=-1;
         if(dataSet.size()>1);
-        for(int i=2; i<=dataSet.size();i++)
+        for(int i=(dataSet.size()-xSplit)>1?(dataSet.size()-xSplit):1;i<dataSet.size();i++)
         {
-            canvas.drawCircle(,,,);
-            canvas.drawCircle(,,,);
+            long tmpopusage=(dataSet.getData(i).getOperator_data()-dataSet.getData(i-1).getOperator_data());
+            long tmplocalusage=(dataSet.getData(i).getLocal_data()-dataSet.getData(i-1).getLocal_data());
+            tmpDataSet.addData(new VolumeData(dataSet.getData(i).getTimeStamp(),tmplocalusage,tmplocalusage));
+            largestData=largestData>tmplocalusage?largestData:tmplocalusage;
+            largestData=largestData>tmpopusage?largestData:tmpopusage;
+        }
+
+        for(int i=0;i<tmpDataSet.size();i++)
+        {
+            float tmpx=offsetAxis+lengthXAxis/xSplit*i;
+            float tmpyLocal=((float)tmpDataSet.getData(i).getLocal_data()/(float)largestData)*lengthYAxis;
+            float tmpyOP=((float)tmpDataSet.getData(i).getOperator_data()/(float)largestData)*lengthYAxis;
+            canvas.drawCircle(tmpx,tmpyLocal,3,localdataPaint);
+            canvas.drawCircle(tmpx,tmpyOP,3,opdataPaint);
         }
     }
 
@@ -143,14 +164,9 @@ public class TTLActivity extends AppCompatActivity  {
             public void run() {
                 super.run();
                 String result = "";
-                DatagramSocket listener = null;
-                try {
-                    listener = new DatagramSocket(listenPort);
-                } catch (SocketException e) {
-                    e.printStackTrace();
-                }
                 while(true) {
                     try {
+                        DatagramSocket listener = new DatagramSocket(listenPort);
                         byte[] inData = new byte[1024];
                         DatagramPacket inPacket = new DatagramPacket(inData, inData.length);
                         listener.receive(inPacket);
@@ -180,8 +196,10 @@ public class TTLActivity extends AppCompatActivity  {
                 canvas = holder.lockCanvas();// lock canvas for drawing and retrieving params
                 heightCanvas=canvas.getHeight();
                 widthCanvas=canvas.getWidth();
-                holder.unlockCanvasAndPost(canvas);
                 offsetAxis=widthCanvas/80;
+                lengthXAxis=widthCanvas-2*offsetAxis;
+                lengthYAxis=heightCanvas/2-2*offsetAxis ;
+                holder.unlockCanvasAndPost(canvas);
 
 
 
@@ -236,6 +254,8 @@ public class TTLActivity extends AppCompatActivity  {
         });
     }
 
+<<<<<<< HEAD
+=======
 //    private int readTTLvalue (EditText myedittext, int myint){
 //        String str = myedittext.getText().toString();
 //        if (str.length()!=0) {
@@ -246,7 +266,7 @@ public class TTLActivity extends AppCompatActivity  {
 //        Log.d("debug", "" + myint);
 //        return myint;
 //    }
-
+>>>>>>> origin/master
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -257,19 +277,25 @@ public class TTLActivity extends AppCompatActivity  {
         //bindService();
         startListenerThread();
 
+<<<<<<< HEAD
         task = new TimerTask(){
             public void run() {
                 Canvas canvas = null;
                 synchronized (surfaceHolder) {
                     canvas = surfaceHolder.lockCanvas();
+
                     axisPaint.setColor(Color.argb(255, 255, 255, 255));
                     axisPaint.setStrokeWidth(3);
+                    localdataPaint.setColor(Color.argb(255, 0, 0, 255));
+                    localdataPaint.setStrokeWidth(3);
                     drawAxies(axisPaint,canvas);
+                    drawData(localdataPaint,opdataPaint,canvas);
                     surfaceHolder.unlockCanvasAndPost(canvas);
                 }
             }
         };
         timer.schedule(task, 1000,1000);
+=======
 //        set_ttl=(Button)findViewById(R.id.set_ttl);
 //        ttl_value = (EditText)findViewById(R.id.ttl_value);
 //        bindService();
@@ -280,6 +306,10 @@ public class TTLActivity extends AppCompatActivity  {
 ////                dataService.show();
 //            }
 //        });
+>>>>>>> origin/master
+
+
+
 
     }
 
@@ -309,7 +339,7 @@ public class TTLActivity extends AppCompatActivity  {
             portNum = toInt(tmp);
             ttl = ttlTime.getText().toString();
 
-            Log.d("debug", " TTL is " + ttl);
+            Log.d("debug", "" + tmp);
 
             new SendfeedbackJob().execute();
             textHint.setText("Msg has been sent");

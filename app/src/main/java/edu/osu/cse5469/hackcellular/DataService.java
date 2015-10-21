@@ -109,6 +109,7 @@ public class DataService extends Service {
         datausage.addData(new VolumeData(date.getTime(), localData, operatorData));
        // ToastUtils.showToast(MainActivity.this,"" + localData+operatorData,100);
         Log.d("usage", "" + localData + "###" + operatorData);
+
     }
 
     @Override
