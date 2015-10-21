@@ -25,9 +25,11 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import java.io.IOException;
+import java.io.InterruptedIOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
+import java.net.SocketException;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -50,7 +52,10 @@ public class TTLActivity extends AppCompatActivity  {
     private final static int SERVER_MSG = 1;
     private DataService dataService;
     private DatagramSocket client;
-    private final int listenPort = 5501;
+
+    private final static int LISTEN_PORT = 5501;
+    private final static int TIMEOUT = 2000;
+
     private ServiceConnection dataServiceConnection = new ServiceConnection() {
 
         @Override
@@ -116,7 +121,7 @@ public class TTLActivity extends AppCompatActivity  {
         canvas.drawLine(offsetAxis, heightCanvas/2-offsetAxis,widthCanvas-offsetAxis, heightCanvas/2-offsetAxis, axisPaint);
 
         for (int i=0;i<=xSplit;i++){
-            canvas.drawLine(offsetAxis+lengthXAxis/xSplit*i, heightCanvas/2-offsetAxis,offsetAxis+lengthXAxis/xSplit*i, heightCanvas/2-2*offsetAxis, axisPaint);
+            canvas.drawLine(offsetAxis + lengthXAxis / xSplit * i, heightCanvas / 2 - offsetAxis, offsetAxis + lengthXAxis / xSplit * i, heightCanvas / 2 - 2 * offsetAxis, axisPaint);
         }
     }
 
@@ -170,33 +175,39 @@ public class TTLActivity extends AppCompatActivity  {
     /*
     Listen to the response msg
     */
-    private void startListenerThread(){
-        new Thread(){
-            @Override
-            public void run() {
-                super.run();
-                String result = "";
-                while(true) {
-                    try {
-                        DatagramSocket listener = new DatagramSocket(listenPort);
-                        byte[] inData = new byte[1024];
-                        DatagramPacket inPacket = new DatagramPacket(inData, inData.length);
-                        listener.receive(inPacket);
-                        result = new String(inPacket.getData(), inPacket.getOffset(), inPacket.getLength());
-                        if (result.length() > 0) {
-                            Message msg = Message.obtain();                                         // Using Handler to exchange message to UI
-                            msg.obj = "Please reduce your TTL";
-                            msg.what = SERVER_MSG;
-                            handler.sendMessage(msg);
-                        }
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                }
-
-            }
-        }.start();
-    }
+//    private void startListenerThread(){
+//        new Thread(){
+//            @Override
+//            public void run() {
+//                super.run();
+//                String result = "";
+//                DatagramSocket listener = null;
+//                try {
+//                    listener = new DatagramSocket(LISTEN_PORT);
+//                } catch (SocketException e) {
+//                    e.printStackTrace();
+//                }
+//                while(true) {
+//                    try {
+//                        byte[] inData = new byte[1024];
+//                        DatagramPacket inPacket = new DatagramPacket(inData, inData.length);
+//                        listener.receive(inPacket);
+//                        result = new String(inPacket.getData(), inPacket.getOffset(), inPacket.getLength());
+//                        if (result.length() > 0) {
+//                            Message msg = Message.obtain();                                         // Using Handler to exchange message to UI
+//                            msg.obj = "Please reduce your TTL";
+//                            Log.d("debug", "Received length is " + result.length());
+//                            msg.what = SERVER_MSG;
+//                            handler.sendMessage(msg);
+//                        }
+//                    } catch (IOException e) {
+//                        e.printStackTrace();
+//                    }
+//                }
+//
+//            }
+//        }.start();
+//    }
     class surfaceCreateThread extends Thread{
         private SurfaceHolder holder ;
         public surfaceCreateThread(SurfaceHolder holder){
@@ -244,6 +255,13 @@ public class TTLActivity extends AppCompatActivity  {
 
         bindUI();
         bindsurfaceCallBack();
+//        startListenerThread();
+        try {
+            client = new DatagramSocket(LISTEN_PORT);
+        } catch (SocketException e) {
+            e.printStackTrace();
+        }
+
     }
 
     /*
@@ -272,14 +290,12 @@ public class TTLActivity extends AppCompatActivity  {
             portNum = toInt(tmp);
             ttl = ttlTime.getText().toString();
 
-            Log.d("debug", "" + tmp);
+            Log.d("debug", "TTL is " + ttl);
 
             new SendfeedbackJob().execute();
-            textHint.setText("Msg has been sent");
 //            if(bindPoint) {
 //                bindPoint = false;
 //                bindService();
-//                startListenerThread();
 //                timer.schedule(task, 300, 1000);
 //            }
         }
@@ -293,10 +309,37 @@ public class TTLActivity extends AppCompatActivity  {
         protected String doInBackground(String... params) {
             try {
                 // Send UDP packet
-                client = new DatagramSocket();
                 InetAddress intetServerAddr = InetAddress.getByName(serverAddr);
                 DatagramPacket sendPacket = new DatagramPacket(ttl.getBytes(), ttl.length(), intetServerAddr, portNum);
                 client.send(sendPacket);
+                Message sendMsg = Message.obtain();
+                sendMsg.obj = "Msg has been sent";
+                sendMsg.what = SERVER_MSG;
+                handler.sendMessage(sendMsg);
+
+                // Receive UDP packet
+                while(true) {
+                    client.setSoTimeout(TIMEOUT);
+                    byte[] inData = new byte[3000];
+                    DatagramPacket inPacket = new DatagramPacket(inData, inData.length);
+                    try {
+                        client.receive(inPacket);
+                        String result = new String(inPacket.getData(), inPacket.getOffset(), inPacket.getLength());
+                        if (result.length() > 0) {
+                            Message msg = Message.obtain();                                         // Using Handler to exchange message to UI
+                            msg.obj = "Please reduce your TTL";
+                            Log.d("debug", "Received length is " + result.length());
+                            msg.what = SERVER_MSG;
+                            handler.sendMessage(msg);
+                        }
+                    } catch (InterruptedIOException e) {
+                        Log.d("debug", "Timeout! No packet received.");
+                        break;
+                    }
+                }
+
+
+
             } catch (IOException e) {
                 e.printStackTrace();
             }

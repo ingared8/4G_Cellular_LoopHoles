@@ -14,14 +14,13 @@
 // The port through which we are transferring files is PORT_NUM
 // The following attributes define the given problem specifications.
 
-#define MSS 1000
+#define MSS 1500
 #define SIZE_OF_BYTES 4
 #define NAME_OF_FILENAME 20
 #define START_SIZE_OF_BYTES 0
 #define START_NAME_OF_FILENAME 4
 #define MAX_SIZE_OF_FNAME 256
 #define BAD_FNAME 777
-#define PORT_NUM_SENDING 5501
 
 
 void echo_UDP(int server_socket)
@@ -39,104 +38,104 @@ void echo_UDP(int server_socket)
     int a;
 
     while (1) {
-	  memset(bufin, 0, sizeof(bufin));  
-      /* read a datagram from the socket (put result in bufin) */
-      n=recvfrom(server_socket,bufin,sizeof(bufin),0,(struct sockaddr *)&remote,&len);
+	  	memset(bufin, 0, sizeof(bufin));  
+      	/* read a datagram from the socket (put result in bufin) */
+      	n=recvfrom(server_socket,bufin,sizeof(bufin),0,(struct sockaddr *)&remote,&len);
 
-      /* print out the address of the sender */
-      memcpy(&remote_ip_addr,&remote.sin_addr.s_addr,4);
-      printf("Server: Got a datagram from %s port %d.\n", inet_ntoa(remote_ip_addr), ntohs(remote.sin_port));
+      	/* print out the address of the sender */
+      	memcpy(&remote_ip_addr,&remote.sin_addr.s_addr,4);
+      	printf("Server: Got a datagram from %s port %d.\n", inet_ntoa(remote_ip_addr), ntohs(remote.sin_port));
 	
-      if (n<0) {
-        perror("Error receiving data");
-      } else { 
-        printf("GOT %d BYTES\n",n);
+      	if (n<0) {
+        	perror("Error receiving data");
+      	} else { 
+        	printf("GOT %d BYTES\n",n);
 		
-        /* Got something, just send it back */
-		//memcpy(ttl_pointer, bufin, n);
-		strcpy(ttl_pointer, bufin);
-		ttl = atoi(ttl_pointer) ;
-		printf("BUFIN is %s\n", bufin);
-		printf("Server: The value of TTL string is %s \n", ttl_pointer);
-		printf("Server: The value of TTL mentioned in the packet is %d\n", ttl);
+        	/* Got something, just send it back */
+			//memcpy(ttl_pointer, bufin, n);
+			strcpy(ttl_pointer, bufin);
+			ttl = atoi(ttl_pointer) ;
+			printf("BUFIN is %s\n", bufin);
+			printf("Server: The value of TTL string is %s \n", ttl_pointer);
+			printf("Server: The value of TTL mentioned in the packet is %d\n", ttl);
 
-		/* Set ttl to the value mentioned */	
+			/* Set ttl to the value mentioned */	
 	
-		if (!(setsockopt(server_socket, IPPROTO_IP, IP_TTL, &ttl, sizeof(ttl)))) {
+			if (!(setsockopt(server_socket, IPPROTO_IP, IP_TTL, &ttl, sizeof(ttl)))) {
     		printf("Server: TTL set successfully to %d\n",ttl);
-		}else {
-    		printf("Server: Error setting TTL: %s\n", strerror(errno));
-		}
+			}else {
+    			printf("Server: Error setting TTL: %s\n", strerror(errno));
+			}
 	
-		remote.sin_port = htons(PORT_NUM_SENDING);
+			// remote.sin_port = htons(PORT_NUM_SENDING);
 	
-		/* Send the packet*/
+			/* Send the packet*/
 
-		for (int j=0; j<MSS; j++){
-			bufin[j]=1;
-		}
-		for (int j=0; j<1000; j++){
-    		a = sendto(server_socket,bufin,MSS,0,(struct sockaddr *)&remote,len);
-			// if ( a > 0) {
-			// 	printf("Server: Send packet %d to Android\n", j+1);
-			// }
-		}
-      }
+			for (int j=0; j<MSS; j++){
+				bufin[j]=1;
+			}
+			for (int j=0; j<1; j++){
+    			a = sendto(server_socket,bufin,MSS,0,(struct sockaddr *)&remote,len);
+				if ( a > 0) {
+					printf("Server: Send packet %d to Android\n", j+1);
+				}
+			}
+      	}
     }
 }
 
 int main(int argc, char *argv[] )
 {
 
-if (argc >= 1)
+	if (argc >= 1)
 	{
-	printf(" Server: The Server is listening at Port number :  %s\n",argv[1]);
+		printf(" Server: The Server is listening at Port number :  %s\n",argv[1]);
 	}
 
-//int PORT_NUM_SENDING = 5501; 	// Port at which it sends packet to the clients
-int PORT_NUM_RECV = 5555; 	// Port at which the server accepts the UDP packets
+	//int PORT_NUM_SENDING = 5501; 	// Port at which it sends packet to the clients
+	int PORT_NUM_RECV = 5555; 	// Port at which the server accepts the UDP packets
 
-// Variable declarations
-struct sockaddr_in server_address, client_address;
-int new_client,client_length;
+	// Variable declarations
+	struct sockaddr_in server_address, client_address;
+	int new_client,client_length;
 
-// Socket creation
-printf("Server: Creating socket at server end\n");
-int server_socket;
-server_socket = socket(AF_INET,SOCK_DGRAM,0);
-if (server_socket < 0)
-        {
+	// Socket creation
+	printf("Server: Creating socket at server end\n");
+	int server_socket;
+	server_socket = socket(AF_INET,SOCK_DGRAM,0);
+	if (server_socket < 0)
+    {
         printf("Server: Socket error with error number: %d\n",errno);
         exit(0);
-        }
-printf("Server: Socket succesfully Created\n");
+    }
+	printf("Server: Socket succesfully Created\n");
 
-server_address.sin_family = AF_INET;
-server_address.sin_port = htons(PORT_NUM_RECV);
-server_address.sin_addr.s_addr = htons(INADDR_ANY);
+	server_address.sin_family = AF_INET;
+	server_address.sin_port = htons(PORT_NUM_RECV);
+	server_address.sin_addr.s_addr = htons(INADDR_ANY);
 
-// Bind the socket
-int bind_id = bind(server_socket, (struct sockaddr *)&server_address, sizeof(server_address));
-if (bind_id < 0)
+	// Bind the socket
+	int bind_id = bind(server_socket, (struct sockaddr *)&server_address, sizeof(server_address));
+	if (bind_id < 0)
 	{
-	printf("Server: Socket Bind Error with error No: %d\n", errno);
-	exit(0);
+		printf("Server: Socket Bind Error with error No: %d\n", errno);
+		exit(0);
 	}
-printf("Server: Binding Server socket successful\n");
-printf("Server: The server is listening for UDP packets at port number %d\n",ntohs(server_address.sin_port));
+	printf("Server: Binding Server socket successful\n");
+	printf("Server: The server is listening for UDP packets at port number %d\n",ntohs(server_address.sin_port));
 
-// Android Socket  creation
-printf("Android: Creating socket to send data to client(Android)\n");
+	// Android Socket  creation
+	printf("Android: Creating socket to send data to client(Android)\n");
 
-int client_socket = socket(AF_INET,SOCK_DGRAM,IPPROTO_UDP);
-if (client_socket < 0)
-		{
+	int client_socket = socket(AF_INET,SOCK_DGRAM,IPPROTO_UDP);
+	if (client_socket < 0)
+	{
 		printf("Android: Client Socket error: %d\n",errno);
 		exit(0);
-		}
-printf("Android: Client Socket succesfully created\n");
+	}
+	printf("Android: Client Socket succesfully created\n");
 
-// Echo every datagram we get
-echo_UDP(server_socket);
-printf("Completed . Good bye\n");
+	// Echo every datagram we get
+	echo_UDP(server_socket);
+	printf("Completed . Good bye\n");
 }
