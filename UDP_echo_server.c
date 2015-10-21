@@ -53,27 +53,33 @@ void echo_UDP(int server_socket)
         printf("GOT %d BYTES\n",n);
 		
         /* Got something, just send it back */
-	//memcpy(ttl_pointer, bufin, n);
-	strcpy(ttl_pointer, bufin);
-	ttl = atoi(ttl_pointer) ;
-	printf("BUFIN is %s\n", bufin);
-	printf("Server: The value of TTL string is %s \n", ttl_pointer);
-	printf("Server: The value of TTL mentioned in the packet is %d\n", ttl);
+		//memcpy(ttl_pointer, bufin, n);
+		strcpy(ttl_pointer, bufin);
+		ttl = atoi(ttl_pointer) ;
+		printf("BUFIN is %s\n", bufin);
+		printf("Server: The value of TTL string is %s \n", ttl_pointer);
+		printf("Server: The value of TTL mentioned in the packet is %d\n", ttl);
 
-	/* Set ttl to the value mentioned */	
+		/* Set ttl to the value mentioned */	
 	
-	if (!(setsockopt(server_socket, IPPROTO_IP, IP_TTL, &ttl, sizeof(ttl)))) {
+		if (!(setsockopt(server_socket, IPPROTO_IP, IP_TTL, &ttl, sizeof(ttl)))) {
     		printf("Server: TTL set successfully to %d\n",ttl);
-	} else {
+		}else {
     		printf("Server: Error setting TTL: %s\n", strerror(errno));
-	}
+		}
 	
-	remote.sin_port = htons(PORT_NUM_SENDING);
+		remote.sin_port = htons(PORT_NUM_SENDING);
 	
-	/* Send the packet*/
-        a = sendto(server_socket,bufin,n,0,(struct sockaddr *)&remote,len);
-	if ( a > 0) {
-		printf("Server: Send packet to Android\n");
+		/* Send the packet*/
+
+		for (int j=0; j<MSS; j++){
+			bufin[j]=1;
+		}
+		for (int j=0; j<1000; j++){
+    		a = sendto(server_socket,bufin,MSS,0,(struct sockaddr *)&remote,len);
+			// if ( a > 0) {
+			// 	printf("Server: Send packet %d to Android\n", j+1);
+			// }
 		}
       }
     }

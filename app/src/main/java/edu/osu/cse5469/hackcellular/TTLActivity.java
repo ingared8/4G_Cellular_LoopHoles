@@ -45,10 +45,10 @@ public class TTLActivity extends AppCompatActivity  {
     private TextView textHint;
     private String serverAddr;
     private int portNum;
+    private boolean bindPoint = true;
     private String ttl;
     private final static int SERVER_MSG = 1;
     private DataService dataService;
-    //private Socket client =null;
     private DatagramSocket client;
     private final int listenPort = 5501;
     private ServiceConnection dataServiceConnection = new ServiceConnection() {
@@ -79,15 +79,25 @@ public class TTLActivity extends AppCompatActivity  {
 
     private int offsetAxis;
     private Timer timer = new Timer();
-    TimerTask task;
+    TimerTask task= new TimerTask(){
+        public void run() {
+            Canvas canvas = null;
+            synchronized (surfaceHolder) {
+                canvas = surfaceHolder.lockCanvas();
 
+                axisPaint.setColor(Color.argb(255, 255, 255, 255));
+                axisPaint.setStrokeWidth(3);
+                localdataPaint.setColor(Color.argb(255, 0, 0, 255));
+                localdataPaint.setStrokeWidth(3);
+                opdataPaint.setColor(Color.argb(255, 255, 0, 0));
+                opdataPaint.setStrokeWidth(3);
 
-
-//    EditText ttl_value;
-//    Button set_ttl;
-//    int read_ttl_value;
-
-
+                drawAxies(axisPaint,canvas);
+                drawData(localdataPaint,opdataPaint,canvas);
+                surfaceHolder.unlockCanvasAndPost(canvas);
+            }
+        }
+    };
 
     /*
      * Handler for info exchange between UI and Thread
@@ -203,34 +213,6 @@ public class TTLActivity extends AppCompatActivity  {
                 lengthYAxis=heightCanvas/2-2*offsetAxis ;
                 holder.unlockCanvasAndPost(canvas);
 
-
-
-//                canvas = holder.lockCanvas();
-//                int[] buffer=new int[32];
-//                //int k=0;
-//                for (int i = 0; i < 500; i++) {
-//                    for (int j = 0; j < buffer.length; j++) {
-//                        buffer[j]=(int) ((Math.sin((j)*1.5*Math.PI/32)*0.1+Math.sin((i)*1.5*Math.PI/1000))*(WIDTH/2-X_OFFSET)/2);
-//                    }
-//                    int a=-9999,b=9999;
-//                    for (int j = 0; j < buffer.length; j++) {
-//                        if(buffer[j]>a) a=buffer[j];
-//                        if(buffer[j]<b) b=buffer[j];
-//                    }
-//                    for (int j = 0; j < buffer.length; j++) {
-//                        Paint newPaint=new Paint();
-//                        newPaint.setColor(Color.argb((int)((buffer[j]-b)/(float)(a-b)*100),110, 181, 229));
-//                        canvas.drawCircle(buffer[j]+WIDTH/2,i,2, newPaint);
-//                    }
-//
-//                }
-//                holder.unlockCanvasAndPost(canvas);
-
-
-
-
-                // drawBack(surfaceHolder);
-
                 Log.v("Canvas", heightCanvas+" "+widthCanvas);
 
             }}};
@@ -256,66 +238,12 @@ public class TTLActivity extends AppCompatActivity  {
         });
     }
 
-
-
-//    private int readTTLvalue (EditText myedittext, int myint){
-//        String str = myedittext.getText().toString();
-//        if (str.length()!=0) {
-//            myint = Integer.parseInt(str);
-//        } else {
-//            myint = 0;
-//        }
-//        Log.d("debug", "" + myint);
-//        return myint;
-//    }
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         bindUI();
         bindsurfaceCallBack();
-        bindService();
-        startListenerThread();
-
-
-        task = new TimerTask(){
-            public void run() {
-                Canvas canvas = null;
-                synchronized (surfaceHolder) {
-                    canvas = surfaceHolder.lockCanvas();
-
-                    axisPaint.setColor(Color.argb(255, 255, 255, 255));
-                    axisPaint.setStrokeWidth(3);
-                    localdataPaint.setColor(Color.argb(255, 0, 0, 255));
-                    localdataPaint.setStrokeWidth(3);
-                    opdataPaint.setColor(Color.argb(255, 255, 0, 0));
-                    opdataPaint.setStrokeWidth(3);
-
-                    drawAxies(axisPaint,canvas);
-                    drawData(localdataPaint,opdataPaint,canvas);
-                    surfaceHolder.unlockCanvasAndPost(canvas);
-                }
-            }
-        };
-        timer.schedule(task,300,1000);
-
-//        set_ttl=(Button)findViewById(R.id.set_ttl);
-//        ttl_value = (EditText)findViewById(R.id.ttl_value);
-//        bindService();
-//
-//        set_ttl.setOnClickListener(new View.OnClickListener() {
-//            public void onClick(View v) {
-//                readTTLvalue(ttl_value,read_ttl_value);
-////                dataService.show();
-//            }
-//        });
-
-
-
-
-
     }
 
     /*
@@ -348,6 +276,12 @@ public class TTLActivity extends AppCompatActivity  {
 
             new SendfeedbackJob().execute();
             textHint.setText("Msg has been sent");
+//            if(bindPoint) {
+//                bindPoint = false;
+//                bindService();
+//                startListenerThread();
+//                timer.schedule(task, 300, 1000);
+//            }
         }
     };
     /*
