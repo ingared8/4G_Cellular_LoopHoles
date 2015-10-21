@@ -7,6 +7,7 @@
 #include <netinet/in.h>
 #include <time.h>
 #include <unistd.h>
+#include <arpa/inet.h>
 
 // This is an E, it Echo server, it replies the same UDP to sender but with the TTL set to the value desired by packet info.
 // Assumptions
@@ -29,6 +30,7 @@ void echo_UDP(int server_socket)
     char bufin[MSS];
     char ttl_pointer[4];
     struct sockaddr_in remote;
+    struct in_addr remote_ip_addr;
 
     /* need to know how big address struct is, len must be set before the
        call to recvfrom!!! */
@@ -37,11 +39,13 @@ void echo_UDP(int server_socket)
     int a;
 
     while (1) {
+	  memset(bufin, 0, sizeof(bufin));  
       /* read a datagram from the socket (put result in bufin) */
       n=recvfrom(server_socket,bufin,sizeof(bufin),0,(struct sockaddr *)&remote,&len);
 
       /* print out the address of the sender */
-      printf("Server: Got a datagram from %d port %d\n",inet_ntoa(remote.sin_addr), ntohs(remote.sin_port));
+      memcpy(&remote_ip_addr,&remote.sin_addr.s_addr,4);
+      printf("Server: Got a datagram from %s port %d.\n", inet_ntoa(remote_ip_addr), ntohs(remote.sin_port));
 	
       if (n<0) {
         perror("Error receiving data");
