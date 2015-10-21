@@ -116,10 +116,11 @@ public class DataService extends Service {
     public IBinder onBind(Intent intent) {                                                              //this will be performed on Activity calling bindService()
         registerReceiver();
         querythread.start();
+       // for (int i=0;i<31;i++) datausage.addData(new VolumeData(233,i*i,3*i*i)); debuguse
         return dataserviceIBinder;
     }
 
-//    public void show(){Log.d("aaaaaaaa","bbbbbbbbbbbb");}
+
 
     public void onCreate() {
         super.onCreate();

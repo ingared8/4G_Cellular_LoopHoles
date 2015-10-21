@@ -119,7 +119,8 @@ public class TTLActivity extends AppCompatActivity  {
         {
             long tmpopusage=(dataSet.getData(i).getOperator_data()-dataSet.getData(i-1).getOperator_data());
             long tmplocalusage=(dataSet.getData(i).getLocal_data()-dataSet.getData(i-1).getLocal_data());
-            tmpDataSet.addData(new VolumeData(dataSet.getData(i).getTimeStamp(),tmplocalusage,tmplocalusage));
+            //Log.d("Y",""+tmpopusage+" "+tmplocalusage);
+            tmpDataSet.addData(new VolumeData(dataSet.getData(i).getTimeStamp(),tmplocalusage,tmpopusage));
             largestData=largestData>tmplocalusage?largestData:tmplocalusage;
             largestData=largestData>tmpopusage?largestData:tmpopusage;
         }
@@ -127,9 +128,10 @@ public class TTLActivity extends AppCompatActivity  {
         for(int i=0;i<tmpDataSet.size();i++)
         {
             float tmpx=offsetAxis+lengthXAxis/xSplit*i;
-            float tmpyLocal=((float)tmpDataSet.getData(i).getLocal_data()/(float)largestData)*lengthYAxis;
-            float tmpyOP=((float)tmpDataSet.getData(i).getOperator_data()/(float)largestData)*lengthYAxis;
-            canvas.drawCircle(tmpx,tmpyLocal,3,localdataPaint);
+            float tmpyLocal=offsetAxis+lengthYAxis-((float)tmpDataSet.getData(i).getLocal_data()/(float)largestData)*lengthYAxis;
+            float tmpyOP=offsetAxis+lengthYAxis-((float)tmpDataSet.getData(i).getOperator_data()/(float)largestData)*lengthYAxis;
+            Log.d("Y",""+tmpyLocal+" "+tmpyOP);
+            canvas.drawCircle(tmpx,tmpyLocal, 3, localdataPaint);
             canvas.drawCircle(tmpx,tmpyOP,3,opdataPaint);
         }
     }
@@ -274,7 +276,7 @@ public class TTLActivity extends AppCompatActivity  {
 
         bindUI();
         bindsurfaceCallBack();
-        //bindService();
+        bindService();
         startListenerThread();
 
 
@@ -288,13 +290,16 @@ public class TTLActivity extends AppCompatActivity  {
                     axisPaint.setStrokeWidth(3);
                     localdataPaint.setColor(Color.argb(255, 0, 0, 255));
                     localdataPaint.setStrokeWidth(3);
+                    opdataPaint.setColor(Color.argb(255, 255, 0, 0));
+                    opdataPaint.setStrokeWidth(3);
+
                     drawAxies(axisPaint,canvas);
                     drawData(localdataPaint,opdataPaint,canvas);
                     surfaceHolder.unlockCanvasAndPost(canvas);
                 }
             }
         };
-        timer.schedule(task, 1000,1000);
+        timer.schedule(task,300,1000);
 
 //        set_ttl=(Button)findViewById(R.id.set_ttl);
 //        ttl_value = (EditText)findViewById(R.id.ttl_value);
