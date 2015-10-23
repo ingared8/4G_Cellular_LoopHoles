@@ -132,8 +132,8 @@ public class TTLActivity extends AppCompatActivity  {
         if(dataSet.size()>1);
         for(int i=(dataSet.size()-xSplit)>1?(dataSet.size()-xSplit):1;i<dataSet.size();i++)
         {
-            long tmpopusage=(dataSet.getData(i).getOperator_data()-dataSet.getData(i-1).getOperator_data());
-            long tmplocalusage=(dataSet.getData(i).getLocal_data()-dataSet.getData(i-1).getLocal_data());
+            long tmpopusage=(dataSet.getData(i).getOperator_data()-dataSet.getData(0).getOperator_data());
+            long tmplocalusage=(dataSet.getData(i).getLocal_data()-dataSet.getData(0).getLocal_data());
             Log.d("Usage ","opusage:"+tmpopusage+" localusage:"+tmplocalusage);
             tmpDataSet.addData(new VolumeData(dataSet.getData(i).getTimeStamp(),tmplocalusage,tmpopusage));
             largestData=largestData>tmplocalusage?largestData:tmplocalusage;
