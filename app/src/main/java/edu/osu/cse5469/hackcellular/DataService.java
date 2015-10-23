@@ -108,7 +108,7 @@ public class DataService extends Service {
         long localData=(TrafficStats.getMobileTxBytes()+TrafficStats.getMobileRxBytes());
         datausage.addData(new VolumeData(date.getTime(), localData, operatorData));
        // ToastUtils.showToast(MainActivity.this,"" + localData+operatorData,100);
-        Log.d("usage", "localData：" + localData + "     operatorData：" + operatorData);
+      //  Log.d("usage", "localData：" + localData + "     operatorData：" + operatorData);
 
     }
 
