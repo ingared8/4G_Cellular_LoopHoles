@@ -145,7 +145,7 @@ public class TTLActivity extends AppCompatActivity  {
             float tmpx=offsetAxis+lengthXAxis/xSplit*i;
             float tmpyLocal=offsetAxis+lengthYAxis-((float)tmpDataSet.getData(i).getLocal_data()/(float)largestData)*lengthYAxis;
             float tmpyOP=offsetAxis+lengthYAxis-((float)tmpDataSet.getData(i).getOperator_data()/(float)largestData)*lengthYAxis;
-            Log.d("Y",""+tmpyLocal+" "+tmpyOP);
+            //Log.d("Y",""+tmpyLocal+" "+tmpyOP);
             canvas.drawCircle(tmpx,tmpyLocal, 3, localdataPaint);
             canvas.drawCircle(tmpx,tmpyOP,3,opdataPaint);
         }
