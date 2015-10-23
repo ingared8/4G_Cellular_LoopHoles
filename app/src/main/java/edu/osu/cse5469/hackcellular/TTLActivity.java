@@ -117,6 +117,7 @@ public class TTLActivity extends AppCompatActivity  {
     };
 
     private void drawAxies(Paint axisPaint,Canvas canvas){
+        canvas.drawColor(Color.argb(255, 0, 0, 0));
         canvas.drawLine(offsetAxis, offsetAxis, offsetAxis, heightCanvas/2-offsetAxis, axisPaint);
         canvas.drawLine(offsetAxis, heightCanvas/2-offsetAxis,widthCanvas-offsetAxis, heightCanvas/2-offsetAxis, axisPaint);
 
