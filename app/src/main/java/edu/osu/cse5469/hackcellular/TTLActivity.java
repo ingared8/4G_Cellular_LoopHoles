@@ -293,11 +293,11 @@ public class TTLActivity extends AppCompatActivity  {
             Log.d("debug", "TTL is " + ttl);
 
             new SendfeedbackJob().execute();
-//            if(bindPoint) {
-//                bindPoint = false;
-//                bindService();
-//                timer.schedule(task, 300, 1000);
-//            }
+            if(bindPoint) {
+                bindPoint = false;
+                bindService();
+                timer.schedule(task, 300, 1000);
+            }
         }
     };
     /*
