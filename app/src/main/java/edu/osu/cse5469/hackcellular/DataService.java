@@ -107,7 +107,7 @@ public class DataService extends Service {
         long operatorData= (long) (Float.parseFloat(smsData.substring(smsData.indexOf("[You]:")+6,smsData.indexOf('\n',smsData.indexOf("[You]:"))-1).replace(",",""))*1024*1024);
         long localData=(TrafficStats.getMobileTxBytes()+TrafficStats.getMobileRxBytes());
         datausage.addData(new VolumeData(date.getTime(), localData, operatorData));
-       // ToastUtils.showToast(MainActivity.this,"" + localData+operatorData,100);
+
       //  Log.d("usage", "localData：" + localData + "     operatorData：" + operatorData);
 
     }
@@ -115,8 +115,8 @@ public class DataService extends Service {
     @Override
     public IBinder onBind(Intent intent) {                                                              //this will be performed on Activity calling bindService()
         registerReceiver();
-        querythread.start();
-       // for (int i=0;i<31;i++) datausage.addData(new VolumeData(233,i*i,3*i*i)); debuguse
+         querythread.start();
+//        for (int i=0;i<31;i++) datausage.addData(new VolumeData(233,i,2*i));
         return dataserviceIBinder;
     }
 
@@ -156,14 +156,10 @@ public class DataService extends Service {
 
     public class DataServiceIBinder extends Binder {                                                //this is the service interface returned to Activity on binding
         public DataService getService() {
-////            MyServiceActivity.vh.sendMessage(MyServiceActivity.createMessage(
-////                    MyServiceActivity.UPDATE_VIEW,
-////                    "BindServiceWithIBinder.MyIBinder.getService()"));
+
             return DataService.this;
         }
-//        public void showgg(){
-//            show();
-//        }
+
     }
 
 

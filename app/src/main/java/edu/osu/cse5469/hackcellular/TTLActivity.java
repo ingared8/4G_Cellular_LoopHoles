@@ -74,7 +74,7 @@ public class TTLActivity extends AppCompatActivity  {
      */
     private SurfaceHolder surfaceHolder;
     private SurfaceView surface;
-    private Paint localdataPaint=new Paint(),opdataPaint=new Paint(),axisPaint=new Paint();
+    private Paint localdataPaint=new Paint(),opdataPaint=new Paint(),axisPaint=new Paint(),opbarPaint=new Paint(),userbarPaint=new Paint();
     private Matrix bgMatrix;
     private int heightCanvas;
     private int widthCanvas;
@@ -94,8 +94,15 @@ public class TTLActivity extends AppCompatActivity  {
                 axisPaint.setStrokeWidth(3);
                 localdataPaint.setColor(Color.argb(255, 0, 0, 255));
                 localdataPaint.setStrokeWidth(3);
+
                 opdataPaint.setColor(Color.argb(255, 255, 0, 0));
                 opdataPaint.setStrokeWidth(3);
+                opdataPaint.setStyle(Paint.Style.STROKE);
+
+                userbarPaint.setColor(Color.argb(180, 0, 0, 255));
+                userbarPaint.setStrokeWidth(3);
+                opbarPaint.setColor(Color.argb(180, 255, 0, 0));
+                userbarPaint.setStrokeWidth(5);
 
                 drawAxies(axisPaint,canvas);
                 drawData(localdataPaint,opdataPaint,canvas);
@@ -141,14 +148,19 @@ public class TTLActivity extends AppCompatActivity  {
             largestData=largestData>tmpopusage?largestData:tmpopusage;
         }
 
+        float lastx=0,lasty=0;
         for(int i=0;i<tmpDataSet.size();i++)
         {
             float tmpx=offsetAxis+lengthXAxis/xSplit*i;
             float tmpyLocal=offsetAxis+lengthYAxis-((float)tmpDataSet.getData(i).getLocal_data()/(float)largestData)*lengthYAxis;
             float tmpyOP=offsetAxis+lengthYAxis-((float)tmpDataSet.getData(i).getOperator_data()/(float)largestData)*lengthYAxis;
             //Log.d("Y",""+tmpyLocal+" "+tmpyOP);
-            canvas.drawCircle(tmpx,tmpyLocal, 3, localdataPaint);
-            canvas.drawCircle(tmpx,tmpyOP,3,opdataPaint);
+            canvas.drawCircle(tmpx, tmpyLocal, 5, localdataPaint);
+            canvas.drawCircle(tmpx,tmpyOP,8,opdataPaint);
+            canvas.drawLine(tmpx, heightCanvas / 2 - offsetAxis, tmpx, tmpyLocal, userbarPaint);
+            if(i!=0)  canvas.drawLine(lastx,lasty, tmpx,tmpyOP, opbarPaint);
+            lastx=tmpx;
+            lasty=tmpyOP;
         }
     }
 
@@ -251,6 +263,14 @@ public class TTLActivity extends AppCompatActivity  {
     }
 
     @Override
+   protected void onPause(){
+       super.onPause();
+        timer.cancel();
+        unbindService(dataServiceConnection);
+
+   }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
@@ -298,6 +318,7 @@ public class TTLActivity extends AppCompatActivity  {
                 bindPoint = false;
                 bindService();
                 timer.schedule(task, 300, 1000);
+
             }
         }
     };
