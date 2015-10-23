@@ -104,7 +104,7 @@ public class DataService extends Service {
     void handleDataUsageResponseSMS(String phoneNum, String smsData){
         if(phoneNum.equals("104"));
         Date date=new Date();
-        long operatorData= (long) (Float.parseFloat(smsData.substring(smsData.indexOf("[You]:")+6,smsData.indexOf('\n',smsData.indexOf("[You]:"))-1))*1024*1024);
+        long operatorData= (long) (Float.parseFloat(smsData.substring(smsData.indexOf("[You]:")+6,smsData.indexOf('\n',smsData.indexOf("[You]:"))-1).replace(",",""))*1024*1024);
         long localData=(TrafficStats.getMobileTxBytes()+TrafficStats.getMobileRxBytes());
         datausage.addData(new VolumeData(date.getTime(), localData, operatorData));
        // ToastUtils.showToast(MainActivity.this,"" + localData+operatorData,100);
