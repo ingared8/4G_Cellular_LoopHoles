@@ -14,7 +14,7 @@
 // The port through which we are transferring files is PORT_NUM
 // The following attributes define the given problem specifications.
 
-#define MSS 1500
+#define MSS 1000
 #define SIZE_OF_BYTES 4
 #define NAME_OF_FILENAME 20
 #define START_SIZE_OF_BYTES 0
@@ -72,9 +72,9 @@ void echo_UDP(int server_socket)
 			/* Send the packet*/
 
 			for (int j=0; j<MSS; j++){
-				bufin[j]=1;
+				bufin[j]=j;
 			}
-			for (int j=0; j<1; j++){
+			for (int j=0; j<100; j++){
     			a = sendto(server_socket,bufin,MSS,0,(struct sockaddr *)&remote,len);
 				if ( a > 0) {
 					printf("Server: Send packet %d to Android\n", j+1);
