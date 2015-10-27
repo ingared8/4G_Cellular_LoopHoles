@@ -6,7 +6,9 @@
     <string name="port">5555</string>
     <string name="send">Send</string>
     <string name="ttlhint">TTL time (i.e. 28)</string>
-    <string name="ttl_hint">Please send your TTL</string>
+    <string name="volumehint">Volume (i.e. 3)</string>
+    <string name="ttl_hint">Please choose a type of attack</string>
+    <string name="switch1">Default Attack</string>
 
     <string name="action_settings">Settings</string>
     <string name="title_activity_ttl">TTLActivity</string>

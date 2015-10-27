@@ -1,5 +1,6 @@
 package edu.osu.cse5469.hackcellular;
 
+import android.app.ProgressDialog;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -21,7 +22,9 @@ import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.Switch;
 import android.widget.TextView;
 
 import java.io.IOException;
@@ -44,6 +47,9 @@ public class TTLActivity extends AppCompatActivity  {
     private EditText desIP;
     private EditText desPort;
     private EditText ttlTime;
+    private EditText volume;
+    private ProgressDialog pd;
+    private Switch switch1;
     private TextView textHint;
     private String serverAddr;
     private int portNum;
@@ -148,7 +154,7 @@ public class TTLActivity extends AppCompatActivity  {
             float tmpyOP=offsetAxis+lengthYAxis-((float)tmpDataSet.getData(i).getOperator_data()/(float)largestData)*lengthYAxis;
             //Log.d("Y",""+tmpyLocal+" "+tmpyOP);
             canvas.drawCircle(tmpx,tmpyLocal, 3, localdataPaint);
-            canvas.drawCircle(tmpx,tmpyOP,3,opdataPaint);
+            canvas.drawCircle(tmpx, tmpyOP, 3, opdataPaint);
         }
     }
 
@@ -165,13 +171,66 @@ public class TTLActivity extends AppCompatActivity  {
         setContentView(R.layout.activity_ttl);
         sendSocketButton = (Button) findViewById(R.id.sendButton);
         desIP = (EditText) findViewById(R.id.edited_ip);
-        desPort = (EditText) findViewById(R.id.edited_port);
         ttlTime = (EditText) findViewById(R.id.edited_ttl);
+        volume = (EditText)findViewById(R.id.edited_volume);
+        switch1 = (Switch)findViewById(R.id.switch1);
         textHint = (TextView) findViewById(R.id.textHint);
-        sendSocketButton.setOnClickListener(new SendClickListener());
+//        sendSocketButton.setOnClickListener(new SendClickListener());
         surface = (SurfaceView)findViewById(R.id.surfaceView);
         surfaceHolder = surface.getHolder();
+
+        DefaultOrMannual();
+        WaitProcess();
     }
+
+    private void WaitProcess(){
+        sendSocketButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                pd = ProgressDialog.show(TTLActivity.this, "Attack", "Please waitting...");
+
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        spandTimeMethod();
+                        handler1.sendEmptyMessage(0);
+                    }
+                }).start();
+            }
+        });
+    }
+
+    private void spandTimeMethod(){
+        try{
+            Thread.sleep(1000);
+        }catch(InterruptedException e){
+            e.printStackTrace();
+        }
+    }
+
+    private Handler handler1 = new Handler(){
+        @Override
+        public void handleMessage(Message msg) {
+            pd.dismiss();
+        }
+    };
+
+
+    private void DefaultOrMannual(){
+        switch1.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    ttlTime.setFocusableInTouchMode(false);
+                    volume.setFocusableInTouchMode(false);
+                } else {
+                    ttlTime.setFocusableInTouchMode(true);
+                    volume.setFocusableInTouchMode(true);
+                }
+            }
+        });
+    }
+
 
     /*
     Listen to the response msg
