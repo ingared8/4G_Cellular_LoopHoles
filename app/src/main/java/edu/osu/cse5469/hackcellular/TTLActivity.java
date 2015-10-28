@@ -191,7 +191,6 @@ public class TTLActivity extends AppCompatActivity  {
         textHint = (TextView) findViewById(R.id.textHint);
         surface = (SurfaceView)findViewById(R.id.surfaceView);
         surfaceHolder = surface.getHolder();
-
         DefaultOrMannual();
 //        WaitProcess();
     }
@@ -262,6 +261,7 @@ public class TTLActivity extends AppCompatActivity  {
                 textPaint.setTextSize(widthCanvas/30);
                 lengthXAxis=widthCanvas-2*offsetAxis-wordlength;
                 lengthYAxis=heightCanvas-2*offsetAxis ;
+                canvas.drawColor(Color.argb(255, 230, 230, 230));
                 holder.unlockCanvasAndPost(canvas);
 
                 Log.v("Canvas", heightCanvas+" "+widthCanvas);
