@@ -297,20 +297,8 @@ public class TTLActivity extends AppCompatActivity  {
 
    }
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
 
-        bindUI();
-        bindsurfaceCallBack();
 
-        try {
-            client = new DatagramSocket(LISTEN_PORT);
-        } catch (SocketException e) {
-            e.printStackTrace();
-        }
-
-    }
 
     /*
     * Handler for info exchange between UI and Thread

@@ -6,7 +6,9 @@
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/scrollView" >
+        android:layout_alignParentBottom="true"
+        android:id="@+id/scrollView"
+        android:fillViewport="true">
 
         <RelativeLayout
             xmlns:tools="http://schemas.android.com/tools"
@@ -135,6 +137,7 @@
                 android:layout_alignParentRight="true"
                 android:layout_alignParentLeft="true"
                 android:layout_below="@+id/textHint"
+                android:layout_alignParentBottom="true"
                 />
 
         </RelativeLayout>
