@@ -55,14 +55,16 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/switch1"
-                    android:id="@+id/switch1" />
+                    android:id="@+id/switch1"
+                    android:textSize="18dp" />
 
                 <Button
                     android:id="@+id/sendButton"
                     android:layout_weight="1"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/send" />
+                    android:text="@string/send"
+                    android:textSize="18dp" />
 
             </LinearLayout>
 
@@ -77,19 +79,40 @@
 
                 android:id="@+id/linear3">
 
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/ttlHint"
+                    android:id="@+id/ttlHint"
+                    android:textSize="18dp" />
+
                 <EditText
                     android:id="@+id/edited_ttl"
-                    android:layout_width="match_parent"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:hint="@string/ttlhint" />
+                    android:text="@string/ttlText" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/volumeHint"
+                    android:id="@+id/volumeHint"
+                    android:textSize="18dp" />
 
                 <EditText
                     android:id="@+id/edited_volume"
-                    android:layout_width="match_parent"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:hint="@string/volumehint" />
+                    android:text="@string/volumeText" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/unit"
+                    android:id="@+id/unit"
+                    android:textSize="18dp" />
 
             </LinearLayout>
 
