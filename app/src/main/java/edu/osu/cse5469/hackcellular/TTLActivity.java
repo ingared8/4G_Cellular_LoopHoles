@@ -74,13 +74,14 @@ public class TTLActivity extends AppCompatActivity  {
      */
     private SurfaceHolder surfaceHolder;
     private SurfaceView surface;
-    private Paint localdataPaint=new Paint(),opdataPaint=new Paint(),axisPaint=new Paint(),opbarPaint=new Paint(),userbarPaint=new Paint();
+    private Paint localdataPaint=new Paint(),opdataPaint=new Paint(),axisPaint=new Paint(),opbarPaint=new Paint(),userbarPaint=new Paint(),textPaint=new Paint();
     private Matrix bgMatrix;
     private int heightCanvas;
     private int widthCanvas;
     private int xSplit=30;
     private int lengthXAxis;
     private int lengthYAxis;
+    private int wordlength;
 
     private int offsetAxis;
     private Timer timer = new Timer();
@@ -90,7 +91,7 @@ public class TTLActivity extends AppCompatActivity  {
             synchronized (surfaceHolder) {
                 canvas = surfaceHolder.lockCanvas();
 
-                axisPaint.setColor(Color.argb(255, 255, 255, 255));
+                axisPaint.setColor(Color.argb(255, 0, 0, 0));
                 axisPaint.setStrokeWidth(3);
                 localdataPaint.setColor(Color.argb(255, 0, 0, 255));
                 localdataPaint.setStrokeWidth(3);
@@ -102,9 +103,12 @@ public class TTLActivity extends AppCompatActivity  {
                 userbarPaint.setColor(Color.argb(180, 0, 0, 255));
                 userbarPaint.setStrokeWidth(3);
                 opbarPaint.setColor(Color.argb(180, 255, 0, 0));
-                userbarPaint.setStrokeWidth(5);
+                opbarPaint.setStrokeWidth(5);
 
-                drawAxies(axisPaint,canvas);
+                textPaint.setColor(Color.argb(255, 0, 0, 0));
+
+
+                drawAxies(axisPaint, canvas);
                 drawData(localdataPaint,opdataPaint,canvas);
                 surfaceHolder.unlockCanvasAndPost(canvas);
             }
@@ -124,12 +128,19 @@ public class TTLActivity extends AppCompatActivity  {
     };
 
     private void drawAxies(Paint axisPaint,Canvas canvas){
-        canvas.drawColor(Color.argb(255, 0, 0, 0));
-        canvas.drawLine(offsetAxis, offsetAxis, offsetAxis, heightCanvas/2-offsetAxis, axisPaint);
-        canvas.drawLine(offsetAxis, heightCanvas/2-offsetAxis,widthCanvas-offsetAxis, heightCanvas/2-offsetAxis, axisPaint);
+        canvas.drawColor(Color.argb(255, 230, 230, 230));
+        int xstart=offsetAxis+wordlength;
+        int ystart=offsetAxis+lengthYAxis;
+        canvas.drawLine(xstart, offsetAxis, xstart, ystart, axisPaint);
+        canvas.drawLine(xstart, ystart,xstart+lengthXAxis, ystart, axisPaint);
+        canvas.drawText("MB", offsetAxis/8, 2 * offsetAxis, textPaint);
+        canvas.drawText("0",xstart/3,ystart,textPaint);
+        for (int i=0;i<=5;i++){
+            canvas.drawLine(xstart,ystart-lengthYAxis/5*i,xstart+offsetAxis,ystart-lengthYAxis/5*i,axisPaint);
+        }
 
-        for (int i=0;i<=xSplit;i++){
-            canvas.drawLine(offsetAxis + lengthXAxis / xSplit * i, heightCanvas / 2 - offsetAxis, offsetAxis + lengthXAxis / xSplit * i, heightCanvas / 2 - 2 * offsetAxis, axisPaint);
+        for (int i=0;i<xSplit;i++){
+            canvas.drawLine(xstart + lengthXAxis / xSplit * i, ystart, xstart + lengthXAxis / xSplit * i, ystart - offsetAxis, axisPaint);
         }
     }
 
@@ -147,17 +158,19 @@ public class TTLActivity extends AppCompatActivity  {
             largestData=largestData>tmplocalusage?largestData:tmplocalusage;
             largestData=largestData>tmpopusage?largestData:tmpopusage;
         }
-
+        for(int i=1;i<6;i++) {
+            canvas.drawText(String.format("%.4f", (float) largestData / 1024 / 1024/5*i), 2 * offsetAxis + wordlength, offsetAxis+lengthYAxis-i*lengthYAxis/5+offsetAxis, textPaint);
+        }
         float lastx=0,lasty=0;
         for(int i=0;i<tmpDataSet.size();i++)
         {
-            float tmpx=offsetAxis+lengthXAxis/xSplit*i;
+            float tmpx=offsetAxis+lengthXAxis/xSplit*i+wordlength;
             float tmpyLocal=offsetAxis+lengthYAxis-((float)tmpDataSet.getData(i).getLocal_data()/(float)largestData)*lengthYAxis;
             float tmpyOP=offsetAxis+lengthYAxis-((float)tmpDataSet.getData(i).getOperator_data()/(float)largestData)*lengthYAxis;
             //Log.d("Y",""+tmpyLocal+" "+tmpyOP);
             canvas.drawCircle(tmpx, tmpyLocal, 5, localdataPaint);
             canvas.drawCircle(tmpx,tmpyOP,8,opdataPaint);
-            canvas.drawLine(tmpx, heightCanvas / 2 - offsetAxis, tmpx, tmpyLocal, userbarPaint);
+            canvas.drawLine(tmpx, offsetAxis+lengthYAxis, tmpx, tmpyLocal, userbarPaint);
             if(i!=0)  canvas.drawLine(lastx,lasty, tmpx,tmpyOP, opbarPaint);
             lastx=tmpx;
             lasty=tmpyOP;
@@ -232,9 +245,11 @@ public class TTLActivity extends AppCompatActivity  {
                 canvas = holder.lockCanvas();// lock canvas for drawing and retrieving params
                 heightCanvas=canvas.getHeight();
                 widthCanvas=canvas.getWidth();
-                offsetAxis=widthCanvas/80;
-                lengthXAxis=widthCanvas-2*offsetAxis;
-                lengthYAxis=heightCanvas/2-2*offsetAxis ;
+                offsetAxis=widthCanvas/50;
+                wordlength=widthCanvas/30;
+                textPaint.setTextSize(widthCanvas/30);
+                lengthXAxis=widthCanvas-2*offsetAxis-wordlength;
+                lengthYAxis=heightCanvas-2*offsetAxis ;
                 holder.unlockCanvasAndPost(canvas);
 
                 Log.v("Canvas", heightCanvas+" "+widthCanvas);
@@ -276,7 +291,7 @@ public class TTLActivity extends AppCompatActivity  {
 
         bindUI();
         bindsurfaceCallBack();
-//        startListenerThread();
+
         try {
             client = new DatagramSocket(LISTEN_PORT);
         } catch (SocketException e) {
