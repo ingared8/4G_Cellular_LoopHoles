@@ -58,6 +58,7 @@
                     android:layout_weight="1"
                     android:text="@string/switch1"
                     android:id="@+id/switch1"
+                    android:checked="true"
                     android:textSize="18dp" />
 
                 <Button
