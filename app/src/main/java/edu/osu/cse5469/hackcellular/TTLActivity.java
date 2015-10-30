@@ -97,7 +97,8 @@ public class TTLActivity extends AppCompatActivity  {
     TimerTask task= new TimerTask(){
         public void run() {
             Canvas canvas = null;
-            synchronized (surfaceHolder) {
+//            synchronized (surfaceHolder) {
+            {
                 canvas = surfaceHolder.lockCanvas();
 
                 axisPaint.setColor(Color.argb(255, 0, 0, 0));
@@ -299,12 +300,12 @@ public class TTLActivity extends AppCompatActivity  {
     }
 
     @Override
-   protected void onPause(){
-       super.onPause();
-        timer.cancel();
-        unbindService(dataServiceConnection);
+    protected void onPause(){
+        super.onPause();
+//        timer.cancel();
+//        unbindService(dataServiceConnection);
 
-   }
+    }
 
 
 
@@ -445,7 +446,7 @@ public class TTLActivity extends AppCompatActivity  {
             ttl = ttlTime.getText().toString();
         }
         else{
-            ttl = "30";
+            ttl = "33";
         }
         attackVolume = volume.getText().toString();
         sendSocketButton.setOnClickListener(new AttckClickListener());
