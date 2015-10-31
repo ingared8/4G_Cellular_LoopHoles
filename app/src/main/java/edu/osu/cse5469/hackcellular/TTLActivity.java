@@ -97,9 +97,10 @@ public class TTLActivity extends AppCompatActivity  {
     TimerTask task= new TimerTask(){
         public void run() {
             Canvas canvas = null;
-//            synchronized (surfaceHolder) {
-            {
+            synchronized (surfaceHolder) {
+              //  if(surfaceHolder==null)  {surface = (SurfaceView)findViewById(R.id.surfaceView);surfaceHolder = surface.getHolder();}
                 canvas = surfaceHolder.lockCanvas();
+
 
                 axisPaint.setColor(Color.argb(255, 0, 0, 0));
                 axisPaint.setStrokeWidth(3);
@@ -118,9 +119,12 @@ public class TTLActivity extends AppCompatActivity  {
                 textPaint.setColor(Color.argb(255, 0, 0, 0));
 
 
-                drawAxies(axisPaint, canvas);
-                drawData(localdataPaint,opdataPaint,canvas);
-                surfaceHolder.unlockCanvasAndPost(canvas);
+                if(canvas!=null){
+                    retrieveSize(canvas);
+                    drawAxies(axisPaint, canvas);
+                drawData(localdataPaint,opdataPaint,canvas);}
+
+                if(canvas!=null) surfaceHolder.unlockCanvasAndPost(canvas);
             }
         }
     };
@@ -157,7 +161,7 @@ public class TTLActivity extends AppCompatActivity  {
             largestData=largestData>tmpopusage?largestData:tmpopusage;
         }
         for(int i=1;i<6;i++) {
-            canvas.drawText(String.format("%.4f", (float) largestData / 1024 / 1024/5*i), 2 * offsetAxis + wordlength, offsetAxis+lengthYAxis-i*lengthYAxis/5+offsetAxis, textPaint);
+            canvas.drawText(String.format("%.2f", (float) largestData / 1024 / 1024/5*i), 2 * offsetAxis + wordlength, offsetAxis+lengthYAxis-i*lengthYAxis/5+offsetAxis, textPaint);
         }
         float lastx=0,lasty=0;
         for(int i=0;i<tmpDataSet.size();i++)
@@ -256,28 +260,30 @@ public class TTLActivity extends AppCompatActivity  {
     }
 
     class surfaceCreateThread extends Thread{
-        private SurfaceHolder holder ;
-        public surfaceCreateThread(SurfaceHolder holder){
-            this.holder = holder;
-        }
+
+
         public void run(){
             Canvas canvas = null;
-            synchronized (holder) {
-                canvas = holder.lockCanvas();// lock canvas for drawing and retrieving params
-                heightCanvas=canvas.getHeight();
-                widthCanvas=canvas.getWidth();
-                offsetAxis=widthCanvas/50;
-                wordlength=widthCanvas/30;
-                textPaint.setTextSize(widthCanvas/30);
-                lengthXAxis=widthCanvas-2*offsetAxis-wordlength;
-                lengthYAxis=heightCanvas-2*offsetAxis ;
-                canvas.drawColor(Color.argb(255, 230, 230, 230));
-                holder.unlockCanvasAndPost(canvas);
-
-                Log.v("Canvas", heightCanvas+" "+widthCanvas);
+            synchronized (surfaceHolder) {
+                canvas = surfaceHolder.lockCanvas();// lock canvas for drawing and retrieving params
+                retrieveSize(canvas);
+                surfaceHolder.unlockCanvasAndPost(canvas);
+              //  Log.v("Canvas", heightCanvas+" "+widthCanvas);
 
             }}};
 
+    public void retrieveSize(Canvas canvas){
+
+        heightCanvas=canvas.getHeight();
+        widthCanvas=canvas.getWidth();
+        offsetAxis=widthCanvas/50;
+        wordlength=widthCanvas/30;
+        textPaint.setTextSize(widthCanvas/30);
+        lengthXAxis=widthCanvas-2*offsetAxis-wordlength;
+        lengthYAxis=heightCanvas-2*offsetAxis;
+        canvas.drawColor(Color.argb(255, 230, 230, 230));
+
+    }
 
     private void bindsurfaceCallBack(){
         surfaceHolder.addCallback(new SurfaceHolder.Callback() {
@@ -287,7 +293,7 @@ public class TTLActivity extends AppCompatActivity  {
 
             @Override
             public void surfaceCreated(SurfaceHolder holder) {
-                surfaceCreateThread mThread = new surfaceCreateThread(holder);
+                surfaceCreateThread mThread = new surfaceCreateThread();
                 mThread.start();
             }
 
@@ -299,13 +305,13 @@ public class TTLActivity extends AppCompatActivity  {
         });
     }
 
-    @Override
-    protected void onPause(){
-        super.onPause();
-//        timer.cancel();
-//        unbindService(dataServiceConnection);
 
-    }
+   protected void Destroy(){
+       super.onDestroy();
+        timer.cancel();
+        unbindService(dataServiceConnection);
+
+   }
 
 
 
@@ -343,7 +349,7 @@ public class TTLActivity extends AppCompatActivity  {
             if(bindPoint) {
                 bindPoint = false;
                 bindService();
-                timer.schedule(task, 300, 1000);
+                timer.schedule(task,1000,1000);
             }
         }
     };
@@ -446,7 +452,7 @@ public class TTLActivity extends AppCompatActivity  {
             ttl = ttlTime.getText().toString();
         }
         else{
-            ttl = "33";
+            ttl = "30";
         }
         attackVolume = volume.getText().toString();
         sendSocketButton.setOnClickListener(new AttckClickListener());

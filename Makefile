@@ -1,7 +1,7 @@
 # Makefile for server
 
 CC = gcc
-OBJSRV = EchoAndAttack.c
+OBJSRV = UDP_echo_server.c
 CFLAGS = 
 # setup for system
 LIBS =

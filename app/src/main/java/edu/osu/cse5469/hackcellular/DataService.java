@@ -120,6 +120,10 @@ public class DataService extends Service {
         return dataserviceIBinder;
     }
 
+    public void onDestroy(){
+        super.onDestroy();
+
+    }
 
 
     public void onCreate() {
