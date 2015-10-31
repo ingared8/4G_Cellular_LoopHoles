@@ -122,7 +122,7 @@ public class DataService extends Service {
 
     public void onDestroy(){
         super.onDestroy();
-
+        unregisterReceiver(SMSReceiver);
     }
 
 
