@@ -15,6 +15,8 @@ import android.os.IBinder;
 import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -54,13 +56,14 @@ public class TTLActivity extends AppCompatActivity  {
     private String serverAddr;
     private final static int portNum = 5555;
     private boolean bindPoint = true;
+    private String ttl_manual;
     private String ttl;
+    private String volume_manual;
     private String attackVolume;
     private final static int SERVER_MSG = 1;
     private final static int TTL_MSG = 2;
     private DataService dataService;
     private DatagramSocket client;
-    private boolean switchDefaultIndex;
 
     private final static int LISTEN_PORT = 5501;
     private final static int TIMEOUT = 500;
@@ -201,9 +204,42 @@ public class TTLActivity extends AppCompatActivity  {
         // Configuration in default mode
         ttlTime.setFocusableInTouchMode(false);
         volume.setFocusableInTouchMode(false);
-        switchDefaultIndex = true;
 
         DefaultOrMannual();
+
+        ttlTime.addTextChangedListener(new TextWatcher() {
+
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                ttl_manual = ttlTime.getText().toString();
+            }
+        });
+
+        volume.addTextChangedListener(new TextWatcher() {
+
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                volume_manual = volume.getText().toString();
+            }
+        });
 //        WaitProcess();
     }
 
@@ -249,15 +285,16 @@ public class TTLActivity extends AppCompatActivity  {
                 if (isChecked) {
                     ttlTime.setFocusableInTouchMode(false);
                     volume.setFocusableInTouchMode(false);
-                    switchDefaultIndex = true;
                 } else {
                     ttlTime.setFocusableInTouchMode(true);
                     volume.setFocusableInTouchMode(true);
-                    switchDefaultIndex = false;
                 }
             }
         });
     }
+
+
+
 
     class surfaceCreateThread extends Thread{
 
@@ -374,6 +411,9 @@ public class TTLActivity extends AppCompatActivity  {
             sendMsg.what = SERVER_MSG;
             handler.sendMessage(sendMsg);
 
+            ttl = ttl_manual;
+            attackVolume = volume_manual;
+
             // If in default mode, then check valid TTL
             if(switchDefaultIndex) {
                 Boolean ttlValid = false;
@@ -448,13 +488,8 @@ public class TTLActivity extends AppCompatActivity  {
         } catch (SocketException e) {
             e.printStackTrace();
         }
-        if(switchDefaultIndex) {
-            ttl = ttlTime.getText().toString();
-        }
-        else{
-            ttl = "30";
-        }
-        attackVolume = volume.getText().toString();
+        ttl_manual = ttlTime.getText().toString;
+        volume_manual = volume.getText().toString();
         sendSocketButton.setOnClickListener(new AttckClickListener());
     }
 
