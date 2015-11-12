@@ -70,129 +70,11 @@ public class TTLActivity extends AppCompatActivity  {
     private final static int LISTEN_PORT = 5501;
     private final static int TIMEOUT = 1000;
 
-    private ServiceConnection dataServiceConnection = new ServiceConnection() {
-
-        @Override
-        public void onServiceConnected(ComponentName name, IBinder service) {                       //connect Service
-            dataService = ((DataService.DataServiceIBinder) (service)).getService();
-        }
-
-        @Override
-        public void onServiceDisconnected(ComponentName name) {                 //disconnect Service
-            dataService = null;
-        }
-    };
+    /****************************** UI PART *********************************/
 
     /*
-    Variables for drawing
-     */
-    private SurfaceHolder surfaceHolder;
-    private SurfaceView surface;
-    private Paint localdataPaint=new Paint(),opdataPaint=new Paint(),axisPaint=new Paint(),opbarPaint=new Paint(),userbarPaint=new Paint(),textPaint=new Paint();
-    private Matrix bgMatrix;
-    private int heightCanvas;
-    private int widthCanvas;
-    private int xSplit=30;
-    private int lengthXAxis;
-    private int lengthYAxis;
-    private int wordlength;
-
-    private int offsetAxis;
-    private Timer timer = new Timer();
-    TimerTask task= new TimerTask(){
-        public void run() {
-            Canvas canvas = null;
-            synchronized (surfaceHolder) {
-              //  if(surfaceHolder==null)  {surface = (SurfaceView)findViewById(R.id.surfaceView);surfaceHolder = surface.getHolder();}
-                canvas = surfaceHolder.lockCanvas();
-
-
-                axisPaint.setColor(Color.argb(255, 0, 0, 0));
-                axisPaint.setStrokeWidth(3);
-                localdataPaint.setColor(Color.argb(255, 0, 0, 255));
-                localdataPaint.setStrokeWidth(3);
-
-                opdataPaint.setColor(Color.argb(255, 255, 0, 0));
-                opdataPaint.setStrokeWidth(3);
-                opdataPaint.setStyle(Paint.Style.STROKE);
-
-                userbarPaint.setColor(Color.argb(180, 0, 0, 255));
-                userbarPaint.setStrokeWidth(3);
-                opbarPaint.setColor(Color.argb(180, 255, 0, 0));
-                opbarPaint.setStrokeWidth(5);
-
-                textPaint.setColor(Color.argb(255, 0, 0, 0));
-
-
-                if(canvas!=null){
-                    retrieveSize(canvas);
-                    drawAxies(axisPaint, canvas);
-                drawData(localdataPaint,opdataPaint,canvas);}
-
-                if(canvas!=null) surfaceHolder.unlockCanvasAndPost(canvas);
-            }
-        }
-    };
-
-    private void drawAxies(Paint axisPaint,Canvas canvas){
-        canvas.drawColor(Color.argb(255, 230, 230, 230));
-        int xstart=offsetAxis+wordlength;
-        int ystart=offsetAxis+lengthYAxis;
-        canvas.drawLine(xstart, offsetAxis, xstart, ystart, axisPaint);
-        canvas.drawLine(xstart, ystart,xstart+lengthXAxis, ystart, axisPaint);
-        canvas.drawText("MB", offsetAxis/8, 2 * offsetAxis, textPaint);
-        canvas.drawText("0",xstart/3,ystart,textPaint);
-        for (int i=0;i<=5;i++){
-            canvas.drawLine(xstart,ystart-lengthYAxis/5*i,xstart+offsetAxis,ystart-lengthYAxis/5*i,axisPaint);
-        }
-
-        for (int i=0;i<xSplit;i++){
-            canvas.drawLine(xstart + lengthXAxis / xSplit * i, ystart, xstart + lengthXAxis / xSplit * i, ystart - offsetAxis, axisPaint);
-        }
-    }
-
-    private void drawData(Paint localdataPaint,Paint opdataPaint,Canvas canvas){
-        DataSet tmpDataSet=new DataSet();
-        DataSet dataSet=dataService.datausage;
-        long largestData=-1;
-        if(dataSet.size()>1);
-        for(int i=(dataSet.size()-xSplit)>1?(dataSet.size()-xSplit):1;i<dataSet.size();i++)
-        {
-            long tmpopusage=(dataSet.getData(i).getOperator_data()-dataSet.getData(0).getOperator_data());
-            long tmplocalusage=(dataSet.getData(i).getLocal_data()-dataSet.getData(0).getLocal_data());
-            Log.d("Usage ","opusage:"+(float)tmpopusage/ 1024 / 1024+" localusage:"+(float)tmplocalusage/ 1024 / 1024);
-            tmpDataSet.addData(new VolumeData(dataSet.getData(i).getTimeStamp(),tmplocalusage,tmpopusage));
-            largestData=largestData>tmplocalusage?largestData:tmplocalusage;
-            largestData=largestData>tmpopusage?largestData:tmpopusage;
-        }
-        for(int i=1;i<6;i++) {
-            canvas.drawText(String.format("%.2f", (float) largestData / 1024 / 1024/5*i), 2 * offsetAxis + wordlength, offsetAxis+lengthYAxis-i*lengthYAxis/5+offsetAxis, textPaint);
-        }
-        float lastx=0,lasty=0;
-        for(int i=0;i<tmpDataSet.size();i++)
-        {
-            float tmpx=offsetAxis+lengthXAxis/xSplit*i+wordlength;
-            float tmpyLocal=offsetAxis+lengthYAxis-((float)tmpDataSet.getData(i).getLocal_data()/(float)largestData)*lengthYAxis;
-            float tmpyOP=offsetAxis+lengthYAxis-((float)tmpDataSet.getData(i).getOperator_data()/(float)largestData)*lengthYAxis;
-            //Log.d("Y",""+tmpyLocal+" "+tmpyOP);
-            canvas.drawCircle(tmpx, tmpyLocal, 5, localdataPaint);
-            canvas.drawCircle(tmpx,tmpyOP,8,opdataPaint);
-            canvas.drawLine(tmpx, offsetAxis+lengthYAxis, tmpx, tmpyLocal, userbarPaint);
-            if(i!=0)  canvas.drawLine(lastx,lasty, tmpx,tmpyOP, opbarPaint);
-            lastx=tmpx;
-            lasty=tmpyOP;
-        }
-    }
-
-
-    private void bindService() {                                                                    //bind service and call onBind() in Service
-        final Intent intent = new Intent(this,DataService.class);
-        bindService(intent, dataServiceConnection, Context.BIND_AUTO_CREATE);                       // bindService
-    }
-
-    /*
-     *bind UI with functions
-     */
+    *bind UI with functions
+    */
     private void bindUI(){
         setContentView(R.layout.activity_ttl);
         sendSocketButton = (Button) findViewById(R.id.sendButton);
@@ -246,7 +128,24 @@ public class TTLActivity extends AppCompatActivity  {
 //        WaitProcess();
     }
 
-//    private void WaitProcess(){
+    private void DefaultOrMannual(){
+        switch1.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    ttlTime.setFocusableInTouchMode(false);
+                    volume.setFocusableInTouchMode(false);
+                    switchDefaultIndex = true;
+                } else {
+                    ttlTime.setFocusableInTouchMode(true);
+                    volume.setFocusableInTouchMode(true);
+                    switchDefaultIndex = false;
+                }
+            }
+        });
+    }
+
+//        private void WaitProcess(){
 //        // Move this part to AttackClickListener
 //        sendSocketButton.setOnClickListener(new View.OnClickListener() {
 //            @Override
@@ -280,30 +179,131 @@ public class TTLActivity extends AppCompatActivity  {
 //        }
 //    };
 
+    /****************************** Service PART *********************************/
 
-    private void DefaultOrMannual(){
-        switch1.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (isChecked) {
-                    ttlTime.setFocusableInTouchMode(false);
-                    volume.setFocusableInTouchMode(false);
-                    switchDefaultIndex = true;
-                } else {
-                    ttlTime.setFocusableInTouchMode(true);
-                    volume.setFocusableInTouchMode(true);
-                    switchDefaultIndex = false;
-                }
-            }
-        });
+    private ServiceConnection dataServiceConnection = new ServiceConnection() {
+
+        @Override
+        public void onServiceConnected(ComponentName name, IBinder service) {                       //connect Service
+            dataService = ((DataService.DataServiceIBinder) (service)).getService();
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName name) {                 //disconnect Service
+            dataService = null;
+        }
+    };
+
+    private void bindService() {                                                                    //bind service and call onBind() in Service
+        final Intent intent = new Intent(this,DataService.class);
+        bindService(intent, dataServiceConnection, Context.BIND_AUTO_CREATE);                       // bindService
     }
 
+    /****************************** SurfaceView PART *********************************/
+
+    /*
+     *Variables for drawing
+     */
+    private SurfaceHolder surfaceHolder;
+    private SurfaceView surface;
+    private Paint localdataPaint=new Paint(),opdataPaint=new Paint(),axisPaint=new Paint(),opbarPaint=new Paint(),userbarPaint=new Paint(),textPaint=new Paint();
+    private Matrix bgMatrix;
+    private int heightCanvas;
+    private int widthCanvas;
+    private int xSplit=30;
+    private int lengthXAxis;
+    private int lengthYAxis;
+    private int wordlength;
+
+    private int offsetAxis;
+    private Timer timer = new Timer();
+    TimerTask task= new TimerTask(){
+        public void run() {
+            Canvas canvas = null;
+            synchronized (surfaceHolder) {
+              //  if(surfaceHolder==null)  {surface = (SurfaceView)findViewById(R.id.surfaceView);surfaceHolder = surface.getHolder();}
+                canvas = surfaceHolder.lockCanvas();
 
 
+                axisPaint.setColor(Color.argb(255, 0, 0, 0));
+                axisPaint.setStrokeWidth(3);
+                localdataPaint.setColor(Color.argb(255, 0, 0, 255));
+                localdataPaint.setStrokeWidth(3);
+
+                opdataPaint.setColor(Color.argb(255, 255, 0, 0));
+                opdataPaint.setStrokeWidth(3);
+                opdataPaint.setStyle(Paint.Style.STROKE);
+
+                userbarPaint.setColor(Color.argb(180, 0, 0, 255));
+                userbarPaint.setStrokeWidth(3);
+                opbarPaint.setColor(Color.argb(180, 255, 0, 0));
+                opbarPaint.setStrokeWidth(5);
+
+                textPaint.setColor(Color.argb(255, 0, 0, 0));
+
+
+                if(canvas!=null){
+                    retrieveSize(canvas);
+                    drawAxies(axisPaint, canvas);
+                    drawData(localdataPaint,opdataPaint,canvas);
+                }
+
+                if(canvas!=null) surfaceHolder.unlockCanvasAndPost(canvas);
+            }
+        }
+    };
+
+    private void drawAxies(Paint axisPaint,Canvas canvas){
+        canvas.drawColor(Color.argb(255, 230, 230, 230));
+        int xstart=offsetAxis+wordlength;
+        int ystart=offsetAxis+lengthYAxis;
+        canvas.drawLine(xstart, offsetAxis, xstart, ystart, axisPaint);
+        canvas.drawLine(xstart, ystart,xstart+lengthXAxis, ystart, axisPaint);
+        canvas.drawText("MB", offsetAxis/8, 2 * offsetAxis, textPaint);
+        canvas.drawText("0",xstart/3,ystart,textPaint);
+        for (int i=0;i<=5;i++){
+            canvas.drawLine(xstart, ystart - lengthYAxis / 5 * i, xstart + offsetAxis, ystart - lengthYAxis / 5 * i, axisPaint);
+        }
+
+        for (int i=0;i<xSplit;i++){
+            canvas.drawLine(xstart + lengthXAxis / xSplit * i, ystart, xstart + lengthXAxis / xSplit * i, ystart - offsetAxis, axisPaint);
+        }
+    }
+
+    private void drawData(Paint localdataPaint,Paint opdataPaint,Canvas canvas){
+        DataSet tmpDataSet=new DataSet();
+        DataSet dataSet=dataService.datausage;
+        long largestData=-1;
+        if(dataSet.size()>1);
+        for(int i=(dataSet.size()-xSplit)>1?(dataSet.size()-xSplit):1;i<dataSet.size();i++)
+        {
+            long tmpopusage=(dataSet.getData(i).getOperator_data()-dataSet.getData(0).getOperator_data());
+            long tmplocalusage=(dataSet.getData(i).getLocal_data()-dataSet.getData(0).getLocal_data());
+            Log.d("Usage ","opusage:"+(float)tmpopusage/ 1024 / 1024+" localusage:"+(float)tmplocalusage/ 1024 / 1024);
+            tmpDataSet.addData(new VolumeData(dataSet.getData(i).getTimeStamp(),tmplocalusage,tmpopusage));
+            largestData=largestData>tmplocalusage?largestData:tmplocalusage;
+            largestData=largestData>tmpopusage?largestData:tmpopusage;
+        }
+        for(int i=1;i<6;i++) {
+            canvas.drawText(String.format("%.2f", (float) largestData / 1024 / 1024/5*i), 2 * offsetAxis + wordlength, offsetAxis+lengthYAxis-i*lengthYAxis/5+offsetAxis, textPaint);
+        }
+        float lastx=0,lasty=0;
+        for(int i=0;i<tmpDataSet.size();i++)
+        {
+            float tmpx=offsetAxis+lengthXAxis/xSplit*i+wordlength;
+            float tmpyLocal=offsetAxis+lengthYAxis-((float)tmpDataSet.getData(i).getLocal_data()/(float)largestData)*lengthYAxis;
+            float tmpyOP=offsetAxis+lengthYAxis-((float)tmpDataSet.getData(i).getOperator_data()/(float)largestData)*lengthYAxis;
+            //Log.d("Y",""+tmpyLocal+" "+tmpyOP);
+            canvas.drawCircle(tmpx, tmpyLocal, 5, localdataPaint);
+            canvas.drawCircle(tmpx,tmpyOP,8,opdataPaint);
+            canvas.drawLine(tmpx, offsetAxis+lengthYAxis, tmpx, tmpyLocal, userbarPaint);
+            if(i!=0)  canvas.drawLine(lastx,lasty, tmpx,tmpyOP, opbarPaint);
+            lastx=tmpx;
+            lasty=tmpyOP;
+        }
+    }
 
     class surfaceCreateThread extends Thread{
-
-
         public void run(){
             Canvas canvas = null;
             synchronized (surfaceHolder) {
@@ -311,8 +311,9 @@ public class TTLActivity extends AppCompatActivity  {
                 retrieveSize(canvas);
                 surfaceHolder.unlockCanvasAndPost(canvas);
               //  Log.v("Canvas", heightCanvas+" "+widthCanvas);
-
-            }}};
+            }
+        }
+    }
 
     public void retrieveSize(Canvas canvas){
 
@@ -356,7 +357,7 @@ public class TTLActivity extends AppCompatActivity  {
    }
 
 
-
+    /****************************** Function PART *********************************/
 
     /*
     * Handler for info exchange between UI and Thread
@@ -536,6 +537,8 @@ public class TTLActivity extends AppCompatActivity  {
             return null;
         }
     }
+
+    /****************************** Lifecycle PART *********************************/
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

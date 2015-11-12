@@ -4,7 +4,7 @@
 
     <string name="ip">IP Address</string>
     <string name="port">5555</string>
-    <string name="send">Send</string>
+    <string name="send">Attack</string>
     <string name="ttlHint">TTL</string>
     <string name="ttlText">33</string>
     <string name="volumeHint">AttackVolume</string>
@@ -16,6 +16,8 @@
     <string name="action_settings">Settings</string>
     <string name="title_activity_ttl">TTLActivity</string>
     <string name="set_ttl">SET</string>
+
+    <string name="PingPangHint">Click button to start a attack</string>
 
     <string name="data_attack">1. DATA ATTACK</string>
     <string-array name="datachoose">
@@ -36,5 +38,8 @@
     </string-array>
 
     <string name="startattack">START ATTACK</string>
+    <string name="title_activity_ping_pang">PingPangActivity</string>
+
+    <string name="hello_world">Hello world!</string>
 
 </resources>
