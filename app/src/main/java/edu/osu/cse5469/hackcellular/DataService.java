@@ -108,7 +108,7 @@ public class DataService extends Service {
         long localData=(TrafficStats.getMobileTxBytes()+TrafficStats.getMobileRxBytes());
         datausage.addData(new VolumeData(date.getTime(), localData, operatorData));
 
-      //  Log.d("usage", "localData：" + localData + "     operatorData：" + operatorData);
+        Log.d("usage raw", "localData：" + (float)localData/1024/1024 + "     operatorData：" + (float)operatorData/1024/1024);
 
     }
 

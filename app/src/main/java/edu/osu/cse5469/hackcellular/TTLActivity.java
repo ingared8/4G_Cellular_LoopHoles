@@ -30,6 +30,7 @@ import android.widget.Switch;
 import android.widget.TextView;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InterruptedIOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
@@ -64,9 +65,10 @@ public class TTLActivity extends AppCompatActivity  {
     private final static int TTL_MSG = 2;
     private DataService dataService;
     private DatagramSocket client;
+    private boolean switchDefaultIndex;
 
     private final static int LISTEN_PORT = 5501;
-    private final static int TIMEOUT = 500;
+    private final static int TIMEOUT = 1000;
 
     private ServiceConnection dataServiceConnection = new ServiceConnection() {
 
@@ -158,7 +160,7 @@ public class TTLActivity extends AppCompatActivity  {
         {
             long tmpopusage=(dataSet.getData(i).getOperator_data()-dataSet.getData(0).getOperator_data());
             long tmplocalusage=(dataSet.getData(i).getLocal_data()-dataSet.getData(0).getLocal_data());
-            Log.d("Usage ","opusage:"+tmpopusage+" localusage:"+tmplocalusage);
+            Log.d("Usage ","opusage:"+(float)tmpopusage/ 1024 / 1024+" localusage:"+(float)tmplocalusage/ 1024 / 1024);
             tmpDataSet.addData(new VolumeData(dataSet.getData(i).getTimeStamp(),tmplocalusage,tmpopusage));
             largestData=largestData>tmplocalusage?largestData:tmplocalusage;
             largestData=largestData>tmpopusage?largestData:tmpopusage;
@@ -204,6 +206,7 @@ public class TTLActivity extends AppCompatActivity  {
         // Configuration in default mode
         ttlTime.setFocusableInTouchMode(false);
         volume.setFocusableInTouchMode(false);
+        switchDefaultIndex = true;
 
         DefaultOrMannual();
 
@@ -285,9 +288,11 @@ public class TTLActivity extends AppCompatActivity  {
                 if (isChecked) {
                     ttlTime.setFocusableInTouchMode(false);
                     volume.setFocusableInTouchMode(false);
+                    switchDefaultIndex = true;
                 } else {
                     ttlTime.setFocusableInTouchMode(true);
                     volume.setFocusableInTouchMode(true);
+                    switchDefaultIndex = false;
                 }
             }
         });
@@ -377,8 +382,6 @@ public class TTLActivity extends AppCompatActivity  {
             serverAddr = desIP.getText().toString();
             Log.d("debug", " " + serverAddr);
 
-            Log.d("debug", "TTL is " + ttl);
-
             new SendfeedbackJob().execute();
 
             // Issue: set ttl to UI show
@@ -386,7 +389,7 @@ public class TTLActivity extends AppCompatActivity  {
             if(bindPoint) {
                 bindPoint = false;
                 bindService();
-                timer.schedule(task,1000,1000);
+                timer.schedule(task, 1000, 1000);
             }
         }
     };
@@ -411,13 +414,42 @@ public class TTLActivity extends AppCompatActivity  {
             sendMsg.what = SERVER_MSG;
             handler.sendMessage(sendMsg);
 
-            ttl = ttl_manual;
-            attackVolume = volume_manual;
+            if(switchDefaultIndex){
+                ttl = "33";
+                attackVolume = "3";
+            }
+            else {
+                ttl = ttl_manual;
+                attackVolume = volume_manual;
+            }
+
+            // Flush the receiver buffer
+            try {
+                while (true) {
+                    client.setSoTimeout((TIMEOUT/4));
+                    byte[] inData = new byte[3000];
+                    DatagramPacket inPacket = new DatagramPacket(inData, inData.length);
+                    try {
+                        client.receive(inPacket);
+                        String result = new String(inPacket.getData(), inPacket.getOffset(), inPacket.getLength());
+                        if (result.length() > 0) {
+                            Log.d("debug", "Received length is " + result.length());
+                        }
+                    } catch (InterruptedIOException e) {
+                        Log.d("debug", "Timeout! No packet received.");
+                        break;
+                    }
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
 
             // If in default mode, then check valid TTL
             if(switchDefaultIndex) {
                 Boolean ttlValid = false;
                 while (!ttlValid) {
+                    Log.d("debug", "TTL is " + ttl);
                     try {
                         String probeInfo = ttl + "," + "0";
                         // Send UDP packet
@@ -459,6 +491,7 @@ public class TTLActivity extends AppCompatActivity  {
             }
 
             // Start Attack
+            Log.d("debug", "TTL is " + ttl);
             String attackInfo = ttl + "," + attackVolume;
             DatagramPacket sendPacket = new DatagramPacket(attackInfo.getBytes(), attackInfo.length(), intetServerAddr, portNum);
             try {
@@ -466,8 +499,37 @@ public class TTLActivity extends AppCompatActivity  {
             } catch (IOException e) {
                 e.printStackTrace();
             }
+            // Check attack validation
+            String textViewShow = "";
+            try {
+                // Receive UDP packet
+                Boolean receivedPacket = false;
+                while (true) {
+                    client.setSoTimeout(TIMEOUT);
+                    byte[] inData = new byte[3000];
+                    DatagramPacket inPacket = new DatagramPacket(inData, inData.length);
+                    try {
+                        client.receive(inPacket);
+                        String result = new String(inPacket.getData(), inPacket.getOffset(), inPacket.getLength());
+                        if (result.length() > 0) {
+                            receivedPacket = true;                                                  // If received anything, set indicator to reduce ttl
+                            Log.d("debug", "Received length is " + result.length());
+                        }
+                    } catch (InterruptedIOException e) {
+                        Log.d("debug", "Timeout! No packet received.");
+                        break;
+                    }
+                }
+                if (receivedPacket) {
+                    textViewShow = attackVolume+"MB Attack Start, with TTL: " + ttl + ". But this is not a valid attack";
+                } else {
+                    textViewShow = attackVolume+"MB Attack Start, with TTL: " + ttl + ".";
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
             Message msg = Message.obtain();
-            msg.obj = attackVolume+"MB Attack Start, with TTL: " + ttl + ".";
+            msg.obj = textViewShow;
             msg.what = SERVER_MSG;
             handler.sendMessage(msg);
 
@@ -488,7 +550,7 @@ public class TTLActivity extends AppCompatActivity  {
         } catch (SocketException e) {
             e.printStackTrace();
         }
-        ttl_manual = ttlTime.getText().toString;
+        ttl_manual = ttlTime.getText().toString();
         volume_manual = volume.getText().toString();
         sendSocketButton.setOnClickListener(new AttckClickListener());
     }
