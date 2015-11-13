@@ -8,48 +8,53 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
+import android.view.View;
 import android.widget.Button;
 
+import java.util.Date;
 import java.util.Timer;
 import java.util.TimerTask;
 
 public class PingPangActivity extends AppCompatActivity {
 
     private Button button;
+    private boolean bindPoint = true;
+    private NetStatSet netStatSet = new NetStatSet();
 
     /****************************** Network Status PART *********************************/
-
-    public String type2Name(int type) {
+    public int type2Name(int type) {
         // http://www.androidchina.net/2471.html
         switch (type) {
-            case 0: return "UNKNOWN";
-            case 1: return "2G";
-            case 2: return "2G";
-            case 3: return "3G";
-            case 4: return "2G";
-            case 5: return "3G";
-            case 6: return "3G";
-            case 7: return "2G";
-            case 8: return "3G";
-            case 9: return "3G";
-            case 10: return "3G";
-            case 11: return "2G";
-            case 12: return "3G";
-            case 13: return "4G";
-            case 14: return "3G";
-            case 15: return "3G";
-            default: return "ERR";
+            case 0: return 0;   // Unknown
+            case 1: return 1;   // 2G
+            case 2: return 1;
+            case 3: return 2;   // 3G
+            case 4: return 1;
+            case 5: return 2;
+            case 6: return 2;
+            case 7: return 1;
+            case 8: return 2;
+            case 9: return 2;
+            case 10: return 2;
+            case 11: return 1;
+            case 12: return 2;
+            case 13: return 3;  // 4G
+            case 14: return 2;
+            case 15: return 2;
+            default: return 4;  // ERR
         }
     }
 
-    public String findCellularStatus(Context context) {
-        ConnectivityManager connMgr = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+    public int findCellularStatus() {
+        ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo networkInfo = connMgr.getNetworkInfo(ConnectivityManager.TYPE_MOBILE);
         int mobile_type = networkInfo.getSubtype();
+        Log.d("debug", "Mobile type: "+Integer.toString(mobile_type));
         return type2Name(mobile_type);
     }
 
@@ -57,6 +62,9 @@ public class PingPangActivity extends AppCompatActivity {
     private SurfaceView surfaceView;
     private SurfaceHolder surfaceHolder;
     private Paint textPaint = new Paint();
+    private Paint netPaint=new Paint();
+    private Paint axisPaint=new Paint();
+    private Paint netBarPaint =new Paint();
 
     private int heightCanvas;
     private int widthCanvas;
@@ -64,6 +72,7 @@ public class PingPangActivity extends AppCompatActivity {
     private int lengthYAxis;
     private int offsetAxis;
     private int wordlength;
+    private int xSplit = 30;
 
     public void bindsurfaceCallBack() {
         surfaceHolder.addCallback(new SurfaceHolder.Callback() {
@@ -105,8 +114,8 @@ public class PingPangActivity extends AppCompatActivity {
         offsetAxis = widthCanvas/50;
         wordlength = widthCanvas/30;
         textPaint.setTextSize(widthCanvas/30);
-        lengthXAxis=widthCanvas-2*offsetAxis-wordlength;
-        lengthYAxis=heightCanvas-2*offsetAxis;
+        lengthXAxis = widthCanvas-2*offsetAxis-wordlength;
+        lengthYAxis = heightCanvas-2*offsetAxis;
         canvas.drawColor(Color.argb(255, 230, 230, 230));
     }
 
@@ -119,10 +128,74 @@ public class PingPangActivity extends AppCompatActivity {
             synchronized (surfaceHolder) {
                 canvas = surfaceHolder.lockCanvas();
 
+                axisPaint.setColor(Color.argb(255, 0, 0, 0));
+                axisPaint.setStrokeWidth(3);
+
+                netPaint.setColor(Color.argb(255, 255, 0, 0));
+                netPaint.setStrokeWidth(3);
+                netPaint.setStyle(Paint.Style.STROKE);
+
+                netBarPaint.setColor(Color.argb(180, 255, 0, 0));
+                netBarPaint.setStrokeWidth(5);
+
+                textPaint.setColor(Color.argb(255, 0, 0, 0));
+
+                if(canvas!=null){
+                    retrieveSize(canvas);
+                    drawAxies(axisPaint, canvas);
+                    drawData(netPaint, canvas);
+                }
+
                 if(canvas!=null) surfaceHolder.unlockCanvasAndPost(canvas);
             }
         }
     };
+
+    public void drawAxies(Paint axisPaint,Canvas canvas) {
+        canvas.drawColor(Color.argb(255, 230, 230, 230));
+        int x_start = offsetAxis+wordlength;
+        int y_start = offsetAxis+lengthYAxis;
+        canvas.drawLine(x_start, offsetAxis, x_start, y_start, axisPaint);
+        canvas.drawLine(x_start, y_start, x_start+lengthXAxis, y_start, axisPaint);
+//        canvas.drawText("MB", offsetAxis/8, 2 * offsetAxis, textPaint);
+//        canvas.drawText("0", x_start/3, y_start, textPaint);
+        for (int i=0;i<=5;i++){
+            canvas.drawLine(x_start, y_start-lengthYAxis/5*i, x_start+offsetAxis, y_start-lengthYAxis/5*i, axisPaint);
+        }
+
+        for (int i=0;i<xSplit;i++){
+            canvas.drawLine(x_start + lengthXAxis/xSplit*i, y_start, x_start+lengthXAxis/xSplit*i, y_start-offsetAxis, axisPaint);
+        }
+    }
+
+    public void drawData(Paint netPaint, Canvas canvas) {
+        Date date = new Date();
+        netStatSet.add(new NetStatus(date.getTime(), findCellularStatus()));
+        float scale = 5;
+        float last_x=0, last_y=0;
+        for(int i=0; i<netStatSet.size(); i++) {
+            float tmp_x = offsetAxis+lengthXAxis/xSplit*i+wordlength;
+            float tmp_y = offsetAxis+lengthYAxis-((float) netStatSet.get(i).getStatus()/scale)*lengthYAxis;
+            canvas.drawCircle(tmp_x, tmp_y, 5, netPaint);
+            if(i!=0)  canvas.drawLine(last_x, last_y, tmp_x, tmp_y, netBarPaint);
+            last_x = tmp_x;
+            last_y = tmp_y;
+        }
+    }
+
+    /****************************** Function PART *********************************/
+    /*
+    * Attack button listener
+    */
+    class AttckClickListener implements View.OnClickListener {
+        @Override
+        public void onClick(View v) {
+            if(bindPoint) {
+                bindPoint = false;
+                timer.schedule(task, 1000, 1000);
+            }
+        }
+    }
 
     /****************************** Lifecycle PART *********************************/
 
@@ -136,6 +209,7 @@ public class PingPangActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         bindUI();
         bindsurfaceCallBack();
+        button.setOnClickListener(new AttckClickListener());
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_ping_pang);

@@ -275,8 +275,7 @@ public class TTLActivity extends AppCompatActivity  {
         DataSet dataSet=dataService.datausage;
         long largestData=-1;
         if(dataSet.size()>1);
-        for(int i=(dataSet.size()-xSplit)>1?(dataSet.size()-xSplit):1;i<dataSet.size();i++)
-        {
+        for(int i=(dataSet.size()-xSplit)>1?(dataSet.size()-xSplit):1;i<dataSet.size();i++) {
             long tmpopusage=(dataSet.getData(i).getOperator_data()-dataSet.getData(0).getOperator_data());
             long tmplocalusage=(dataSet.getData(i).getLocal_data()-dataSet.getData(0).getLocal_data());
             Log.d("Usage ","opusage:"+(float)tmpopusage/ 1024 / 1024+" localusage:"+(float)tmplocalusage/ 1024 / 1024);
@@ -288,8 +287,7 @@ public class TTLActivity extends AppCompatActivity  {
             canvas.drawText(String.format("%.2f", (float) largestData / 1024 / 1024/5*i), 2 * offsetAxis + wordlength, offsetAxis+lengthYAxis-i*lengthYAxis/5+offsetAxis, textPaint);
         }
         float lastx=0,lasty=0;
-        for(int i=0;i<tmpDataSet.size();i++)
-        {
+        for(int i=0;i<tmpDataSet.size();i++) {
             float tmpx=offsetAxis+lengthXAxis/xSplit*i+wordlength;
             float tmpyLocal=offsetAxis+lengthYAxis-((float)tmpDataSet.getData(i).getLocal_data()/(float)largestData)*lengthYAxis;
             float tmpyOP=offsetAxis+lengthYAxis-((float)tmpDataSet.getData(i).getOperator_data()/(float)largestData)*lengthYAxis;
@@ -393,7 +391,7 @@ public class TTLActivity extends AppCompatActivity  {
                 timer.schedule(task, 1000, 1000);
             }
         }
-    };
+    }
     /*
      * To protect prevent the error of network operating on main thread.
      */
