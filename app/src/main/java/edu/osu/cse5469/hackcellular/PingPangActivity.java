@@ -169,20 +169,22 @@ public class PingPangActivity extends AppCompatActivity {
     public void drawData(Paint netPaint, Canvas canvas) {
         Date date = new Date();
         netStatSet.add(new NetStatus(date.getTime(), findCellularStatus()));
+        Log.d("debug", "Status is now: " + Integer.toString(findCellularStatus()));
         float scale = 5;
         float last_x=0, last_y=0;
 
-        canvas.drawText("Unknown", 2*offsetAxis+wordLength, offsetAxis+lengthYAxis-lengthYAxis/5+offsetAxis, textPaint);
-        canvas.drawText("2G", 2*offsetAxis+wordLength, offsetAxis+lengthYAxis-2*lengthYAxis/5+offsetAxis, textPaint);
-        canvas.drawText("3G", 2*offsetAxis+wordLength, offsetAxis+lengthYAxis-3*lengthYAxis/5+offsetAxis, textPaint);
-        canvas.drawText("LTE", 2*offsetAxis+wordLength, offsetAxis+lengthYAxis-4*lengthYAxis/5+offsetAxis, textPaint);
-        canvas.drawText("ERR", 2*offsetAxis+wordLength, offsetAxis+lengthYAxis-5*lengthYAxis/5+offsetAxis, textPaint);
+        canvas.drawText("Unknown", 2*offsetAxis+wordLength, offsetAxis+lengthYAxis+offsetAxis, textPaint);
+        canvas.drawText("2G", 2 * offsetAxis + wordLength, offsetAxis + lengthYAxis - lengthYAxis / scale + offsetAxis, textPaint);
+        canvas.drawText("3G", 2*offsetAxis+wordLength, offsetAxis+lengthYAxis-2*lengthYAxis/scale+offsetAxis, textPaint);
+        canvas.drawText("LTE", 2 * offsetAxis + wordLength, offsetAxis + lengthYAxis - 3 * lengthYAxis / scale + offsetAxis, textPaint);
+        canvas.drawText("ERR", 2 * offsetAxis + wordLength, offsetAxis + lengthYAxis - 4 * lengthYAxis / scale + offsetAxis, textPaint);
 
-        for(int i=0; i<netStatSet.size(); i++) {
-            float tmp_x = offsetAxis+lengthXAxis/xSplit*i+ wordLength;
+        int startPlace = (netStatSet.size()-xSplit>0)?netStatSet.size()-xSplit:0;
+        for(int i=startPlace; i<netStatSet.size(); i++) {
+            float tmp_x = offsetAxis+lengthXAxis/xSplit*(i-startPlace)+ wordLength ;
             float tmp_y = offsetAxis+lengthYAxis-((float) netStatSet.get(i).getStatus()/scale)*lengthYAxis;
             canvas.drawCircle(tmp_x, tmp_y, 5, netPaint);
-            if(i!=0)  canvas.drawLine(last_x, last_y, tmp_x, tmp_y, netBarPaint);
+            if(i!=startPlace)  canvas.drawLine(last_x, last_y, tmp_x, tmp_y, netBarPaint);
             last_x = tmp_x;
             last_y = tmp_y;
         }
@@ -197,7 +199,7 @@ public class PingPangActivity extends AppCompatActivity {
         public void onClick(View v) {
             if(bindPoint) {
                 bindPoint = false;
-                timer.schedule(task, 1000, 1000);
+                timer.schedule(task, 5000, 5000);
             }
         }
     }
@@ -213,12 +215,15 @@ public class PingPangActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
         bindUI();
         bindsurfaceCallBack();
-        button.setOnClickListener(new AttckClickListener());
 
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_ping_pang);
+
+        // Function part need add, Send Attack button, and Stop Attack button, by using TCP.
+        // Establish connection and disconnecting them each time. Default port 5502
+
+        button.setOnClickListener(new AttckClickListener());
     }
 
     @Override

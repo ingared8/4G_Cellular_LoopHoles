@@ -19,7 +19,7 @@
             android:paddingLeft="@dimen/activity_horizontal_margin"
             android:paddingRight="@dimen/activity_horizontal_margin"
             tools:context="edu.osu.cse5469.hackcellular.TTLActivity"
-            android:id="@+id/relativeLayouti">
+            android:id="@+id/relativeLayout">
 
             <LinearLayout
                 android:orientation="horizontal"
