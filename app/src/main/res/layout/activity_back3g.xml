@@ -19,13 +19,13 @@
             android:paddingLeft="@dimen/activity_horizontal_margin"
             android:paddingRight="@dimen/activity_horizontal_margin"
             tools:context="edu.osu.cse5469.hackcellular.Back3GActivity"
-            android:id="@+id/relativeLayouti">
+            android:id="@+id/relativeLayout">
 
             <LinearLayout
                 android:orientation="horizontal"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_alignParentLeft="true"
+                android:layout_alignParentCenter="true"
                 android:layout_alignParentRight="true"
                 android:layout_alignParentStart="true"
                 android:layout_alignParentTop="true"
@@ -34,15 +34,57 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:id="@+id/Hint_PingPang"
+                    android:id="@+id/Hint_back3G"
+                    android:textSize="20dp"
+                    android:textStyle="bold"
+                    android:text="@string/back3GHint" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentRight="true"
+                android:layout_below="@+id/linear1_back3G"
+                android:id="@+id/linear2_back3G">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/Hint_back3G1"
                     android:layout_weight="1"
                     android:textSize="18dp"
-                    android:text="@string/PingPangHint" />
+                    android:text="@string/back3GHint1" />
                 <Button
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:id="@+id/button_back3G"
-                    android:text="@string/send" />
+                    android:id="@+id/button1_back3G"
+                    android:text="@string/back3GButton1" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentRight="true"
+                android:layout_below="@+id/linear2_back3G"
+                android:id="@+id/linear3_back3G">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/Hint2_back3G"
+                    android:layout_weight="1"
+                    android:textSize="18dp"
+                    android:text="@string/back3GHint2" />
+                <Button
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/button2_back3G"
+                    android:text="@string/back3GButton2" />
             </LinearLayout>
 
             <SurfaceView
@@ -51,7 +93,7 @@
                 android:id="@+id/surfaceView_back3G"
                 android:layout_alignParentRight="true"
                 android:layout_alignParentLeft="true"
-                android:layout_below="@+id/linear1_back3G"
+                android:layout_below="@+id/linear3_back3G"
                 android:layout_alignParentBottom="true"
                 />
 

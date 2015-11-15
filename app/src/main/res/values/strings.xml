@@ -22,6 +22,12 @@
 
     <string name="PingPangHint">Click button to start a attack</string>
 
+    <string name="back3GHint">START A BACK3G ATTACK:</string>
+    <string name="back3GHint1">First, download a file;</string>
+    <string name="back3GButton1">DOWNLOAD</string>
+    <string name="back3GHint2">Second, dial a call.</string>
+    <string name="back3GButton2">CALL</string>
+
     <string name="attack_hint">ATTACK TYPES</string>
     <string-array name="attackChoose">
         <item>TTL ATTACK</item>
