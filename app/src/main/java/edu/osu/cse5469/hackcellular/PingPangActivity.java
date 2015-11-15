@@ -71,7 +71,7 @@ public class PingPangActivity extends AppCompatActivity {
     private int lengthXAxis;
     private int lengthYAxis;
     private int offsetAxis;
-    private int wordlength;
+    private int wordLength;
     private int xSplit = 30;
 
     public void bindsurfaceCallBack() {
@@ -112,9 +112,9 @@ public class PingPangActivity extends AppCompatActivity {
         heightCanvas = canvas.getHeight();
         widthCanvas = canvas.getWidth();
         offsetAxis = widthCanvas/50;
-        wordlength = widthCanvas/30;
+        wordLength = widthCanvas/30;
         textPaint.setTextSize(widthCanvas/30);
-        lengthXAxis = widthCanvas-2*offsetAxis-wordlength;
+        lengthXAxis = widthCanvas-2*offsetAxis- wordLength;
         lengthYAxis = heightCanvas-2*offsetAxis;
         canvas.drawColor(Color.argb(255, 230, 230, 230));
     }
@@ -153,12 +153,10 @@ public class PingPangActivity extends AppCompatActivity {
 
     public void drawAxies(Paint axisPaint,Canvas canvas) {
         canvas.drawColor(Color.argb(255, 230, 230, 230));
-        int x_start = offsetAxis+wordlength;
+        int x_start = offsetAxis+ wordLength;
         int y_start = offsetAxis+lengthYAxis;
         canvas.drawLine(x_start, offsetAxis, x_start, y_start, axisPaint);
         canvas.drawLine(x_start, y_start, x_start+lengthXAxis, y_start, axisPaint);
-//        canvas.drawText("MB", offsetAxis/8, 2 * offsetAxis, textPaint);
-//        canvas.drawText("0", x_start/3, y_start, textPaint);
         for (int i=0;i<=5;i++){
             canvas.drawLine(x_start, y_start-lengthYAxis/5*i, x_start+offsetAxis, y_start-lengthYAxis/5*i, axisPaint);
         }
@@ -173,8 +171,15 @@ public class PingPangActivity extends AppCompatActivity {
         netStatSet.add(new NetStatus(date.getTime(), findCellularStatus()));
         float scale = 5;
         float last_x=0, last_y=0;
+
+        canvas.drawText("Unknown", 2*offsetAxis+wordLength, offsetAxis+lengthYAxis-lengthYAxis/5+offsetAxis, textPaint);
+        canvas.drawText("2G", 2*offsetAxis+wordLength, offsetAxis+lengthYAxis-2*lengthYAxis/5+offsetAxis, textPaint);
+        canvas.drawText("3G", 2*offsetAxis+wordLength, offsetAxis+lengthYAxis-3*lengthYAxis/5+offsetAxis, textPaint);
+        canvas.drawText("LTE", 2*offsetAxis+wordLength, offsetAxis+lengthYAxis-4*lengthYAxis/5+offsetAxis, textPaint);
+        canvas.drawText("ERR", 2*offsetAxis+wordLength, offsetAxis+lengthYAxis-5*lengthYAxis/5+offsetAxis, textPaint);
+
         for(int i=0; i<netStatSet.size(); i++) {
-            float tmp_x = offsetAxis+lengthXAxis/xSplit*i+wordlength;
+            float tmp_x = offsetAxis+lengthXAxis/xSplit*i+ wordLength;
             float tmp_y = offsetAxis+lengthYAxis-((float) netStatSet.get(i).getStatus()/scale)*lengthYAxis;
             canvas.drawCircle(tmp_x, tmp_y, 5, netPaint);
             if(i!=0)  canvas.drawLine(last_x, last_y, tmp_x, tmp_y, netBarPaint);
