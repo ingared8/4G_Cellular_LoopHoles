@@ -51,7 +51,7 @@
 
         <activity
             android:name=".Back3GActivity"
-            android:label="@string/title_activity_ttl"
+            android:label="@string/title_activity_back_3g"
             android:parentActivityName=".MainActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"

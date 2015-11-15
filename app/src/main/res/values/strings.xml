@@ -15,30 +15,33 @@
 
     <string name="action_settings">Settings</string>
     <string name="title_activity_ttl">TTLActivity</string>
+    <string name="title_activity_ping_pang">PingPangActivity</string>
+    <string name="title_activity_back_3g">Back3GActivity</string>
+
     <string name="set_ttl">SET</string>
 
     <string name="PingPangHint">Click button to start a attack</string>
 
-    <string name="data_attack">1. DATA ATTACK</string>
-    <string-array name="datachoose">
+    <string name="attack_hint">ATTACK TYPES</string>
+    <string-array name="attackChoose">
         <item>TTL ATTACK</item>
-        <item>ATTACK 2</item>
+        <item>PING-PANG ATTACK</item>
+        <item>BACK-3G ATTACK</item>
     </string-array>
 
-    <string name="voice_attack">2. VOICE ATTACK</string>
-    <string-array name="voicechoose">
-        <item>ATTACK 1</item>
-        <item>ATTACK 2</item>
-    </string-array>
+    <!--<string name="voice_attack">2. VOICE ATTACK</string>-->
+    <!--<string-array name="voicechoose">-->
+        <!--<item>Ping-Pang ATTACK</item>-->
+        <!--<item>BACK-3G ATTACK</item>-->
+    <!--</string-array>-->
 
-    <string name="protocol_attack">3. PROTOCOL ATTACK</string>
-    <string-array name="protocolchoose">
-        <item>ATTACK 1</item>
-        <item>ATTACK 2</item>
-    </string-array>
+    <!--<string name="protocol_attack">3. PROTOCOL ATTACK</string>-->
+    <!--<string-array name="protocolchoose">-->
+        <!--<item>ATTACK 1</item>-->
+        <!--<item>ATTACK 2</item>-->
+    <!--</string-array>-->
 
     <string name="startattack">START ATTACK</string>
-    <string name="title_activity_ping_pang">PingPangActivity</string>
 
     <string name="hello_world">Hello world!</string>
 

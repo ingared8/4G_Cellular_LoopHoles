@@ -59,8 +59,8 @@ public class PingPangActivity extends AppCompatActivity {
     }
 
     /****************************** SurfaceView PART *********************************/
-    private SurfaceView surfaceView;
     private SurfaceHolder surfaceHolder;
+    private SurfaceView surfaceView;
     private Paint textPaint = new Paint();
     private Paint netPaint=new Paint();
     private Paint axisPaint=new Paint();
@@ -205,6 +205,7 @@ public class PingPangActivity extends AppCompatActivity {
     /****************************** Lifecycle PART *********************************/
 
     public void bindUI(){
+        setContentView(R.layout.activity_ping_pang);
         surfaceView = (SurfaceView) findViewById(R.id.surfaceView_PingPang);
         surfaceHolder = surfaceView.getHolder();
         button = (Button) findViewById(R.id.button_PingPang);

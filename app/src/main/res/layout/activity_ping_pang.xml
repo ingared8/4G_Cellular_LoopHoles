@@ -7,7 +7,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_alignParentBottom="true"
-        android:id="@+id/scrollView"
+        android:id="@+id/scrollView_PingPang"
         android:fillViewport="true">
 
         <RelativeLayout
