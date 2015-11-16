@@ -5,12 +5,15 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.Paint;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.PowerManager;
+import android.telecom.Call;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.SurfaceHolder;
@@ -39,6 +42,7 @@ public class Back3GActivity extends Activity {
 
     private Button DownloadButton;
     private Button CallButton;
+    private boolean bindPoint = true;
 
 
 
@@ -165,7 +169,6 @@ public class Back3GActivity extends Activity {
     private SurfaceHolder surfaceHolder;
     private SurfaceView surface;
     private Paint localdataPaint=new Paint(),opdataPaint=new Paint(),axisPaint=new Paint(),opbarPaint=new Paint(),userbarPaint=new Paint(),textPaint=new Paint();
-    private Matrix bgMatrix;
     private int heightCanvas;
     private int widthCanvas;
     private int xSplit=30;
@@ -203,13 +206,10 @@ public class Back3GActivity extends Activity {
                 opbarPaint.setColor(Color.argb(180, 255, 0, 0));
                 opbarPaint.setStrokeWidth(5);
 
-
-
-
                 if(canvas!=null){
                     retrieveSize(canvas);
-                    drawAxies(axisPaint, canvas);
-                    drawData(localdataPaint,opdataPaint,canvas);
+                    drawAxies(canvas);
+                    drawData(canvas);
                 }
 
                 if(canvas!=null) surfaceHolder.unlockCanvasAndPost(canvas);
@@ -217,7 +217,7 @@ public class Back3GActivity extends Activity {
         }
     };
 
-    private void drawAxies(Paint axisPaint,Canvas canvas){
+    private void drawAxies(Canvas canvas){
         canvas.drawColor(Color.argb(255, 230, 230, 230));
         int xstart=offsetAxis+wordlength;
         int ystart=offsetAxis+lengthYAxis;
@@ -234,50 +234,38 @@ public class Back3GActivity extends Activity {
         }
     }
 
-    private void drawData(Paint localdataPaint,Paint opdataPaint,Canvas canvas){
-        DataSet tmpDataSet=new DataSet();
-        DataSet dataSet=dataService.datausage;
+    private void drawData(Canvas canvas){
+        DataSet throughputDataSet=new DataSet();
+
         long largestData=-1;
 
-        for(int i=(dataSet.size()-xSplit)>1?(dataSet.size()-xSplit):1;i<dataSet.size();i++) {
-            long tmpopusage=(dataSet.getData(i).getOperator_data()-dataSet.getData(0).getOperator_data());
-            long tmplocalusage=(dataSet.getData(i).getLocal_data()-dataSet.getData(0).getLocal_data());
-            Log.d("Usage ", "opusage:" + (float) tmpopusage / 1024 / 1024 + " localusage:" + (float) tmplocalusage / 1024 / 1024);
-            tmpDataSet.addData(new VolumeData(dataSet.getData(i).getTimeStamp(),tmplocalusage,tmpopusage));
-            largestData=largestData>tmplocalusage?largestData:tmplocalusage;
-            largestData=largestData>tmpopusage?largestData:tmpopusage;
+        for(int i=(throughputDataSet.size()-xSplit)>1?(throughputDataSet.size()-xSplit):1;i<throughputDataSet.size();i++) {
+            long usage=(throughputDataSet.getData(i).getOperator_data()-throughputDataSet.getData(0).getOperator_data());
+            long uselessusage=0;
+
+            throughputDataSet.addData(new VolumeData(throughputDataSet.getData(i).getTimeStamp(),usage,uselessusage));
+            largestData=largestData>usage?largestData:usage;
+
         }
         for(int i=1;i<6;i++) {
             canvas.drawText(String.format("%.2f", (float) largestData / 1024 / 1024/5*i), 2 * offsetAxis + wordlength, offsetAxis+lengthYAxis-i*lengthYAxis/5+offsetAxis, textPaint);
         }
-        float lastx=0,lasty=0;
-        for(int i=0;i<tmpDataSet.size();i++) {
+ //       float lastx=0,lasty=0;
+        for(int i=0;i<throughputDataSet.size();i++) {
             float tmpx=offsetAxis+lengthXAxis/xSplit*i+wordlength;
-            float tmpyLocal=offsetAxis+lengthYAxis-((float)tmpDataSet.getData(i).getLocal_data()/(float)largestData)*lengthYAxis;
-            float tmpyOP=offsetAxis+lengthYAxis-((float)tmpDataSet.getData(i).getOperator_data()/(float)largestData)*lengthYAxis;
+            float tmpyLocal=offsetAxis+lengthYAxis-((float)throughputDataSet.getData(i).getLocal_data()/(float)largestData)*lengthYAxis;
+//            float tmpyOP=offsetAxis+lengthYAxis-((float)throughputDataSet.getData(i).getOperator_data()/(float)largestData)*lengthYAxis;
             //Log.d("Y",""+tmpyLocal+" "+tmpyOP);
             canvas.drawCircle(tmpx, tmpyLocal, 5, localdataPaint);
-            canvas.drawCircle(tmpx,tmpyOP,8,opdataPaint);
-            canvas.drawLine(tmpx, offsetAxis+lengthYAxis, tmpx, tmpyLocal, userbarPaint);
-            if(i!=0)  canvas.drawLine(lastx,lasty, tmpx,tmpyOP, opbarPaint);
-            lastx=tmpx;
-            lasty=tmpyOP;
+//            canvas.drawCircle(tmpx,tmpyOP,8,opdataPaint);
+            if(i!=0) canvas.drawLine(tmpx, offsetAxis+lengthYAxis, tmpx, tmpyLocal, userbarPaint);
+//            if(i!=0)  canvas.drawLine(lastx,lasty, tmpx,tmpyOP, opbarPaint);
+//            lastx=tmpx;
+//            lasty=tmpyOP;
         }
     }
 
-    class surfaceCreateThread extends Thread{
-        public void run(){
-            Canvas canvas = null;
-            synchronized (surfaceHolder) {
-                canvas = surfaceHolder.lockCanvas();// lock canvas for drawing and retrieving params
-                retrieveSize(canvas);
-                surfaceHolder.unlockCanvasAndPost(canvas);
-                //  Log.v("Canvas", heightCanvas+" "+widthCanvas);
-            }
-        }
-    }
-
-    public void retrieveSize(Canvas canvas){
+     public void retrieveSize(Canvas canvas){
 
         heightCanvas=canvas.getHeight();
         widthCanvas=canvas.getWidth();
@@ -291,24 +279,42 @@ public class Back3GActivity extends Activity {
     }
 
 
+    /*Attack
 
-    class AttckClickListener implements View.OnClickListener {
-        @Override
-        public void onClick(View v) {
-            serverAddr = desIP.getText().toString();
-            Log.d("debug", " " + serverAddr);
+     */
 
-            if(bindPoint) {
-                bindPoint = false;
-                bindService();
-                timer.schedule(task, 1000, 1000);
+
+    public void Attack(){
+
+        DownloadButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (bindPoint) {
+                    bindPoint = false;
+                    timer.schedule(task, 1000, 1000);
+                }
             }
-        }
+        });
+
+        CallButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(Intent.ACTION_CALL, Uri.parse("tel:xxxxxxxxxx"));
+                startActivity(intent);
+            }
+        });
+
+
+
     }
+
 
 
     public void onCreate() {
         bindUI();
+        Attack();
+
+
         mProgressDialog = new ProgressDialog(Back3GActivity.this);
         mProgressDialog.setMessage("A message");
         mProgressDialog.setIndeterminate(true);
