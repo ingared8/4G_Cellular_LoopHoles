@@ -4,7 +4,9 @@
 
     <string name="ip">IP Address</string>
     <string name="port">5555</string>
+    <string name="phone">Your Phone Number</string>
     <string name="send">Attack</string>
+    <string name="end">Stop</string>
     <string name="ttlHint">TTL</string>
     <string name="ttlText">33</string>
     <string name="volumeHint">AttackVolume</string>
@@ -20,7 +22,7 @@
 
     <string name="set_ttl">SET</string>
 
-    <string name="PingPangHint">Click button to start a attack</string>
+    <string name="PingPangHint">Click Attack button to start a attack</string>
 
     <string name="back3GHint">START A BACK3G ATTACK:</string>
     <string name="back3GHint1">First, download a file;</string>

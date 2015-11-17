@@ -221,7 +221,6 @@ public class TTLActivity extends AppCompatActivity  {
         public void run() {
             Canvas canvas = null;
             synchronized (surfaceHolder) {
-              //  if(surfaceHolder==null)  {surface = (SurfaceView)findViewById(R.id.surfaceView);surfaceHolder = surface.getHolder();}
                 canvas = surfaceHolder.lockCanvas();
 
 

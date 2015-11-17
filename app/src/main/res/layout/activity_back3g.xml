@@ -35,7 +35,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:id="@+id/Hint_back3G"
-                    android:textSize="20dp"
+                    android:textSize="18dp"
                     android:textStyle="bold"
                     android:text="@string/back3GHint" />
 

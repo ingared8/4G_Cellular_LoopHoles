@@ -31,6 +31,17 @@
                 android:layout_alignParentTop="true"
                 android:id="@+id/linear1_PingPang">
 
+                <EditText
+                    android:layout_height="wrap_content"
+                    android:layout_width="match_parent"
+                    android:hint="@string/ip"
+                    android:id="@+id/ip_pingpang" />
+                <EditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/phone"
+                    android:id="@+id/phone_pingpang"/>
+
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -38,11 +49,31 @@
                     android:layout_weight="1"
                     android:textSize="18dp"
                     android:text="@string/PingPangHint" />
-                <Button
-                    android:layout_width="wrap_content"
+
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:id="@+id/button_PingPang"
-                    android:text="@string/send" />
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentRight="true"
+                    android:layout_alignParentStart="true"
+                    android:layout_alignParentTop="true"
+                    android:id="@+id/linear_button">
+                    <Button
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/startAttack_pingpang"
+                        android:layout_weight="1"
+                        android:text="@string/send" />
+                    <Button
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/stopAttack_pingpang"
+                        android:layout_weight="1"
+                        android:text="@string/end" />
+
+                </LinearLayout>
+
             </LinearLayout>
 
             <SurfaceView

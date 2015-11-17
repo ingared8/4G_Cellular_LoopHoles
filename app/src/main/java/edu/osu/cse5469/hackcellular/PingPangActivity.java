@@ -6,6 +6,8 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -15,14 +17,29 @@ import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.TextView;
 
+import java.io.DataOutputStream;
+import java.io.IOException;
+import java.net.InetAddress;
+import java.net.Socket;
+import java.net.UnknownHostException;
 import java.util.Date;
 import java.util.Timer;
 import java.util.TimerTask;
 
 public class PingPangActivity extends AppCompatActivity {
 
-    private Button button;
+    private Button startAttack;
+    private Button stopAttack;
+    private EditText ipAddr;
+    private EditText phoneNum;
+    private TextView textInfo;
+    private String ip;
+    private static final int PORT = 5502;
+    private static final int START_SIGNAL = 1;
+    private static final int STOP_SIGNAL = 2;
     private boolean bindPoint = true;
     private NetStatSet netStatSet = new NetStatSet();
 
@@ -192,15 +209,89 @@ public class PingPangActivity extends AppCompatActivity {
 
     /****************************** Function PART *********************************/
     /*
+    * Handler for info exchange between UI and Thread
+    */
+    private Handler handler = new Handler(){
+        @Override
+        public void handleMessage(Message msg) {
+            if(msg.what == START_SIGNAL){
+                textInfo.setText((String) msg.obj);
+            }
+            if(msg.what == STOP_SIGNAL){
+                textInfo.setText((String) msg.obj);
+            }
+        }
+    };
+
+    /*
     * Attack button listener
     */
-    class AttckClickListener implements View.OnClickListener {
+    class AttackClickListener implements View.OnClickListener {
         @Override
         public void onClick(View v) {
+            ip = ipAddr.getText().toString();
+            String phone = phoneNum.getText().toString();
+            Socket attackSocket;
+            DataOutputStream out;
+
+            try {
+                InetAddress serverAddr = InetAddress.getByName(ip);
+                attackSocket = new Socket(serverAddr, PORT);
+                out = new DataOutputStream(attackSocket.getOutputStream());
+                out.writeUTF(phone);
+                out.flush();
+
+                attackSocket.close();
+            } catch (UnknownHostException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            Message sendMsg = Message.obtain();
+            sendMsg.obj = "Ping-Pang Attack Start. Please pay attention to the network status icon at the top and the graph";
+            sendMsg.what = START_SIGNAL;
+            handler.sendMessage(sendMsg);
+            Log.d("debug", "Attack signal has sent.");
+
             if(bindPoint) {
                 bindPoint = false;
                 timer.schedule(task, 5000, 5000);
             }
+        }
+    }
+
+    /*
+     * Stop attack button listener
+     */
+    class StopClickListener implements View.OnClickListener {
+        @Override
+        public void onClick(View v) {
+            if(ip!="") {
+                Socket stopSocket;
+                DataOutputStream out;
+
+                try {
+                    InetAddress serverAddr = InetAddress.getByName(ip);
+                    stopSocket = new Socket(serverAddr, PORT);
+                    out = new DataOutputStream(stopSocket.getOutputStream());
+                    out.writeUTF("STOP");
+                    out.flush();
+
+                    stopSocket.close();
+                } catch (UnknownHostException e) {
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            Message sendMsg = Message.obtain();
+            sendMsg.obj = "Ping-Pang Attack Stop. Press the Attack button to re-start the attack";
+            sendMsg.what = STOP_SIGNAL;
+            handler.sendMessage(sendMsg);
+            Log.d("debug", "Stop signal has sent.");
+
         }
     }
 
@@ -210,7 +301,11 @@ public class PingPangActivity extends AppCompatActivity {
         setContentView(R.layout.activity_ping_pang);
         surfaceView = (SurfaceView) findViewById(R.id.surfaceView_PingPang);
         surfaceHolder = surfaceView.getHolder();
-        button = (Button) findViewById(R.id.button_PingPang);
+        startAttack = (Button) findViewById(R.id.startAttack_pingpang);
+        stopAttack = (Button) findViewById(R.id.stopAttack_pingpang);
+        ipAddr = (EditText) findViewById(R.id.ip_pingpang);
+        phoneNum = (EditText) findViewById(R.id.phone_pingpang);
+        textInfo = (TextView) findViewById(R.id.Hint_PingPang);
     }
 
     @Override
@@ -223,7 +318,8 @@ public class PingPangActivity extends AppCompatActivity {
         // Function part need add, Send Attack button, and Stop Attack button, by using TCP.
         // Establish connection and disconnecting them each time. Default port 5502
 
-        button.setOnClickListener(new AttckClickListener());
+        startAttack.setOnClickListener(new AttackClickListener());
+        stopAttack.setOnClickListener(new StopClickListener());
     }
 
     @Override
