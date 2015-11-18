@@ -6,6 +6,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.os.AsyncTask;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
@@ -22,8 +23,11 @@ import android.widget.TextView;
 
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.net.DatagramPacket;
+import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.Socket;
+import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.util.Date;
 import java.util.Timer;
@@ -37,6 +41,7 @@ public class PingPangActivity extends AppCompatActivity {
     private EditText phoneNum;
     private TextView textInfo;
     private String ip;
+    private String info = "";
     private static final int PORT = 5502;
     private static final int START_SIGNAL = 1;
     private static final int STOP_SIGNAL = 2;
@@ -223,6 +228,46 @@ public class PingPangActivity extends AppCompatActivity {
         }
     };
 
+    private void tcpSocket() {
+        Socket attackSocket;
+        DataOutputStream out;
+
+        try {
+            InetAddress serverAddr = InetAddress.getByName(ip);
+            attackSocket = new Socket(serverAddr, PORT);
+            out = new DataOutputStream(attackSocket.getOutputStream());
+            out.writeUTF(info);
+            out.flush();
+
+            attackSocket.close();
+        } catch (UnknownHostException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    private void udpSocket() {
+        DatagramSocket attackSocket;
+        DatagramPacket outPacket;
+
+        try {
+            InetAddress serverAddr = InetAddress.getByName(ip);
+            attackSocket = new DatagramSocket();
+            outPacket = new DatagramPacket(info.getBytes(), info.length(), serverAddr, PORT);
+            attackSocket.send(outPacket);
+        } catch (SocketException e) {
+            e.printStackTrace();
+        } catch (UnknownHostException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+
+    }
+
     /*
     * Attack button listener
     */
@@ -231,22 +276,9 @@ public class PingPangActivity extends AppCompatActivity {
         public void onClick(View v) {
             ip = ipAddr.getText().toString();
             String phone = phoneNum.getText().toString();
-            Socket attackSocket;
-            DataOutputStream out;
 
-            try {
-                InetAddress serverAddr = InetAddress.getByName(ip);
-                attackSocket = new Socket(serverAddr, PORT);
-                out = new DataOutputStream(attackSocket.getOutputStream());
-                out.writeUTF(phone);
-                out.flush();
-
-                attackSocket.close();
-            } catch (UnknownHostException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            info = phone;
+            new SendfeedbackJob().execute();
 
             Message sendMsg = Message.obtain();
             sendMsg.obj = "Ping-Pang Attack Start. Please pay attention to the network status icon at the top and the graph";
@@ -267,27 +299,18 @@ public class PingPangActivity extends AppCompatActivity {
     class StopClickListener implements View.OnClickListener {
         @Override
         public void onClick(View v) {
+            String hint;
             if(ip!="") {
-                Socket stopSocket;
-                DataOutputStream out;
-
-                try {
-                    InetAddress serverAddr = InetAddress.getByName(ip);
-                    stopSocket = new Socket(serverAddr, PORT);
-                    out = new DataOutputStream(stopSocket.getOutputStream());
-                    out.writeUTF("STOP");
-                    out.flush();
-
-                    stopSocket.close();
-                } catch (UnknownHostException e) {
-                    e.printStackTrace();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+                info = "STOP";
+                new SendfeedbackJob().execute();
+                hint = "Ping-Pang Attack Stop. Press the Attack button to re-start the attack";
+            }
+            else {
+                hint = "Please start attack first";
             }
 
             Message sendMsg = Message.obtain();
-            sendMsg.obj = "Ping-Pang Attack Stop. Press the Attack button to re-start the attack";
+            sendMsg.obj = hint;
             sendMsg.what = STOP_SIGNAL;
             handler.sendMessage(sendMsg);
             Log.d("debug", "Stop signal has sent.");
@@ -295,7 +318,17 @@ public class PingPangActivity extends AppCompatActivity {
         }
     }
 
-    /****************************** Lifecycle PART *********************************/
+    private class SendfeedbackJob extends AsyncTask<String, Void, String> {
+
+        @Override
+        protected String doInBackground(String... params) {
+//            tcpSocket();
+            udpSocket();
+            return null;
+        }
+    }
+
+        /****************************** Lifecycle PART *********************************/
 
     public void bindUI(){
         setContentView(R.layout.activity_ping_pang);
