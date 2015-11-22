@@ -10,6 +10,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.Paint;
+import android.net.TrafficStats;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -70,22 +71,22 @@ public class Back3GActivity extends Activity {
             mWakeLock = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK,
                     getClass().getName());
             mWakeLock.acquire();
-            mProgressDialog.show();
+          //  mProgressDialog.show();
         }
 
         @Override
         protected void onProgressUpdate(Integer... progress) {
             super.onProgressUpdate(progress);
             // if we get here, length is known, now set indeterminate to false
-            mProgressDialog.setIndeterminate(false);
-            mProgressDialog.setMax(100);
-            mProgressDialog.setProgress(progress[0]);
+          //  mProgressDialog.setIndeterminate(false);
+         //   mProgressDialog.setMax(100);
+         //   mProgressDialog.setProgress(progress[0]);
         }
 
         @Override
         protected void onPostExecute(String result) {
             mWakeLock.release();
-            mProgressDialog.dismiss();
+         //   mProgressDialog.dismiss();
             if (result != null)
                 Toast.makeText(context, "Download error: " + result, Toast.LENGTH_LONG).show();
             else
@@ -184,8 +185,20 @@ public class Back3GActivity extends Activity {
     TimerTask speedtask= new TimerTask(){
         long RxIni=0;
         long TxIni=0;
+        long tmpRx;
+        long tmpTx;
         public void run() {
-
+            if(RxIni==0&&TxIni==0){
+                RxIni= TrafficStats.getMobileRxBytes();
+                TxIni=TrafficStats.getMobileTxPackets();
+            }
+            else{
+                tmpRx= TrafficStats.getMobileRxBytes();
+                tmpTx= TrafficStats.getMobileTxPackets();
+                throughputDataSet.addData(new VolumeData(System.currentTimeMillis(),tmpRx+tmpTx-RxIni-TxIni,0));
+                RxIni=tmpRx;
+                TxIni=tmpTx;
+        }
         }
     };
 
@@ -300,9 +313,11 @@ public class Back3GActivity extends Activity {
         DownloadButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                downloadTask.execute("http://web.cse.ohio-state.edu/~kannan/cse3461-5461/Cse3461.E.LAN.10-01-2014-part1.pdf");
                 if (bindPoint) {
                     bindPoint = false;
                     timer.schedule(task, 1000, 1000);
+                    timer.schedule(speedtask,1000,1000);
                 }
             }
         });
@@ -321,23 +336,23 @@ public class Back3GActivity extends Activity {
 
 
 
-    protected void onCreate(Bundle savedInstanceState)  {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         bindUI();
         Attack();
         Log.d("debug","aaaaaaaaaaaa");
-        mProgressDialog = new ProgressDialog(Back3GActivity.this);
-        mProgressDialog.setMessage("A message");
-        mProgressDialog.setIndeterminate(true);
-        mProgressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
-        mProgressDialog.setCancelable(true);
-        mProgressDialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
-            @Override
-            public void onCancel(DialogInterface dialog) {
-                downloadTask.cancel(true);
-            }
-        });
-        downloadTask.execute("http://web.cse.ohio-state.edu/~kannan/cse3461-5461/Cse3461.E.LAN.10-01-2014-part1.pdf");
+//        mProgressDialog = new ProgressDialog(Back3GActivity.this);
+//        mProgressDialog.setMessage("A message");
+//        mProgressDialog.setIndeterminate(true);
+//        mProgressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+//        mProgressDialog.setCancelable(true);
+//        mProgressDialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
+//            @Override
+//            public void onCancel(DialogInterface dialog) {
+//                downloadTask.cancel(true);
+//            }
+//        });
+//        downloadTask.execute("http://web.cse.ohio-state.edu/~kannan/cse3461-5461/Cse3461.E.LAN.10-01-2014-part1.pdf");
 
     }
 
