@@ -47,6 +47,8 @@ public class Back3GActivity extends Activity {
     private Button CallButton;
     private boolean bindPoint = true;
     DataSet throughputDataSet=new DataSet();
+    DataSet throughputDataSettmp=new DataSet();
+    int init=0;
 
 
 
@@ -181,21 +183,23 @@ public class Back3GActivity extends Activity {
 
     private int offsetAxis;
     private Timer timer = new Timer();
-
+    private Timer timer1 = new Timer();
     TimerTask speedtask= new TimerTask(){
         long RxIni=0;
         long TxIni=0;
         long tmpRx;
         long tmpTx;
         public void run() {
-            if(RxIni==0&&TxIni==0){
+            if(init<=3){
                 RxIni= TrafficStats.getMobileRxBytes();
                 TxIni=TrafficStats.getMobileTxPackets();
+                init++;
             }
             else{
-                tmpRx= TrafficStats.getMobileRxBytes();
-                tmpTx= TrafficStats.getMobileTxPackets();
-                throughputDataSet.addData(new VolumeData(System.currentTimeMillis(),tmpRx+tmpTx-RxIni-TxIni,0));
+                tmpRx= TrafficStats.getTotalRxBytes();
+                tmpTx= TrafficStats.getTotalTxPackets();
+               throughputDataSettmp.addData(new VolumeData(System.currentTimeMillis(),tmpRx+tmpTx-RxIni-TxIni,0));
+                Log.d("Flow",tmpRx+tmpTx-RxIni-TxIni+"");
                 RxIni=tmpRx;
                 TxIni=tmpTx;
         }
@@ -263,11 +267,11 @@ public class Back3GActivity extends Activity {
 
         long largestData=-1;
 
-        for(int i=(throughputDataSet.size()-xSplit)>1?(throughputDataSet.size()-xSplit):1;i<throughputDataSet.size();i++) {
-            long usage=(throughputDataSet.getData(i).getOperator_data()-throughputDataSet.getData(0).getOperator_data());
+        for(int i=(throughputDataSettmp.size()-xSplit)>1?(throughputDataSettmp.size()-xSplit):1;i<throughputDataSettmp.size();i++) {
+            long usage=(throughputDataSettmp.getData(i).getOperator_data()-throughputDataSettmp.getData(0).getOperator_data());
             long uselessusage=0;
 
-            throughputDataSet.addData(new VolumeData(throughputDataSet.getData(i).getTimeStamp(),usage,uselessusage));
+            throughputDataSet.addData(new VolumeData(throughputDataSettmp.getData(i).getTimeStamp(),usage,uselessusage));
             largestData=largestData>usage?largestData:usage;
 
         }
@@ -313,11 +317,11 @@ public class Back3GActivity extends Activity {
         DownloadButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                downloadTask.execute("http://web.cse.ohio-state.edu/~kannan/cse3461-5461/Cse3461.E.LAN.10-01-2014-part1.pdf");
+             //   downloadTask.execute("http://mirrors.koehn.com/ubuntureleases/14.04.3/ubuntu-14.04.3-desktop-amd64.iso");
                 if (bindPoint) {
                     bindPoint = false;
                     timer.schedule(task, 1000, 1000);
-                    timer.schedule(speedtask,1000,1000);
+                    timer1.schedule(speedtask,1000,1000);
                 }
             }
         });
