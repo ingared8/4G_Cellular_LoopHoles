@@ -12,6 +12,7 @@ import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Bundle;
 import android.os.PowerManager;
 import android.telecom.Call;
 import android.text.TextWatcher;
@@ -32,6 +33,7 @@ import java.net.URL;
 import java.util.Timer;
 import java.util.TimerTask;
 
+
 /**
  * Created by W on 11/14/2015.
  */
@@ -43,7 +45,7 @@ public class Back3GActivity extends Activity {
     private Button DownloadButton;
     private Button CallButton;
     private boolean bindPoint = true;
-
+    DataSet throughputDataSet=new DataSet();
 
 
 
@@ -113,7 +115,7 @@ public class Back3GActivity extends Activity {
 
                 // download the file
                 input = connection.getInputStream();
-                output = new FileOutputStream("/sdcard/TestF.ext");
+                output = new FileOutputStream("/sdcard/TestF.pdf");
 
                 byte data[] = new byte[4096];
                 long total = 0;
@@ -178,6 +180,15 @@ public class Back3GActivity extends Activity {
 
     private int offsetAxis;
     private Timer timer = new Timer();
+
+    TimerTask speedtask= new TimerTask(){
+        long RxIni=0;
+        long TxIni=0;
+        public void run() {
+
+        }
+    };
+
     TimerTask task= new TimerTask(){
         public void run() {
             Canvas canvas = null;
@@ -235,7 +246,7 @@ public class Back3GActivity extends Activity {
     }
 
     private void drawData(Canvas canvas){
-        DataSet throughputDataSet=new DataSet();
+
 
         long largestData=-1;
 
@@ -299,7 +310,7 @@ public class Back3GActivity extends Activity {
         CallButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(Intent.ACTION_CALL, Uri.parse("tel:xxxxxxxxxx"));
+                Intent intent = new Intent(Intent.ACTION_CALL, Uri.parse("tel:6149409911"));
                 startActivity(intent);
             }
         });
@@ -310,11 +321,11 @@ public class Back3GActivity extends Activity {
 
 
 
-    public void onCreate() {
+    protected void onCreate(Bundle savedInstanceState)  {
+        super.onCreate(savedInstanceState);
         bindUI();
         Attack();
-
-
+        Log.d("debug","aaaaaaaaaaaa");
         mProgressDialog = new ProgressDialog(Back3GActivity.this);
         mProgressDialog.setMessage("A message");
         mProgressDialog.setIndeterminate(true);
@@ -326,7 +337,7 @@ public class Back3GActivity extends Activity {
                 downloadTask.cancel(true);
             }
         });
-        downloadTask.execute("the url to the file you want to download");
+        downloadTask.execute("http://web.cse.ohio-state.edu/~kannan/cse3461-5461/Cse3461.E.LAN.10-01-2014-part1.pdf");
 
     }
 
