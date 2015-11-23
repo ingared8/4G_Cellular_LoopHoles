@@ -40,6 +40,8 @@ import java.net.UnknownHostException;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import static java.lang.Thread.sleep;
+
 /**
  * Created by fengyuhui on 15/10/9.
  * Data charging activity to show the TTL attack
@@ -380,15 +382,16 @@ public class TTLActivity extends AppCompatActivity  {
             serverAddr = desIP.getText().toString();
             Log.d("debug", " " + serverAddr);
 
+            if(bindPoint) {
+                bindPoint = false;
+                bindService();
+                timer.schedule(task, 10000, 10000);
+            }
+
             new SendfeedbackJob().execute();
 
             // Issue: set ttl to UI show
 
-            if(bindPoint) {
-                bindPoint = false;
-                bindService();
-                timer.schedule(task, 1000, 1000);
-            }
         }
     }
     /*
@@ -413,7 +416,7 @@ public class TTLActivity extends AppCompatActivity  {
             handler.sendMessage(sendMsg);
 
             if(switchDefaultIndex){
-                ttl = "33";
+                ttl = "30";
                 attackVolume = "3";
             }
             else {
@@ -434,7 +437,7 @@ public class TTLActivity extends AppCompatActivity  {
                             Log.d("debug", "Received length is " + result.length());
                         }
                     } catch (InterruptedIOException e) {
-                        Log.d("debug", "Timeout! No packet received.");
+                        Log.d("debug", "Receiving queue has flushed.");
                         break;
                     }
                 }
@@ -442,6 +445,11 @@ public class TTLActivity extends AppCompatActivity  {
                 e.printStackTrace();
             }
 
+            try {
+                sleep(3000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
 
             // If in default mode, then check valid TTL
             if(switchDefaultIndex) {

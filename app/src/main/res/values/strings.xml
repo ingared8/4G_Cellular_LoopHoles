@@ -8,7 +8,7 @@
     <string name="send">Attack</string>
     <string name="end">Stop</string>
     <string name="ttlHint">TTL</string>
-    <string name="ttlText">33</string>
+    <string name="ttlText">30</string>
     <string name="volumeHint">AttackVolume</string>
     <string name="volumeText">3</string>
     <string name="ttl_hint">Please choose a type of attack</string>
