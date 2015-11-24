@@ -92,10 +92,12 @@ public class MainActivity extends Activity {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
 
                 if (isChecked) {
-                    desIP.setFocusableInTouchMode(false);
+                    //desIP.setFocusableInTouchMode(false);
+                    desIP.setVisibility(buttonView.INVISIBLE);
                     switchable = true;
                 } else {
-                    desIP.setFocusableInTouchMode(true);
+                    //desIP.setFocusableInTouchMode(true);
+                    desIP.setVisibility(buttonView.VISIBLE);
                     switchable = false;
 
                 }
