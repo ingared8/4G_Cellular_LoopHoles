@@ -3,12 +3,16 @@ package edu.osu.cse5469.hackcellular;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.view.View;
+import android.widget.CompoundButton;
+import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.Switch;
 import android.widget.TextView;
 
 
@@ -25,7 +29,10 @@ public class MainActivity extends Activity {
 //    private Spinner protocolspinner;
 
     private Button startAttack;
-
+    private Switch ipswitch;
+    private EditText desIP;
+    private String serverAddr;
+    private boolean switchable;
 
 //    private ServiceConnection dataServiceConnection = new ServiceConnection() {
 //
@@ -62,6 +69,11 @@ public class MainActivity extends Activity {
         attackSpinner =(Spinner)findViewById(R.id.attack_spinner);
         setSpinner(attackSpinner, this.getResources().getStringArray(R.array.attackChoose));
 
+        ipswitch = (Switch)findViewById(R.id.switch2);
+        desIP = (EditText) findViewById(R.id.edited_ip2);
+
+        switchable = true;
+
 //        voiceattack = (TextView)findViewById(R.id.voice_attack);
 //        voicespinner =(Spinner)findViewById(R.id.voice_attack_spinner);
 //        setSpinner(voicespinner, this.getResources().getStringArray(R.array.voicechoose));
@@ -71,17 +83,45 @@ public class MainActivity extends Activity {
 //        setSpinner(protocolspinner, this.getResources().getStringArray(R.array.protocolchoose));
     }
 
-    private void startattack(Button mybutton, final Spinner myspinner){
-        mybutton.setOnClickListener(new Button.OnClickListener(){
-            public void onClick(View v){
+    private void startattack(final Button mybutton, final Spinner myspinner){
+
+
+
+        ipswitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+
+                if (isChecked) {
+                    desIP.setFocusableInTouchMode(false);
+                    switchable = true;
+                } else {
+                    desIP.setFocusableInTouchMode(true);
+                    switchable = false;
+
+                }
+
+            }
+        });
+
+        mybutton.setOnClickListener(new Button.OnClickListener() {
+            public void onClick(View v) {
+                if (switchable){
+                    serverAddr = "default ip";
+                }else{
+                    serverAddr = desIP.getText().toString();
+                }
+
+               // Log.d("serveraddr"," "+serverAddr);
                 Intent intent = new Intent();
-                switch(myspinner.getSelectedItemPosition()){
+                switch (myspinner.getSelectedItemPosition()) {
                     case 0:
                         intent.setClass(MainActivity.this, TTLActivity.class);
+                        intent.putExtra("severAddr", serverAddr);
                         startActivity(intent);
                         break;
                     case 1:
                         intent.setClass(MainActivity.this, PingPangActivity.class);
+                        intent.putExtra("severAddr", serverAddr);
                         startActivity(intent);
                         break;
                     case 2:
@@ -91,6 +131,7 @@ public class MainActivity extends Activity {
                 }
             }
         });
+
     }
 
     @Override
