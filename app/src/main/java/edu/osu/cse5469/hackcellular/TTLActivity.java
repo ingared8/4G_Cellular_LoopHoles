@@ -30,7 +30,6 @@ import android.widget.Switch;
 import android.widget.TextView;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InterruptedIOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
@@ -272,15 +271,15 @@ public class TTLActivity extends AppCompatActivity  {
     }
 
     private void drawData(Paint localdataPaint,Paint opdataPaint,Canvas canvas){
-        DataSet tmpDataSet=new DataSet();
-        DataSet dataSet=dataService.datausage;
+        PlotData tmpPlotData =new PlotData();
+        PlotData plotData =dataService.datausage;
         long largestData=-1;
-        if(dataSet.size()>1);
-        for(int i=(dataSet.size()-xSplit)>1?(dataSet.size()-xSplit):1;i<dataSet.size();i++) {
-            long tmpopusage=(dataSet.getData(i).getOperator_data()-dataSet.getData(0).getOperator_data());
-            long tmplocalusage=(dataSet.getData(i).getLocal_data()-dataSet.getData(0).getLocal_data());
+        if(plotData.size()>1);
+        for(int i=(plotData.size()-xSplit)>1?(plotData.size()-xSplit):1;i< plotData.size();i++) {
+            long tmpopusage=(plotData.getData(i).getOperator_data()- plotData.getData(0).getOperator_data());
+            long tmplocalusage=(plotData.getData(i).getLocal_data()- plotData.getData(0).getLocal_data());
             Log.d("Usage ","opusage:"+(float)tmpopusage/ 1024 / 1024+" localusage:"+(float)tmplocalusage/ 1024 / 1024);
-            tmpDataSet.addData(new VolumeData(dataSet.getData(i).getTimeStamp(),tmplocalusage,tmpopusage));
+            tmpPlotData.addData(new VolumeData(plotData.getData(i).getTimeStamp(),tmplocalusage,tmpopusage));
             largestData=largestData>tmplocalusage?largestData:tmplocalusage;
             largestData=largestData>tmpopusage?largestData:tmpopusage;
         }
@@ -288,10 +287,10 @@ public class TTLActivity extends AppCompatActivity  {
             canvas.drawText(String.format("%.2f", (float) largestData / 1024 / 1024/5*i), 2 * offsetAxis + wordlength, offsetAxis+lengthYAxis-i*lengthYAxis/5+offsetAxis, textPaint);
         }
         float lastx=0,lasty=0;
-        for(int i=0;i<tmpDataSet.size();i++) {
+        for(int i=0;i< tmpPlotData.size();i++) {
             float tmpx=offsetAxis+lengthXAxis/xSplit*i+wordlength;
-            float tmpyLocal=offsetAxis+lengthYAxis-((float)tmpDataSet.getData(i).getLocal_data()/(float)largestData)*lengthYAxis;
-            float tmpyOP=offsetAxis+lengthYAxis-((float)tmpDataSet.getData(i).getOperator_data()/(float)largestData)*lengthYAxis;
+            float tmpyLocal=offsetAxis+lengthYAxis-((float) tmpPlotData.getData(i).getLocal_data()/(float)largestData)*lengthYAxis;
+            float tmpyOP=offsetAxis+lengthYAxis-((float) tmpPlotData.getData(i).getOperator_data()/(float)largestData)*lengthYAxis;
             //Log.d("Y",""+tmpyLocal+" "+tmpyOP);
             canvas.drawCircle(tmpx, tmpyLocal, 5, localdataPaint);
             canvas.drawCircle(tmpx,tmpyOP,8,opdataPaint);
