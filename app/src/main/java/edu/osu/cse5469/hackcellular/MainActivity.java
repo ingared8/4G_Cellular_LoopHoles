@@ -72,7 +72,7 @@ public class MainActivity extends Activity {
         ipswitch = (Switch)findViewById(R.id.switch2);
         desIP = (EditText) findViewById(R.id.edited_ip2);
 
-        switchable = true;
+        switchable = false;
 
 //        voiceattack = (TextView)findViewById(R.id.voice_attack);
 //        voicespinner =(Spinner)findViewById(R.id.voice_attack_spinner);

@@ -16,8 +16,8 @@ import java.net.UnknownHostException;
 public class CommunicationSocket {
 
     private DatagramSocket client;
-    private InetAddress intetServerAddr;
-    private String ip;
+    private InetAddress inetServerAddr;
+    private String serverAddr;
     private int port;
     int size = 1000;
 
@@ -29,12 +29,12 @@ public class CommunicationSocket {
         }
     }
 
-    public CommunicationSocket (String ip, int port) {
+    public CommunicationSocket (String serverAddr, int port) {
         this();
-        this.ip = ip;
+        this.serverAddr = serverAddr;
         this.port = port;
         try {
-            intetServerAddr = InetAddress.getByName(ip);
+            inetServerAddr = InetAddress.getByName(serverAddr);
         } catch (UnknownHostException e) {
             e.printStackTrace();
         }
@@ -44,11 +44,12 @@ public class CommunicationSocket {
         this.size = size;
     }
 
+    // Flush memory, return true if there is anything in the receive memory, otherwise return false
     public boolean flush() {
-        int timeout = 200;
+        int timeout = 500;
         boolean result = false;
         while(true) {
-            String receiveInfo = receive(timeout);
+            String receiveInfo = receivePacket(timeout);
             if (receiveInfo.equals("Timeout")){
                 break;
             }
@@ -60,7 +61,8 @@ public class CommunicationSocket {
         return result;
     }
 
-    public String receive() {
+    // Receive message with blocking the process
+    public String receivePacket() {
         String result = "";
         try {
             byte[] inData = new byte[size];
@@ -75,7 +77,8 @@ public class CommunicationSocket {
         return result;
     }
 
-    public String receive(int timeout) {
+    // Receive message with a time interval. If do not receive anything, return "Timeout"
+    public String receivePacket(int timeout) {
         String result = "";
         try {
             client.setSoTimeout(timeout);
@@ -96,10 +99,13 @@ public class CommunicationSocket {
         return result;
     }
 
-    public void send(String info) {
-        DatagramPacket sendPacket = new DatagramPacket(info.getBytes(), info.length(), intetServerAddr, port);
+    public void sendPacket(String info) {
+        DatagramPacket sendPacket = new DatagramPacket(info.getBytes(), info.length(), inetServerAddr, port);
         try {
             client.send(sendPacket);
+//            Log.d("debug", "Sending message: " + info);
+//            Log.d("debug", "Server's IP: " + serverAddr);
+//            Log.d("debug", "Server's port: " + Integer.toString(port));
         } catch (IOException e) {
             e.printStackTrace();
         }
