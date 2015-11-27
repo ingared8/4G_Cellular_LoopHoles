@@ -78,6 +78,8 @@ public class TTLActivity extends AppCompatActivity  {
     */
     private void bindUI(){
         setContentView(R.layout.activity_ttl);
+
+        // UI bind
         sendSocketButton = (Button) findViewById(R.id.sendButton);
         desIP = (EditText) findViewById(R.id.edited_ip);
         ttlTime = (EditText) findViewById(R.id.edited_ttl);
@@ -86,13 +88,17 @@ public class TTLActivity extends AppCompatActivity  {
         textHint = (TextView) findViewById(R.id.textHint);
         surface = (SurfaceView)findViewById(R.id.surfaceView);
         surfaceHolder = surface.getHolder();
+
+        // Intent content bing
+        Intent intent = getIntent();
+        serverAddr = intent.getStringExtra("severAddr");
+        Log.d("debug", " " + serverAddr);
+
         // Configuration in default mode
         ttlTime.setFocusableInTouchMode(false);
         volume.setFocusableInTouchMode(false);
         switchDefaultIndex = true;
-
         DefaultOrMannual();
-
         ttlTime.addTextChangedListener(new TextWatcher() {
 
             @Override
@@ -126,7 +132,6 @@ public class TTLActivity extends AppCompatActivity  {
                 volume_manual = volume.getText().toString();
             }
         });
-//        WaitProcess();
     }
 
     private void DefaultOrMannual(){
@@ -145,40 +150,6 @@ public class TTLActivity extends AppCompatActivity  {
             }
         });
     }
-
-//        private void WaitProcess(){
-//        // Move this part to AttackClickListener
-//        sendSocketButton.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                pd = ProgressDialog.show(TTLActivity.this, "Attack", "Please waitting...");
-//
-//                new Thread(new Runnable() {
-//                    @Override
-//                    public void run() {
-//                        spandTimeMethod();
-//                        handler1.sendEmptyMessage(0);
-//                    }
-//                }).start();
-//            }
-//        });
-//    }
-//
-//    private void spandTimeMethod(){
-//        try{
-//            Thread.sleep(1000);
-//        }catch(InterruptedException e){
-//            e.printStackTrace();
-//        }
-//    }
-//
-//    private Handler handler1 = new Handler(){
-//        // Move this part to handler
-//        @Override
-//        public void handleMessage(Message msg) {
-//            pd.dismiss();
-//        }
-//    };
 
     /****************************** Service PART *********************************/
 
@@ -378,8 +349,8 @@ public class TTLActivity extends AppCompatActivity  {
     class AttckClickListener implements View.OnClickListener {
         @Override
         public void onClick(View v) {
-            serverAddr = desIP.getText().toString();
-            Log.d("debug", " " + serverAddr);
+//            serverAddr = desIP.getText().toString();
+//            Log.d("debug", " " + serverAddr);
 
             if(bindPoint) {
                 bindPoint = false;

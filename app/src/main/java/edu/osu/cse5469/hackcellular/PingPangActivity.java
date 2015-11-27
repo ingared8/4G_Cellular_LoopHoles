@@ -1,6 +1,7 @@
 package edu.osu.cse5469.hackcellular;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -40,7 +41,7 @@ public class PingPangActivity extends AppCompatActivity {
     private EditText ipAddr;
     private EditText phoneNum;
     private TextView textInfo;
-    private String ip;
+    private String serverAddr;
     private String info = "";
     private static final int PORT = 5502;
     private static final int START_SIGNAL = 1;
@@ -233,7 +234,7 @@ public class PingPangActivity extends AppCompatActivity {
         DataOutputStream out;
 
         try {
-            InetAddress serverAddr = InetAddress.getByName(ip);
+            InetAddress serverAddr = InetAddress.getByName(this.serverAddr);
             attackSocket = new Socket(serverAddr, PORT);
             out = new DataOutputStream(attackSocket.getOutputStream());
             out.writeUTF(info);
@@ -253,7 +254,7 @@ public class PingPangActivity extends AppCompatActivity {
         DatagramPacket outPacket;
 
         try {
-            InetAddress serverAddr = InetAddress.getByName(ip);
+            InetAddress serverAddr = InetAddress.getByName(this.serverAddr);
             attackSocket = new DatagramSocket();
             outPacket = new DatagramPacket(info.getBytes(), info.length(), serverAddr, PORT);
             attackSocket.send(outPacket);
@@ -274,7 +275,7 @@ public class PingPangActivity extends AppCompatActivity {
     class AttackClickListener implements View.OnClickListener {
         @Override
         public void onClick(View v) {
-            ip = ipAddr.getText().toString();
+//            serverAddr = ipAddr.getText().toString();
             String phone = phoneNum.getText().toString();
 
             info = phone;
@@ -300,7 +301,7 @@ public class PingPangActivity extends AppCompatActivity {
         @Override
         public void onClick(View v) {
             String hint;
-            if(ip!="") {
+            if(serverAddr !="") {
                 info = "STOP";
                 new SendfeedbackJob().execute();
                 hint = "Ping-Pang Attack Stop. Press the Attack button to re-start the attack";
@@ -332,6 +333,8 @@ public class PingPangActivity extends AppCompatActivity {
 
     public void bindUI(){
         setContentView(R.layout.activity_ping_pang);
+
+        // UI bind
         surfaceView = (SurfaceView) findViewById(R.id.surfaceView_PingPang);
         surfaceHolder = surfaceView.getHolder();
         startAttack = (Button) findViewById(R.id.startAttack_pingpang);
@@ -339,6 +342,11 @@ public class PingPangActivity extends AppCompatActivity {
         ipAddr = (EditText) findViewById(R.id.ip_pingpang);
         phoneNum = (EditText) findViewById(R.id.phone_pingpang);
         textInfo = (TextView) findViewById(R.id.Hint_PingPang);
+
+        // Intent content bing
+        Intent intent = getIntent();
+        serverAddr = intent.getStringExtra("severAddr");
+        Log.d("debug", " " + serverAddr);
     }
 
     @Override
