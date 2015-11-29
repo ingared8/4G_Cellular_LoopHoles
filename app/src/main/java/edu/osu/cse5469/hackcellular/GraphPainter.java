@@ -18,10 +18,10 @@ import java.util.Vector;
 
 
 public class GraphPainter {
+    DataToPaint dataToPaint;
     private SurfaceHolder surfaceHolder;
     private SurfaceView surface;
     public Vector<Vector<Float>>  arrays;
-    DataToPaint dataToPaint;
 
     private int heightCanvas;
     private int widthCanvas;
@@ -66,7 +66,7 @@ public class GraphPainter {
         lengthYAxis=heightCanvas-2*offsetAxis;
     }
 
-    private void drawAxies(Canvas canvas){
+    private void drawAxis(Canvas canvas){
 
         canvas.drawColor(Color.argb(255, 230, 230, 230));
 
@@ -127,7 +127,7 @@ public class GraphPainter {
         Canvas canvas=surfaceHolder.lockCanvas();
         if(canvas!=null){
         retrieveSize(canvas);
-        drawAxies(canvas);
+        drawAxis(canvas);
         drawData(canvas);}
         if(canvas!=null)surfaceHolder.unlockCanvasAndPost(canvas);
     }
