@@ -9,6 +9,7 @@ import android.view.SurfaceView;
 
 import java.lang.reflect.Array;
 import java.util.Timer;
+import java.util.TimerTask;
 import java.util.Vector;
 
 /**
@@ -20,6 +21,7 @@ public class GraphPainter {
     private SurfaceHolder surfaceHolder;
     private SurfaceView surface;
     public Vector<Vector<Float>>  arrays;
+    DataToPaint dataToPaint;
 
     private int heightCanvas;
     private int widthCanvas;
@@ -28,7 +30,7 @@ public class GraphPainter {
     private int lengthYAxis;
     private int offsetAxis;
 
-    private int lableMode=0;
+    private int labelMode=0;
     private int xTicks=30;
     private int yTicks=5;
     private Paint axisPaint,textPaint;
@@ -38,13 +40,14 @@ public class GraphPainter {
     private Vector<String> lables;
 
     public GraphPainter(DataToPaint dataToPaint){
-        arrays=dataToPaint.Arrays;
+        this.dataToPaint=dataToPaint;
+        arrays=dataToPaint.arrays;
         surface=dataToPaint.surface;
         surfaceHolder=surface.getHolder();
 
         lables=dataToPaint.lables;
-        lableMode=dataToPaint.lableMode;
-        if(lableMode==0){
+        labelMode=dataToPaint.labelMode;
+        if(labelMode==0){
             lables.add(1,"");
             lables.add(1,"");
             lables.add(1,"");
@@ -85,31 +88,47 @@ public class GraphPainter {
 
     private void drawData(Canvas canvas){
 
-        Vector<Float> FinalDraw=new Vector<Float>();
-        float largestData=-1;
+
 
         for (int k=0; k<arrays.size(); k++){
-        for(int i=(arrays.get(k).size()-xTicks)>0?(arrays.get(k).size()-xTicks):0;i<arrays.get(k).size();i++) {
-            float usage=arrays.get(k).get(i);
-            FinalDraw.add(usage);
-            largestData=largestData>usage?largestData:usage;
-        }
+            Vector<Float> FinalDraw=new Vector<Float>();
+            float largestData=-1;
+            for(int i=(arrays.get(k).size()-xTicks)>0?(arrays.get(k).size()-xTicks):0;i<arrays.get(k).size();i++) {
+               float usage=arrays.get(k).get(i);
+                FinalDraw.add(usage);
+                largestData=largestData>usage?largestData:usage;
+            }
 
-        if (lableMode==0){
-            for(int i=1;i<6;i++) {
-                canvas.drawText(String.format("%.2f", (float) largestData/5 * i), 2 * offsetAxis + textLength, offsetAxis+lengthYAxis-i*lengthYAxis/5+offsetAxis, textPaint);
+            if (labelMode==0){
+                for(int i=1;i<6;i++) {
+                    canvas.drawText(String.format("%.2f", (float) largestData/5 * i), 2 * offsetAxis + textLength, offsetAxis+lengthYAxis-i*lengthYAxis/5+offsetAxis, textPaint);
+                }
+            }
+
+            for(int i=0;i<FinalDraw.size();i++) {
+                float tmpx=offsetAxis+lengthXAxis/xTicks*i+textLength;
+                float tmpy=offsetAxis+lengthYAxis-((float)FinalDraw.get(i)/(float)largestData)*lengthYAxis;
+    //            canvas.drawCircle(tmpx, tmpy, 5, localdataPaint);
+    //            if(i!=0) canvas.drawLine(tmpx, offsetAxis+lengthYAxis, tmpx, tmpy, userbarPaint);
             }
         }
-
-        for(int i=0;i<FinalDraw.size();i++) {
-            float tmpx=offsetAxis+lengthXAxis/xTicks*i+textLength;
-            float tmpy=offsetAxis+lengthYAxis-((float)FinalDraw.get(i)/(float)largestData)*lengthYAxis;
-//            canvas.drawCircle(tmpx, tmpy, 5, localdataPaint);
-//            if(i!=0) canvas.drawLine(tmpx, offsetAxis+lengthYAxis, tmpx, tmpy, userbarPaint);
-        }}
     }
 
-    private void draw(DataToPaint dataToPaint){
+    private synchronized void draw(){
+        Canvas canvas=surfaceHolder.lockCanvas();
+        if(canvas!=null){
+        retrieveSize(canvas);
+        drawAxies(canvas);
+        drawData(canvas);}
+        if(canvas!=null)surfaceHolder.unlockCanvasAndPost(canvas);
+    }
 
+    TimerTask task= new TimerTask(){
+        public void run() {
+            draw();
+        }
+    };
+    public void schedule(){
+        timer.schedule(task,5000,dataToPaint.interval);
     }
 }

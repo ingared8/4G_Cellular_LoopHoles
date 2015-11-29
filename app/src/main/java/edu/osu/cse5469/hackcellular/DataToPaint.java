@@ -11,10 +11,11 @@ import java.util.Vector;
  */
 public class DataToPaint {
 
-        public Vector<Vector<Float>>  Arrays;
+        public Vector<Vector<Float>>  arrays;
         public Vector<String> lables;
-        public int lableMode=0;
+        public int labelMode=0;
         public SurfaceView surface;
+        public int interval;
 
 
 };
