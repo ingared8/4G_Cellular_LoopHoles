@@ -2,9 +2,6 @@ package edu.osu.cse5469.hackcellular;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.Paint;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
@@ -15,24 +12,14 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import java.io.DataOutputStream;
-import java.io.IOException;
-import java.net.DatagramPacket;
-import java.net.DatagramSocket;
-import java.net.InetAddress;
-import java.net.Socket;
-import java.net.SocketException;
-import java.net.UnknownHostException;
 import java.util.Date;
-import java.util.Timer;
-import java.util.TimerTask;
+import java.util.Vector;
 
 public class PingPangActivity extends AppCompatActivity {
 
@@ -41,6 +28,7 @@ public class PingPangActivity extends AppCompatActivity {
     private Button stopAttack;
     private EditText phoneNum;
     private TextView textInfo;
+    private SurfaceView surfaceView;
 
     // UI parameters' variable
     private String serverAddr;
@@ -48,8 +36,11 @@ public class PingPangActivity extends AppCompatActivity {
 
     // Function parameters
     private boolean bindPoint = true;
-    private NetStatSet netStatSet = new NetStatSet();
+//    private NetStatSet netStatSet = new NetStatSet();
+    private GraphPainter graphPainter;
+    private DataSet dataSet;
 
+    private static final int INTERVAL = 5000;
     private static final int PORTNUM = 5502;
     private static final int START_SIGNAL = 1;
     private static final int STOP_SIGNAL = 2;
@@ -87,138 +78,6 @@ public class PingPangActivity extends AppCompatActivity {
         return type2Name(mobile_type);
     }
 
-    /****************************** SurfaceView PART *********************************/
-    private SurfaceHolder surfaceHolder;
-    private SurfaceView surfaceView;
-    private Paint textPaint = new Paint();
-    private Paint netPaint=new Paint();
-    private Paint axisPaint=new Paint();
-    private Paint netBarPaint =new Paint();
-
-    private int heightCanvas;
-    private int widthCanvas;
-    private int lengthXAxis;
-    private int lengthYAxis;
-    private int offsetAxis;
-    private int wordLength;
-    private int xSplit = 30;
-
-    public void bindsurfaceCallBack() {
-        surfaceHolder.addCallback(new SurfaceHolder.Callback() {
-
-            @Override
-            public void surfaceCreated(SurfaceHolder holder) {
-                surfaceCreateThread surfaceThread = new surfaceCreateThread();
-                surfaceThread.start();
-            }
-
-            @Override
-            public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
-
-            }
-
-            @Override
-            public void surfaceDestroyed(SurfaceHolder holder) {
-
-            }
-        });
-    }
-
-    class surfaceCreateThread extends Thread {
-        @Override
-        public void run() {
-            super.run();
-            Canvas canvas = null;
-            synchronized (surfaceHolder) {
-                canvas = surfaceHolder.lockCanvas();
-                retrieveSize(canvas);
-                surfaceHolder.unlockCanvasAndPost(canvas);
-            }
-        }
-    }
-
-    public void retrieveSize(Canvas canvas) {
-        heightCanvas = canvas.getHeight();
-        widthCanvas = canvas.getWidth();
-        offsetAxis = widthCanvas/50;
-        wordLength = widthCanvas/30;
-        textPaint.setTextSize(widthCanvas/30);
-        lengthXAxis = widthCanvas-2*offsetAxis- wordLength;
-        lengthYAxis = heightCanvas-2*offsetAxis;
-        canvas.drawColor(Color.argb(255, 230, 230, 230));
-    }
-
-
-    private Timer timer = new Timer();
-    private TimerTask task = new TimerTask() {
-        @Override
-        public void run() {
-            Canvas canvas = null;
-            synchronized (surfaceHolder) {
-                canvas = surfaceHolder.lockCanvas();
-
-                axisPaint.setColor(Color.argb(255, 0, 0, 0));
-                axisPaint.setStrokeWidth(3);
-
-                netPaint.setColor(Color.argb(255, 255, 0, 0));
-                netPaint.setStrokeWidth(3);
-                netPaint.setStyle(Paint.Style.STROKE);
-
-                netBarPaint.setColor(Color.argb(180, 255, 0, 0));
-                netBarPaint.setStrokeWidth(5);
-
-                textPaint.setColor(Color.argb(255, 0, 0, 0));
-
-                if(canvas!=null){
-                    retrieveSize(canvas);
-                    drawAxies(axisPaint, canvas);
-                    drawData(netPaint, canvas);
-                }
-
-                if(canvas!=null) surfaceHolder.unlockCanvasAndPost(canvas);
-            }
-        }
-    };
-
-    public void drawAxies(Paint axisPaint,Canvas canvas) {
-        canvas.drawColor(Color.argb(255, 230, 230, 230));
-        int x_start = offsetAxis+ wordLength;
-        int y_start = offsetAxis+lengthYAxis;
-        canvas.drawLine(x_start, offsetAxis, x_start, y_start, axisPaint);
-        canvas.drawLine(x_start, y_start, x_start+lengthXAxis, y_start, axisPaint);
-        for (int i=0;i<=5;i++){
-            canvas.drawLine(x_start, y_start-lengthYAxis/5*i, x_start+offsetAxis, y_start-lengthYAxis/5*i, axisPaint);
-        }
-
-        for (int i=0;i<xSplit;i++){
-            canvas.drawLine(x_start + lengthXAxis/xSplit*i, y_start, x_start+lengthXAxis/xSplit*i, y_start-offsetAxis, axisPaint);
-        }
-    }
-
-    public void drawData(Paint netPaint, Canvas canvas) {
-        Date date = new Date();
-        netStatSet.add(new NetStatus(date.getTime(), findCellularStatus()));
-        Log.d("debug", "Status is now: " + Integer.toString(findCellularStatus()));
-        float scale = 5;
-        float last_x=0, last_y=0;
-
-        canvas.drawText("Unknown", 2*offsetAxis+wordLength, offsetAxis+lengthYAxis+offsetAxis, textPaint);
-        canvas.drawText("2G", 2 * offsetAxis + wordLength, offsetAxis + lengthYAxis - lengthYAxis / scale + offsetAxis, textPaint);
-        canvas.drawText("3G", 2*offsetAxis+wordLength, offsetAxis+lengthYAxis-2*lengthYAxis/scale+offsetAxis, textPaint);
-        canvas.drawText("LTE", 2 * offsetAxis + wordLength, offsetAxis + lengthYAxis - 3 * lengthYAxis / scale + offsetAxis, textPaint);
-        canvas.drawText("ERR", 2 * offsetAxis + wordLength, offsetAxis + lengthYAxis - 4 * lengthYAxis / scale + offsetAxis, textPaint);
-
-        int startPlace = (netStatSet.size()-xSplit>0)?netStatSet.size()-xSplit:0;
-        for(int i=startPlace; i<netStatSet.size(); i++) {
-            float tmp_x = offsetAxis+lengthXAxis/xSplit*(i-startPlace)+ wordLength ;
-            float tmp_y = offsetAxis+lengthYAxis-((float) netStatSet.get(i).getStatus()/scale)*lengthYAxis;
-            canvas.drawCircle(tmp_x, tmp_y, 5, netPaint);
-            if(i!=startPlace)  canvas.drawLine(last_x, last_y, tmp_x, tmp_y, netBarPaint);
-            last_x = tmp_x;
-            last_y = tmp_y;
-        }
-    }
-
     /****************************** Function PART *********************************/
     /*
     * Handler for info exchange between UI and Thread
@@ -235,45 +94,24 @@ public class PingPangActivity extends AppCompatActivity {
         }
     };
 
-//    private void tcpSocket() {
-//        Socket attackSocket;
-//        DataOutputStream out;
-//
-//        try {
-//            InetAddress serverAddr = InetAddress.getByName(this.serverAddr);
-//            attackSocket = new Socket(serverAddr, PORT);
-//            out = new DataOutputStream(attackSocket.getOutputStream());
-//            out.writeUTF(info);
-//            out.flush();
-//
-//            attackSocket.close();
-//        } catch (UnknownHostException e) {
-//            e.printStackTrace();
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-//
-//    }
-//
-//    private void udpSocket() {
-//        DatagramSocket attackSocket;
-//        DatagramPacket outPacket;
-//
-//        try {
-//            InetAddress serverAddr = InetAddress.getByName(this.serverAddr);
-//            attackSocket = new DatagramSocket();
-//            outPacket = new DatagramPacket(info.getBytes(), info.length(), serverAddr, PORT);
-//            attackSocket.send(outPacket);
-//        } catch (SocketException e) {
-//            e.printStackTrace();
-//        } catch (UnknownHostException e) {
-//            e.printStackTrace();
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-//
-//
-//    }
+    /*
+    * Tread to update data set
+    */
+    class DataUpateThread extends Thread {
+
+        public void run() {
+            Date date = new Date();
+            DataUnit dataUnit = new DataUnit();
+            dataUnit.setTimeStamp(date.getTime());
+            dataUnit.addData("Mobile Network Status", (float) findCellularStatus());
+            dataSet.add(dataUnit);
+            try {
+                sleep(INTERVAL);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+    }
 
     /*
     * Attack button listener
@@ -294,7 +132,9 @@ public class PingPangActivity extends AppCompatActivity {
 
             if(bindPoint) {
                 bindPoint = false;
-                timer.schedule(task, 5000, 5000);
+                DataUpateThread dataUpateThread = new DataUpateThread();
+                dataUpateThread.start();
+                graphPainter.schedule(dataSet, INTERVAL);
             }
         }
     }
@@ -328,8 +168,6 @@ public class PingPangActivity extends AppCompatActivity {
 
         @Override
         protected String doInBackground(String... params) {
-//            tcpSocket();
-//            udpSocket();
             CommunicationSocket communicationSocket = new CommunicationSocket(serverAddr, PORTNUM);
             communicationSocket.sendPacket(info);
             return null;
@@ -343,7 +181,6 @@ public class PingPangActivity extends AppCompatActivity {
 
         // UI bind
         surfaceView = (SurfaceView) findViewById(R.id.surfaceView_PingPang);
-        surfaceHolder = surfaceView.getHolder();
         startAttack = (Button) findViewById(R.id.startAttack_pingpang);
         stopAttack = (Button) findViewById(R.id.stopAttack_pingpang);
         phoneNum = (EditText) findViewById(R.id.phone_pingpang);
@@ -361,8 +198,14 @@ public class PingPangActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         bindUI();
-        bindsurfaceCallBack();                                                                      // Plot part
 
+        Vector<String> labels = new Vector<String>();
+        labels.add("UNKNOWN");
+        labels.add("2G");
+        labels.add("3G");
+        labels.add("LTE");
+        labels.add("ERR");
+        graphPainter = new GraphPainter(surfaceView, labels, null);
         startAttack.setOnClickListener(new AttackClickListener());
         stopAttack.setOnClickListener(new StopClickListener());
     }
