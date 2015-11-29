@@ -46,7 +46,7 @@ public class Back3GActivity extends Activity {
     private Button DownloadButton;
     private Button CallButton;
     private boolean bindPoint = true;
-    DataSet throughputDataSet=new DataSet();
+
     DataSet throughputDataSettmp=new DataSet();
     int init=0;
 
@@ -198,7 +198,7 @@ public class Back3GActivity extends Activity {
             else{
                 tmpRx= TrafficStats.getTotalRxBytes();
                 tmpTx= TrafficStats.getTotalTxPackets();
-               throughputDataSettmp.addData(new VolumeData(System.currentTimeMillis(),tmpRx+tmpTx-RxIni-TxIni,0));
+               throughputDataSettmp.addData(new VolumeData(System.currentTimeMillis(), tmpRx + tmpTx - RxIni - TxIni, 0));
                 Log.d("Flow",tmpRx+tmpTx-RxIni-TxIni+"");
                 RxIni=tmpRx;
                 TxIni=tmpTx;
@@ -251,7 +251,7 @@ public class Back3GActivity extends Activity {
         int ystart=offsetAxis+lengthYAxis;
         canvas.drawLine(xstart, offsetAxis, xstart, ystart, axisPaint);
         canvas.drawLine(xstart, ystart,xstart+lengthXAxis, ystart, axisPaint);
-        canvas.drawText("kbps", offsetAxis/8, 2 * offsetAxis, textPaint);
+        canvas.drawText("MBps", offsetAxis/8, 2 * offsetAxis, textPaint);
         canvas.drawText("0",xstart/3,ystart,textPaint);
         for (int i=0;i<=5;i++){
             canvas.drawLine(xstart, ystart - lengthYAxis / 5 * i, xstart + offsetAxis, ystart - lengthYAxis / 5 * i, axisPaint);
@@ -263,17 +263,17 @@ public class Back3GActivity extends Activity {
     }
 
     private void drawData(Canvas canvas){
-
+        DataSet throughputDataSet=new DataSet();
 
         long largestData=-1;
 
         for(int i=(throughputDataSettmp.size()-xSplit)>1?(throughputDataSettmp.size()-xSplit):1;i<throughputDataSettmp.size();i++) {
-            long usage=(throughputDataSettmp.getData(i).getOperator_data()-throughputDataSettmp.getData(0).getOperator_data());
+            long usage=(throughputDataSettmp.getData(i).getLocal_data());
             long uselessusage=0;
 
             throughputDataSet.addData(new VolumeData(throughputDataSettmp.getData(i).getTimeStamp(),usage,uselessusage));
             largestData=largestData>usage?largestData:usage;
-
+            Log.d("flow2",usage+"");
         }
         for(int i=1;i<6;i++) {
             canvas.drawText(String.format("%.2f", (float) largestData / 1024 / 1024/5*i), 2 * offsetAxis + wordlength, offsetAxis+lengthYAxis-i*lengthYAxis/5+offsetAxis, textPaint);
@@ -302,7 +302,7 @@ public class Back3GActivity extends Activity {
         textPaint.setTextSize(widthCanvas/30);
         lengthXAxis=widthCanvas-2*offsetAxis-wordlength;
         lengthYAxis=heightCanvas-2*offsetAxis;
-        canvas.drawColor(Color.argb(255, 230, 230, 230));
+        //canvas.drawColor(Color.argb(255, 230, 230, 230));
 
     }
 
@@ -317,7 +317,7 @@ public class Back3GActivity extends Activity {
         DownloadButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-             //   downloadTask.execute("http://mirrors.koehn.com/ubuntureleases/14.04.3/ubuntu-14.04.3-desktop-amd64.iso");
+             downloadTask.execute("http://mirrors.koehn.com/ubuntureleases/14.04.3/ubuntu-14.04.3-desktop-amd64.iso");
                 if (bindPoint) {
                     bindPoint = false;
                     timer.schedule(task, 1000, 1000);
