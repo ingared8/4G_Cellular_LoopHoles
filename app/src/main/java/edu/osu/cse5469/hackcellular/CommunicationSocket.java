@@ -51,6 +51,7 @@ public class CommunicationSocket {
         while(true) {
             String receiveInfo = receivePacket(timeout);
             if (receiveInfo.equals("Timeout")){
+                Log.d("debug", "Memory has been empty.");
                 break;
             }
             if (receiveInfo.length() > 0) {
