@@ -2,19 +2,14 @@ package edu.osu.cse5469.hackcellular;
 
 
 import android.app.Activity;
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.Paint;
 import android.net.TrafficStats;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.PowerManager;
 import android.util.Log;
-import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
 import android.widget.Button;
@@ -29,7 +24,6 @@ import java.net.URL;
 import java.util.Date;
 import java.util.Timer;
 import java.util.TimerTask;
-import java.util.Vector;
 
 
 /**
