@@ -104,8 +104,8 @@ public class GraphPainter {
         for(int i=0;i<FinalDraw.size();i++) {
             float tmpx=offsetAxis+lengthXAxis/xTicks*i+textLength;
             float tmpy=offsetAxis+lengthYAxis-((float)FinalDraw.get(i)/(float)largestData)*lengthYAxis;
-            canvas.drawCircle(tmpx, tmpy, 5, localdataPaint);
-            if(i!=0) canvas.drawLine(tmpx, offsetAxis+lengthYAxis, tmpx, tmpy, userbarPaint);
+//            canvas.drawCircle(tmpx, tmpy, 5, localdataPaint);
+//            if(i!=0) canvas.drawLine(tmpx, offsetAxis+lengthYAxis, tmpx, tmpy, userbarPaint);
         }}
     }
 
