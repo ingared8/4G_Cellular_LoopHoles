@@ -15,6 +15,7 @@ public class DataUnit {
 
     public DataUnit() {
         data = new Vector<Float>();
+        dataType = new Vector<String>();
     }
 
     public long getTimeStamp() {
