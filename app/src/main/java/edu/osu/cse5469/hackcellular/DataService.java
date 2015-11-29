@@ -18,70 +18,34 @@ import android.telephony.SmsMessage;
 import android.util.Log;
 
 import java.util.Date;
+import java.util.Vector;
 
 /**
  * Created by GJ on 10/8/2015.
  */
 public class DataService extends Service {
     private final String AttQueryCode = "*3282#";
-    PlotData datausage = new PlotData();
+    private DataSet dataSet = new DataSet();
     DataServiceIBinder dataserviceIBinder = new DataServiceIBinder();
-    private long local_data;
 
-    // Thread to query data usage in local and operator
-    Thread querythread = new Thread(new Runnable() {
+    /****************************** Getter PART *********************************/
 
-        @Override
-        public void  run() {
-            while (true) {
-                //long timeStamp = System.currentTimeMillis();
-                //local_data = getLocalData();
-                getOperatorData();
-                synchronized(this){
-//                try {
-//                    wait(10000);
-//                } catch (InterruptedException e) {
-//                    e.printStackTrace();
-//                }}
-                try {
-                    Thread.sleep(60000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }}
-
-//              VolumeData tmpData = new VolumeData(timeStamp, local_data, operator_data);
-//                datausage.addData(tmpData);
-            }
-        }
-    });
-    private long operator_data;
-
-    private void registerReceiver(){                                                                  //Register SMS broadcast receiver in the service
-        IntentFilter SmsIntent = new IntentFilter("android.provider.Telephony.SMS_RECEIVED");
-        SmsIntent.setPriority(999);                                                                     //What does this mean?
-        registerReceiver(SMSReceiver, SmsIntent);
+    public DataSet getData() {
+        return this.dataSet;
     }
 
+    /****************************** Function PART *********************************/
     private BroadcastReceiver SMSReceiver = new BroadcastReceiver() {
         @Override
-        public void onReceive(Context context, Intent intent)
-        {
+        public void onReceive(Context context, Intent intent) {
             Bundle bundle = intent.getExtras();
             SmsMessage[] msgs = null;
-            String phonenum = "";
-            String str = "";
-            String pwd_str = "";
-            //this.abortBroadcast();
-            if (bundle != null)
-            {
+            if (bundle != null) {
                 Object[] pdus = (Object[]) bundle.get("pdus");
                 msgs = new SmsMessage[pdus.length];
                 String phoneNum = "";
                 String smsData ="";
-                for (int i = 0; i < msgs.length; i++)
-                {
-                    long currentTime = System.currentTimeMillis();
-
+                for (int i = 0; i < msgs.length; i++) {
                     msgs[i] = SmsMessage.createFromPdu((byte[])pdus[i]);
 
                     if (phoneNum.length()==0 || phoneNum.equalsIgnoreCase(msgs[i].getOriginatingAddress()) == true) {
@@ -100,33 +64,51 @@ public class DataService extends Service {
         }
     };
 
-    void handleDataUsageResponseSMS(String phoneNum, String smsData){
+    void handleDataUsageResponseSMS(String phoneNum, String smsData) {
         if(phoneNum.equals("104"));
         Date date=new Date();
-        long operatorData= (long) (Float.parseFloat(smsData.substring(smsData.indexOf("[You]:")+6,smsData.indexOf('\n',smsData.indexOf("[You]:"))-1).replace(",",""))*1024*1024);
-        long localData=(TrafficStats.getMobileTxBytes()+TrafficStats.getMobileRxBytes());
-        datausage.addData(new VolumeData(date.getTime(), localData, operatorData));
+        long operatorData = (long) (Float.parseFloat(smsData.substring(smsData.indexOf("[You]:")+6,smsData.indexOf('\n',smsData.indexOf("[You]:"))-1).replace(",",""))*1024*1024);
+        long localData = getLocalData();
 
-        Log.d("usage raw", "localData：" + (float)localData/1024/1024 + "     operatorData：" + (float)operatorData/1024/1024);
+
+        DataUnit dataUnit = new DataUnit();
+        dataUnit.setTimeStamp(date.getTime());
+        dataUnit.addData("Local Data", (float) localData);
+        dataUnit.addData("Operator Data", (float) operatorData);
+        dataSet.add(dataUnit);
+
+        Log.d("usage raw", "localData：" + (float) localData / 1024 / 1024 + "     operatorData：" + (float) operatorData / 1024 / 1024);
 
     }
 
-    @Override
-    public IBinder onBind(Intent intent) {                                                              //this will be performed on Activity calling bindService()
-        registerReceiver();
-         querythread.start();
-       // for (int i=0;i<31;i++) datausage.addData(new VolumeData(233,i,2*i));
-        return dataserviceIBinder;
+    // Thread to query data usage in local and operator
+    Thread querythread = new Thread(new Runnable() {
+
+        @Override
+        public void  run() {
+            while (true) {
+                getOperatorData();
+                synchronized(this){
+                    try {
+                        Thread.sleep(60000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+
+            }
+        }
+    });
+
+    private void registerReceiver(){                                                                  //Register SMS broadcast receiver in the service
+        IntentFilter SmsIntent = new IntentFilter("android.provider.Telephony.SMS_RECEIVED");
+        SmsIntent.setPriority(999);                                                                     //What does this mean?
+        registerReceiver(SMSReceiver, SmsIntent);
     }
 
-    public void onDestroy(){
-        super.onDestroy();
-        unregisterReceiver(SMSReceiver);
-    }
-
-
-    public void onCreate() {
-        super.onCreate();
+    // Get data usage from operator
+    private void getOperatorData() {
+        sendUSSDCode(AttQueryCode);
     }
 
     // Send USSD code to query ATT post-paid data usage
@@ -138,22 +120,19 @@ public class DataService extends Service {
         startActivity(ussdIntent);
     }
 
-    // Get data usage from operator
-    private void getOperatorData() {
-        sendUSSDCode(AttQueryCode);
-    }
-
     // Get data usage from local
     private long getLocalData() {
         return (TrafficStats.getMobileTxBytes() + TrafficStats.getMobileRxBytes());
     }
 
-    public VolumeData getLatest() {
-        return datausage.getData();
-    }
 
-    public PlotData getAll() {
-        return datausage;
+    /****************************** Lifecycle PART *********************************/
+
+    @Override
+    public IBinder onBind(Intent intent) {                                                              //this will be performed on Activity calling bindService()
+        registerReceiver();
+        querythread.start();
+        return dataserviceIBinder;
     }
 
     public class DataServiceIBinder extends Binder {                                                //this is the service interface returned to Activity on binding
@@ -162,6 +141,15 @@ public class DataService extends Service {
             return DataService.this;
         }
 
+    }
+
+    public void onCreate() {
+        super.onCreate();
+    }
+
+    public void onDestroy() {
+        super.onDestroy();
+        unregisterReceiver(SMSReceiver);
     }
 
 

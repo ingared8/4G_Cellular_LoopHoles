@@ -52,34 +52,13 @@ public class GraphPainter {
             }
         }
 
-
-    private void bindsurfaceCallBack(){
-        surfaceHolder.addCallback(new SurfaceHolder.Callback() {
-            public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
-
-            }
-
-            @Override
-            public void surfaceCreated(SurfaceHolder holder) {
-                surfaceCreateThread mThread = new surfaceCreateThread();
-                mThread.start();
-            }
-
-            @Override
-            public void surfaceDestroyed(SurfaceHolder holder) {
-                // TODO Auto-generated method stub
-
-            }
-        });
-    }
-
-    public GraphPainter(SurfaceView surface, Vector<String> labels, Vector<Vector<Paint>> paint, DataSet dataSet, int interval) {
+    public GraphPainter(SurfaceView surface, Vector<String> labels, Vector<Vector<Paint>> paint) {
         this.labels = labels;
         labelMode = false;
-        helper(surface, paint, dataSet, interval);
+        helper(surface, paint);
     }
 
-    public GraphPainter(SurfaceView surface, String unit, Vector<Vector<Paint>> paint, DataSet dataSet, int interval) {
+    public GraphPainter(SurfaceView surface, String unit, Vector<Vector<Paint>> paint) {
         labels = new Vector<String>();
         labels.add("0");
         labels.add("");
@@ -87,17 +66,15 @@ public class GraphPainter {
         labels.add("");
         labels.add("");
         labels.add(unit);
-        helper(surface, paint, dataSet, interval);
+        helper(surface, paint);
     }
 
-    public void helper(SurfaceView surface, Vector<Vector<Paint>> paint, DataSet dataSet, int interval) {
-        this.dataSet = dataSet;
+    public void helper(SurfaceView surface, Vector<Vector<Paint>> paint) {
         this.paint = paint;
         this.surface = surface;
         this.surfaceHolder = this.surface.getHolder();
         bindsurfaceCallBack();
 
-        this.interval = interval;
         axisPaint.setColor(Color.argb(255, 0, 0, 0));
         axisPaint.setStrokeWidth(3);
         textPaint.setColor(Color.argb(255, 0, 0, 0));
@@ -132,6 +109,26 @@ public class GraphPainter {
             paint.get(1).add(null);
             paint.get(1).add(barPaint2);
         }
+    }
+
+    private void bindsurfaceCallBack() {
+        surfaceHolder.addCallback(new SurfaceHolder.Callback() {
+            public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
+
+            }
+
+            @Override
+            public void surfaceCreated(SurfaceHolder holder) {
+                surfaceCreateThread mThread = new surfaceCreateThread();
+                mThread.start();
+            }
+
+            @Override
+            public void surfaceDestroyed(SurfaceHolder holder) {
+                // TODO Auto-generated method stub
+
+            }
+        });
     }
 
     private void retrieveSize(Canvas canvas){
@@ -225,7 +222,9 @@ public class GraphPainter {
             draw();
         }
     };
-    public void schedule(){
+    public void schedule(DataSet dataSet, int interval){
+        this.dataSet = dataSet;
+        this.interval = interval;
         timer.schedule(task, 1000, interval);
     }
     public void cancel(){
