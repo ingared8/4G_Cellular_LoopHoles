@@ -14,7 +14,6 @@ import android.net.Uri;
 import android.os.Binder;
 import android.os.Bundle;
 import android.os.IBinder;
-import android.telephony.SmsManager;
 import android.telephony.SmsMessage;
 import android.util.Log;
 
@@ -25,7 +24,7 @@ import java.util.Date;
  */
 public class DataService extends Service {
     private final String AttQueryCode = "*3282#";
-    DataSet datausage = new DataSet();
+    PlotData datausage = new PlotData();
     DataServiceIBinder dataserviceIBinder = new DataServiceIBinder();
     private long local_data;
 
@@ -128,7 +127,6 @@ public class DataService extends Service {
 
     public void onCreate() {
         super.onCreate();
-      //  ToastUtils.showToast("");
     }
 
     // Send USSD code to query ATT post-paid data usage
@@ -154,7 +152,7 @@ public class DataService extends Service {
         return datausage.getData();
     }
 
-    public DataSet getAll() {
+    public PlotData getAll() {
         return datausage;
     }
 
