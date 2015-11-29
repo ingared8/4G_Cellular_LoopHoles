@@ -33,6 +33,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.Vector;
 
 
 /**
@@ -216,7 +217,6 @@ public class Back3GActivity extends Activity {
 
                 axisPaint.setColor(Color.argb(255, 0, 0, 0));
                 axisPaint.setStrokeWidth(3);
-
                 textPaint.setColor(Color.argb(255, 0, 0, 0));
 
                 /*****画笔
@@ -342,9 +342,47 @@ public class Back3GActivity extends Activity {
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        surface = (SurfaceView)findViewById(R.id.surfaceView_back3G);
         bindUI();
         Attack();
-        Log.d("debug","aaaaaaaaaaaa");
+
+        /*这一部分是新的GraphPainter的示例
+        setContentView(R.layout.activity_back3g);
+        final DataToPaint dataToPaint=new DataToPaint();
+
+        dataToPaint.surface=(SurfaceView)findViewById(R.id.surfaceView_back3G);
+        dataToPaint.interval=1000;
+
+        dataToPaint.labels.add("0");
+        dataToPaint.labels.add("MBps");
+
+        Vector<Float> data1=new Vector<Float>();
+        data1.add(new Float(3.14));
+        data1.add(new Float(2));
+        data1.add(new Float(1));
+        data1.add(new Float(1.5));
+        data1.add(new Float(6));
+        dataToPaint.arrays.add(data1);
+
+        Vector<Float> data2=new Vector<Float>();
+        data2.add(new Float(4.5));
+        data2.add(new Float(7));
+        data2.add(new Float(6));
+        data2.add(new Float(3));
+        data2.add(new Float(9));
+        dataToPaint.arrays.add(data2);
+
+        final GraphPainter Painter=new GraphPainter(dataToPaint);
+
+        DownloadButton = (Button) findViewById(R.id.button1_back3G);
+        DownloadButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Painter.schedule();
+            }
+        });
+        */
+
 //        mProgressDialog = new ProgressDialog(Back3GActivity.this);
 //        mProgressDialog.setMessage("A message");
 //        mProgressDialog.setIndeterminate(true);

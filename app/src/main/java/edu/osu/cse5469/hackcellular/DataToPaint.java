@@ -13,8 +13,14 @@ import java.util.Vector;
 public class DataToPaint {
         public Vector<Vector<Float>>  arrays;
         public Vector<Vector<Paint>>  paint;
-        public Vector<String> lables;
+        public Vector<String> labels;
         public int labelMode=0;
         public SurfaceView surface;
         public int interval;
+
+        public DataToPaint(){
+                labels=new Vector<String>();
+                arrays=new Vector<Vector<Float>>();
+                paint=null;
+        }
 };
