@@ -182,7 +182,7 @@ public class GraphPainter {
             }
         }
         else {
-            largestData = (float) labels.size();
+            largestData = (float) yTicks;
         }
 
         for (int k=0; k<dimension; k++){
