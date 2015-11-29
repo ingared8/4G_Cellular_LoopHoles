@@ -1,7 +1,6 @@
 package edu.osu.cse5469.hackcellular;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Vector;
 
 /**
  * Created by fengyuhui on 15/11/25.
@@ -10,12 +9,12 @@ public class DataUnit {
 
     private long timeStamp;
 
-    private List<Long> data;
+    private Vector<Float> data;
 
-    private List<String> dataType;              // The description of the responded data, i.e. Local Data Usage, Net Status and ...
+    private Vector<String> dataType;              // The description of the responded data, i.e. Local Data Usage, Net Status and ...
 
     public DataUnit() {
-        data = new ArrayList<Long>();
+        data = new Vector<Float>();
     }
 
     public long getTimeStamp() {
@@ -26,20 +25,20 @@ public class DataUnit {
         this.timeStamp = timeStamp;
     }
 
-    public List<Long> getData() {
+    public Vector<Float> getData() {
         return data;
     }
 
-    public List<String> getDataType() {
+    public Vector<String> getDataType() {
         return dataType;
     }
 
-    public void addData(String dataType, Long data) {
+    public void addData(String dataType, Float data) {
         this.dataType.add(dataType);
         this.data.add(data);
     }
 
-    public int getDataDimesion() {
+    public int getDataDimension() {
         return data.size();
     }
 

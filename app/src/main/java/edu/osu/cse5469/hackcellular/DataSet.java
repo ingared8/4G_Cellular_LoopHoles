@@ -1,17 +1,16 @@
 package edu.osu.cse5469.hackcellular;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Vector;
 
 /**
  * Created by fengyuhui on 15/11/25.
  */
 public class DataSet {
 
-    private List<DataUnit> list;
+    private Vector<DataUnit> list;
 
     public DataSet() {
-        list = new ArrayList<DataUnit>();
+        list = new Vector<DataUnit>();
     }
 
     public int size() {
