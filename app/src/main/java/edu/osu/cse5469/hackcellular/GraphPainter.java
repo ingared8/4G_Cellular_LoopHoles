@@ -169,14 +169,14 @@ public class GraphPainter {
         float largestData = -1;
 
         int dimension = dataSet.getLastData().getDataDimension();
-        for (int k=0; k<dimension; k++){
-            for(int i=(dataSet.size()-xTicks)>0?(dataSet.size()-xTicks):0; i<dataSet.size(); i++) {
-                float usage = dataSet.getData(i).getData().get(k);
-                largestData = largestData>usage?largestData:usage;
-            }
-        }
 
         if (labelMode){
+            for (int k=0; k<dimension; k++){
+                for(int i=(dataSet.size()-xTicks)>0?(dataSet.size()-xTicks):0; i<dataSet.size(); i++) {
+                    float usage = dataSet.getData(i).getData().get(k);
+                    largestData = largestData>usage?largestData:usage;
+                }
+            }
             for(int i=1;i<6;i++) {
                 canvas.drawText(String.format("%.2f", (float) largestData/5 * i), 2 * offsetAxis + textLength, offsetAxis+lengthYAxis-i*lengthYAxis/5+offsetAxis, textPaint);
             }
