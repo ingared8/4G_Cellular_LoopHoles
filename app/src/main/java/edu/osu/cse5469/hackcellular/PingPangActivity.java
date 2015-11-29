@@ -1,6 +1,7 @@
 package edu.osu.cse5469.hackcellular;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -35,18 +36,24 @@ import java.util.TimerTask;
 
 public class PingPangActivity extends AppCompatActivity {
 
+    // UI parameters
     private Button startAttack;
     private Button stopAttack;
-    private EditText ipAddr;
     private EditText phoneNum;
     private TextView textInfo;
-    private String ip;
+
+    // UI parameters' variable
+    private String serverAddr;
     private String info = "";
-    private static final int PORT = 5502;
-    private static final int START_SIGNAL = 1;
-    private static final int STOP_SIGNAL = 2;
+
+    // Function parameters
     private boolean bindPoint = true;
     private NetStatSet netStatSet = new NetStatSet();
+
+    private static final int PORTNUM = 5502;
+    private static final int START_SIGNAL = 1;
+    private static final int STOP_SIGNAL = 2;
+
 
     /****************************** Network Status PART *********************************/
     public int type2Name(int type) {
@@ -228,45 +235,45 @@ public class PingPangActivity extends AppCompatActivity {
         }
     };
 
-    private void tcpSocket() {
-        Socket attackSocket;
-        DataOutputStream out;
-
-        try {
-            InetAddress serverAddr = InetAddress.getByName(ip);
-            attackSocket = new Socket(serverAddr, PORT);
-            out = new DataOutputStream(attackSocket.getOutputStream());
-            out.writeUTF(info);
-            out.flush();
-
-            attackSocket.close();
-        } catch (UnknownHostException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-    }
-
-    private void udpSocket() {
-        DatagramSocket attackSocket;
-        DatagramPacket outPacket;
-
-        try {
-            InetAddress serverAddr = InetAddress.getByName(ip);
-            attackSocket = new DatagramSocket();
-            outPacket = new DatagramPacket(info.getBytes(), info.length(), serverAddr, PORT);
-            attackSocket.send(outPacket);
-        } catch (SocketException e) {
-            e.printStackTrace();
-        } catch (UnknownHostException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-
-    }
+//    private void tcpSocket() {
+//        Socket attackSocket;
+//        DataOutputStream out;
+//
+//        try {
+//            InetAddress serverAddr = InetAddress.getByName(this.serverAddr);
+//            attackSocket = new Socket(serverAddr, PORT);
+//            out = new DataOutputStream(attackSocket.getOutputStream());
+//            out.writeUTF(info);
+//            out.flush();
+//
+//            attackSocket.close();
+//        } catch (UnknownHostException e) {
+//            e.printStackTrace();
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//
+//    }
+//
+//    private void udpSocket() {
+//        DatagramSocket attackSocket;
+//        DatagramPacket outPacket;
+//
+//        try {
+//            InetAddress serverAddr = InetAddress.getByName(this.serverAddr);
+//            attackSocket = new DatagramSocket();
+//            outPacket = new DatagramPacket(info.getBytes(), info.length(), serverAddr, PORT);
+//            attackSocket.send(outPacket);
+//        } catch (SocketException e) {
+//            e.printStackTrace();
+//        } catch (UnknownHostException e) {
+//            e.printStackTrace();
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//
+//
+//    }
 
     /*
     * Attack button listener
@@ -274,7 +281,6 @@ public class PingPangActivity extends AppCompatActivity {
     class AttackClickListener implements View.OnClickListener {
         @Override
         public void onClick(View v) {
-            ip = ipAddr.getText().toString();
             String phone = phoneNum.getText().toString();
 
             info = phone;
@@ -300,7 +306,7 @@ public class PingPangActivity extends AppCompatActivity {
         @Override
         public void onClick(View v) {
             String hint;
-            if(ip!="") {
+            if(serverAddr !="") {
                 info = "STOP";
                 new SendfeedbackJob().execute();
                 hint = "Ping-Pang Attack Stop. Press the Attack button to re-start the attack";
@@ -323,33 +329,39 @@ public class PingPangActivity extends AppCompatActivity {
         @Override
         protected String doInBackground(String... params) {
 //            tcpSocket();
-            udpSocket();
+//            udpSocket();
+            CommunicationSocket communicationSocket = new CommunicationSocket(serverAddr, PORTNUM);
+            communicationSocket.sendPacket(info);
             return null;
         }
     }
 
-        /****************************** Lifecycle PART *********************************/
+    /****************************** UI PART *********************************/
 
     public void bindUI(){
         setContentView(R.layout.activity_ping_pang);
+
+        // UI bind
         surfaceView = (SurfaceView) findViewById(R.id.surfaceView_PingPang);
         surfaceHolder = surfaceView.getHolder();
         startAttack = (Button) findViewById(R.id.startAttack_pingpang);
         stopAttack = (Button) findViewById(R.id.stopAttack_pingpang);
-        ipAddr = (EditText) findViewById(R.id.ip_pingpang);
         phoneNum = (EditText) findViewById(R.id.phone_pingpang);
         textInfo = (TextView) findViewById(R.id.Hint_PingPang);
+
+        // Intent content bing
+        Intent intent = getIntent();
+        serverAddr = intent.getStringExtra("severAddr");
+        Log.d("debug", " " + serverAddr);
     }
+
+    /****************************** Lifecycle PART *********************************/
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         bindUI();
-        bindsurfaceCallBack();
-
-
-        // Function part need add, Send Attack button, and Stop Attack button, by using TCP.
-        // Establish connection and disconnecting them each time. Default port 5502
+        bindsurfaceCallBack();                                                                      // Plot part
 
         startAttack.setOnClickListener(new AttackClickListener());
         stopAttack.setOnClickListener(new StopClickListener());

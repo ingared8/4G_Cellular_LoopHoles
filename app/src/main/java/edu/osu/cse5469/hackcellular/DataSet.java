@@ -4,37 +4,33 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by fengyuhui on 15/10/8.
- * To store Data volume from local and operator associated with their time stamp in a list.
+ * Created by fengyuhui on 15/11/25.
  */
-
 public class DataSet {
-    private List<VolumeData> list;
-    private int size;
+
+    private List<DataUnit> list;
 
     public DataSet() {
-        list = new ArrayList<VolumeData>();
-        size = 0;
-    }
-
-    public void addData(VolumeData tmpData) {
-        list.add(tmpData);
-        size++;
+        list = new ArrayList<DataUnit>();
     }
 
     public int size() {
-        return size;
+        return list.size();
     }
 
-    public VolumeData getData() {
-        if (!list.isEmpty())
-            return list.get(size - 1);
+    public void add(DataUnit dataUnit) {
+        list.add(dataUnit);
+    }
+
+    public DataUnit getData(int index) {
+        if(list.size() > index)
+            return list.get(index);
         else return null;
     }
 
-    public VolumeData getData(int index) {
-        if (size > index)
-            return list.get(index);
+    public DataUnit getLastData() {
+        if(!list.isEmpty())
+            return list.get(list.size()-1);
         else return null;
     }
 
