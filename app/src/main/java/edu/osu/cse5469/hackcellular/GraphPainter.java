@@ -108,8 +108,17 @@ public class GraphPainter {
             for(int i=0;i<FinalDraw.size();i++) {
                 float tmpx=offsetAxis+lengthXAxis/xTicks*i+textLength;
                 float tmpy=offsetAxis+lengthYAxis-((float)FinalDraw.get(i)/(float)largestData)*lengthYAxis;
-    //            canvas.drawCircle(tmpx, tmpy, 5, localdataPaint);
-    //            if(i!=0) canvas.drawLine(tmpx, offsetAxis+lengthYAxis, tmpx, tmpy, userbarPaint);
+
+                Paint localdataPaint=new Paint();
+                localdataPaint.setColor(Color.argb(255, 0, 0, 255));
+                localdataPaint.setStrokeWidth(3);
+
+                Paint userbarPaint=new Paint();
+                userbarPaint.setColor(Color.argb(180, 0, 0, 255));
+                userbarPaint.setStrokeWidth(3);
+
+                canvas.drawCircle(tmpx, tmpy, 5, localdataPaint);
+                if(i!=0) canvas.drawLine(tmpx, offsetAxis+lengthYAxis, tmpx, tmpy, userbarPaint);
             }
         }
     }
