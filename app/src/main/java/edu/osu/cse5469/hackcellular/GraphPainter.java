@@ -18,11 +18,11 @@ import java.util.Vector;
 
 
 public class GraphPainter {
-    DataToPaint dataToPaint;
+    private DataToPaint dataToPaint;
     private SurfaceHolder surfaceHolder;
     private SurfaceView surface;
-    public Vector<Vector<Float>>  arrays;
-    public Vector<Vector<Paint>>  paint;
+    private Vector<Vector<Float>>  arrays;
+    private Vector<Vector<Paint>>  paint;
 
     private int heightCanvas;
     private int widthCanvas;
@@ -131,7 +131,7 @@ public class GraphPainter {
         }
     }
 
-    public void retrieveSize(Canvas canvas){
+    private void retrieveSize(Canvas canvas){
         heightCanvas=canvas.getHeight();
         widthCanvas=canvas.getWidth();
         offsetAxis=widthCanvas/50;
