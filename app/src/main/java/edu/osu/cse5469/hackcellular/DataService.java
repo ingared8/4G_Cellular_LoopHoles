@@ -73,8 +73,8 @@ public class DataService extends Service {
 
         DataUnit dataUnit = new DataUnit();
         dataUnit.setTimeStamp(date.getTime());
-        dataUnit.addData("Local Data", (float) localData);
         dataUnit.addData("Operator Data", (float) operatorData);
+        dataUnit.addData("Local Data", (float) localData);
         dataSet.add(dataUnit);
 
         Log.d("usage raw", "localData：" + (float) localData / 1024 / 1024 + "     operatorData：" + (float) operatorData / 1024 / 1024);

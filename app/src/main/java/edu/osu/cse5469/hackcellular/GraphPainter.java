@@ -86,29 +86,29 @@ public class GraphPainter {
             this.paint.add(new Vector<Paint>());
 
             Paint dataPaint1 = new Paint();
-            dataPaint1.setColor(Color.argb(255, 0, 0, 255));
+            dataPaint1.setColor(Color.argb(255, 255, 0, 0));
             dataPaint1.setStrokeWidth(3);
+            dataPaint1.setStyle(Paint.Style.STROKE);
 
             Paint barPaint1 = new Paint();
-            barPaint1.setColor(Color.argb(180, 0, 0, 255));
-            barPaint1.setStrokeWidth(3);
+            barPaint1.setColor(Color.argb(180, 255, 0, 0));
+            barPaint1.setStrokeWidth(5);
 
             this.paint.get(0).add(dataPaint1);
-            this.paint.get(0).add(barPaint1);
             this.paint.get(0).add(null);
+            this.paint.get(0).add(barPaint1);
 
             Paint dataPaint2 = new Paint();
-            dataPaint2.setColor(Color.argb(255, 255, 0, 0));
+            dataPaint2.setColor(Color.argb(255, 0, 0, 255));
             dataPaint2.setStrokeWidth(3);
-            dataPaint2.setStyle(Paint.Style.STROKE);
 
             Paint barPaint2 = new Paint();
-            barPaint2.setColor(Color.argb(180, 255, 0, 0));
-            barPaint2.setStrokeWidth(5);
+            barPaint2.setColor(Color.argb(180, 0, 0, 255));
+            barPaint2.setStrokeWidth(3);
 
             this.paint.get(1).add(dataPaint2);
-            this.paint.get(1).add(null);
             this.paint.get(1).add(barPaint2);
+            this.paint.get(1).add(null);
         }
     }
 
