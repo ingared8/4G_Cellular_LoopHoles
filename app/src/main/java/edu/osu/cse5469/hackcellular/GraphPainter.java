@@ -3,6 +3,7 @@ package edu.osu.cse5469.hackcellular;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
@@ -79,10 +80,10 @@ public class GraphPainter {
         axisPaint.setStrokeWidth(3);
         textPaint.setColor(Color.argb(255, 0, 0, 0));
         yTicks = labels.size()-1;
-        if (paint==null){
-            paint = new Vector<Vector<Paint>>();
-            paint.add(new Vector<Paint>());
-            paint.add(new Vector<Paint>());
+        if (this.paint==null){
+            this.paint = new Vector<Vector<Paint>>();
+            this.paint.add(new Vector<Paint>());
+            this.paint.add(new Vector<Paint>());
 
             Paint dataPaint1 = new Paint();
             dataPaint1.setColor(Color.argb(255, 0, 0, 255));
@@ -92,9 +93,9 @@ public class GraphPainter {
             barPaint1.setColor(Color.argb(180, 0, 0, 255));
             barPaint1.setStrokeWidth(3);
 
-            paint.get(0).add(dataPaint1);
-            paint.get(0).add(barPaint1);
-            paint.get(0).add(null);
+            this.paint.get(0).add(dataPaint1);
+            this.paint.get(0).add(barPaint1);
+            this.paint.get(0).add(null);
 
             Paint dataPaint2 = new Paint();
             dataPaint2.setColor(Color.argb(255, 255, 0, 0));
@@ -105,9 +106,9 @@ public class GraphPainter {
             barPaint2.setColor(Color.argb(180, 255, 0, 0));
             barPaint2.setStrokeWidth(5);
 
-            paint.get(1).add(dataPaint2);
-            paint.get(1).add(null);
-            paint.get(1).add(barPaint2);
+            this.paint.get(1).add(dataPaint2);
+            this.paint.get(1).add(null);
+            this.paint.get(1).add(barPaint2);
         }
     }
 
@@ -196,7 +197,6 @@ public class GraphPainter {
 
                 float tmpx = offsetAxis+lengthXAxis/xTicks*i+textLength;
                 float tmpy = offsetAxis+lengthYAxis-((float)FinalDraw.get(i)/(float)largestData)*lengthYAxis;
-
 
                 canvas.drawCircle(tmpx, tmpy, 5, paint.get(k).get(0));
                 if(i!=0 && paint.get(k).get(1)!=null) canvas.drawLine(tmpx, offsetAxis+lengthYAxis, tmpx, tmpy, paint.get(k).get(1));

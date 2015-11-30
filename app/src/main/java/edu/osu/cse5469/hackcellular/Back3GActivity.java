@@ -10,6 +10,8 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.PowerManager;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.SurfaceView;
 import android.view.View;
 import android.widget.Button;
@@ -44,7 +46,7 @@ public class Back3GActivity extends Activity {
     private boolean bindPoint = true;
     private Timer timer1 = new Timer();
     private GraphPainter graphPainter;
-    private DataSet dataSet;
+    private DataSet dataSet = new DataSet();
     final DownloadTask downloadTask = new DownloadTask(Back3GActivity.this);
     private final static int INTERVAL = 1000;
     int init=0;
@@ -68,21 +70,24 @@ public class Back3GActivity extends Activity {
         long tmpTx;
         public void run() {
             if(init<=2){
-                RxIni= TrafficStats.getTotalRxBytes();
-                TxIni=TrafficStats.getTotalRxBytes();
+                RxIni = TrafficStats.getTotalRxBytes();
+                TxIni = TrafficStats.getTotalTxPackets();
                 init++;
             }
             else{
-                tmpRx= TrafficStats.getTotalRxBytes();
-                tmpTx= TrafficStats.getTotalTxPackets();
+                tmpRx = TrafficStats.getTotalRxBytes();
+                tmpTx = TrafficStats.getTotalTxPackets();
 
                 Date date = new Date();
                 DataUnit dataUnit = new DataUnit();
                 dataUnit.setTimeStamp(date.getTime());
-                dataUnit.addData("Network Speed", (float) tmpRx+tmpTx-RxIni-TxIni);
-                dataSet.add(dataUnit);
-//                throughputPlotDataSettmp.addData(new VolumeData(System.currentTimeMillis(),tmpRx+tmpTx-RxIni-TxIni,0));
+                dataUnit.addData("Network Speed", (float) (tmpRx + tmpTx - RxIni - TxIni)/1000);
                 Log.d("Flow", tmpRx + tmpTx - RxIni - TxIni + "");
+                dataSet.add(dataUnit);
+
+                if(init == 3) {
+                    graphPainter.schedule(dataSet, INTERVAL);
+                }
 
                 RxIni=tmpRx;
                 TxIni=tmpTx;
@@ -100,7 +105,6 @@ public class Back3GActivity extends Activity {
                 if (bindPoint) {
                     bindPoint = false;
                     timer1.schedule(speedtask, 1000, INTERVAL);
-                    graphPainter.schedule(dataSet, INTERVAL);
                 }
             }
         });
@@ -217,7 +221,7 @@ public class Back3GActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         bindUI();
-        graphPainter = new GraphPainter(surfaceView, "Mbps", null);
+        graphPainter = new GraphPainter(surfaceView, "KBps", null);
         Attack();
 
 //        mProgressDialog = new ProgressDialog(Back3GActivity.this);
@@ -235,7 +239,26 @@ public class Back3GActivity extends Activity {
 
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu_back_3g, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+
+        //noinspection SimplifiableIfStatement
+        if (id == R.id.action_settings) {
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
 }
-
-
-

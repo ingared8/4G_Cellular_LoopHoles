@@ -13,6 +13,8 @@ public class DataUnit {
 
     private Vector<String> dataType;              // The description of the responded data, i.e. Local Data Usage, Net Status and ...
 
+    private int size = 1;
+
     public DataUnit() {
         data = new Vector<Float>();
         dataType = new Vector<String>();
@@ -37,10 +39,11 @@ public class DataUnit {
     public void addData(String dataType, Float data) {
         this.dataType.add(dataType);
         this.data.add(data);
+        size = this.data.size();
     }
 
     public int getDataDimension() {
-        return data.size();
+        return size;
     }
 
 }

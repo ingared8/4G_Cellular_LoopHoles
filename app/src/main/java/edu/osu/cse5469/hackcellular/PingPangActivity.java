@@ -38,7 +38,7 @@ public class PingPangActivity extends AppCompatActivity {
     private boolean bindPoint = true;
 //    private NetStatSet netStatSet = new NetStatSet();
     private GraphPainter graphPainter;
-    private DataSet dataSet;
+    private DataSet dataSet = new DataSet();
 
     private static final int INTERVAL = 5000;
     private static final int PORTNUM = 5502;
