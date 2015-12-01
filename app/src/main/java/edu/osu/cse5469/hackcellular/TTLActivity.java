@@ -186,13 +186,23 @@ public class TTLActivity extends AppCompatActivity  {
             ttl_manual = ttlTime.getText().toString();
             volume_manual = volume.getText().toString();
 
-            if(bindPoint) {
-                bindPoint = false;
-                bindService();
-                graphPainter.schedule(dataService.getData(), 10000);
-            }
-
+            if(bindPoint) { bindService();}
             new SendFeedBackJob().execute();
+
+            while(bindPoint) {
+                try{
+                    graphPainter.schedule(dataService.getData(), 10000);
+                    bindPoint = false;
+                }
+                catch (Exception e) {
+                    e.printStackTrace();
+                    try {
+                        sleep(60000);
+                    } catch (InterruptedException e1) {
+                        e1.printStackTrace();
+                    }
+                }
+            }
         }
     }
 
