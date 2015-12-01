@@ -1,9 +1,5 @@
 package edu.osu.cse5469.hackcellular;
 
-/**
- * Created by GJ on 10/8/2015.
- */
-
 import android.app.Service;
 import android.content.BroadcastReceiver;
 import android.content.Context;

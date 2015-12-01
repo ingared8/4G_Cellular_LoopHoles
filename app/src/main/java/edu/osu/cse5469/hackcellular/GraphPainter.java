@@ -29,8 +29,6 @@ public class GraphPainter {
     private int lengthYAxis;
     private int offsetAxis;
 
-    private int interval;
-
     private boolean labelMode = true;
     private int xTicks = 30;
     private int yTicks;
@@ -224,7 +222,6 @@ public class GraphPainter {
     };
     public void schedule(DataSet dataSet, int interval){
         this.dataSet = dataSet;
-        this.interval = interval;
         timer.schedule(task, 1000, interval);
     }
     public void cancel(){

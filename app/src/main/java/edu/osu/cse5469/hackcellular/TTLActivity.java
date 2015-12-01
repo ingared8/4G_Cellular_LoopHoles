@@ -84,7 +84,7 @@ public class TTLActivity extends AppCompatActivity  {
         ttlTime.setFocusableInTouchMode(false);
         volume.setFocusableInTouchMode(false);
         switchDefaultIndex = true;
-        DefaultOrMannual();
+        defaultOrManual();
         ttlTime.addTextChangedListener(new TextWatcher() {
 
             @Override
@@ -120,7 +120,7 @@ public class TTLActivity extends AppCompatActivity  {
         });
     }
 
-    private void DefaultOrMannual(){
+    private void defaultOrManual(){
         switch1.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -179,7 +179,7 @@ public class TTLActivity extends AppCompatActivity  {
     /*
     * Attack button listener
     */
-    class AttckClickListener implements View.OnClickListener {
+    class AttackClickListener implements View.OnClickListener {
         @Override
         public void onClick(View v) {
 
@@ -188,18 +188,18 @@ public class TTLActivity extends AppCompatActivity  {
 
             if(bindPoint) {
                 bindPoint = false;
-//                bindService();
-//                graphPainter.schedule(dataService.getData(), 10000);
+                bindService();
+                graphPainter.schedule(dataService.getData(), 10000);
             }
 
-            new SendfeedbackJob().execute();
+            new SendFeedBackJob().execute();
         }
     }
 
     /*
      * To protect prevent the error of network operating on main thread.
      */
-    private class SendfeedbackJob extends AsyncTask<String, Void, String>{
+    private class SendFeedBackJob extends AsyncTask<String, Void, String>{
 
         @Override
         protected String doInBackground(String... params) {
@@ -283,7 +283,7 @@ public class TTLActivity extends AppCompatActivity  {
         communicationSocket = new CommunicationSocket(serverAddr, PORTNUM);
 
         // TTL activity communication protocol: "TTL, Attack Volume"
-        sendSocketButton.setOnClickListener(new AttckClickListener());
+        sendSocketButton.setOnClickListener(new AttackClickListener());
     }
 
     @Override
