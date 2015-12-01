@@ -42,7 +42,7 @@ public class Back3GActivity extends Activity {
 
     // Function parameters
     private boolean bindPoint = true;
-    private Timer timer1 = new Timer();
+    private Timer timer = new Timer();
     private GraphPainter graphPainter;
     private DataSet dataSet = new DataSet();
     final DownloadTask downloadTask = new DownloadTask(Back3GActivity.this);
@@ -102,7 +102,7 @@ public class Back3GActivity extends Activity {
                 downloadTask.execute("http://mirrors.koehn.com/ubuntureleases/14.04.3/ubuntu-14.04.3-desktop-amd64.iso");
                 if (bindPoint) {
                     bindPoint = false;
-                    timer1.schedule(speedtask, 1000, INTERVAL);
+                    timer.schedule(speedtask, 1000, INTERVAL);
                 }
             }
         });

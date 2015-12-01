@@ -108,7 +108,7 @@ public class MainActivity extends Activity {
         mybutton.setOnClickListener(new Button.OnClickListener() {
             public void onClick(View v) {
                 if (switchable){
-                    serverAddr = "default ip";
+                    serverAddr = "127.0.0.1";
                 }else{
                     serverAddr = desIP.getText().toString();
                 }

@@ -19,6 +19,8 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import java.util.Date;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.Vector;
 
 public class PingPangActivity extends AppCompatActivity {
@@ -36,9 +38,10 @@ public class PingPangActivity extends AppCompatActivity {
 
     // Function parameters
     private boolean bindPoint = true;
-//    private NetStatSet netStatSet = new NetStatSet();
     private GraphPainter graphPainter;
     private DataSet dataSet = new DataSet();
+    private Timer timer = new Timer();
+
 
     private static final int INTERVAL = 5000;
     private static final int PORTNUM = 5502;
@@ -74,7 +77,7 @@ public class PingPangActivity extends AppCompatActivity {
         ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo networkInfo = connMgr.getNetworkInfo(ConnectivityManager.TYPE_MOBILE);
         int mobile_type = networkInfo.getSubtype();
-        Log.d("debug", "Mobile type: "+Integer.toString(mobile_type));
+//        Log.d("debug", "Mobile type: "+Integer.toString(mobile_type));
         return type2Name(mobile_type);
     }
 
@@ -94,24 +97,18 @@ public class PingPangActivity extends AppCompatActivity {
         }
     };
 
-    /*
-    * Tread to update data set
-    */
-    class DataUpateThread extends Thread {
+    TimerTask dataUpdateTask= new TimerTask() {
 
+        @Override
         public void run() {
             Date date = new Date();
             DataUnit dataUnit = new DataUnit();
             dataUnit.setTimeStamp(date.getTime());
             dataUnit.addData("Mobile Network Status", (float) findCellularStatus());
+            Log.d("debug", "Mobile network status is: " + findCellularStatus());
             dataSet.add(dataUnit);
-            try {
-                sleep(INTERVAL);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
         }
-    }
+    };
 
     /*
     * Attack button listener
@@ -132,8 +129,7 @@ public class PingPangActivity extends AppCompatActivity {
 
             if(bindPoint) {
                 bindPoint = false;
-                DataUpateThread dataUpateThread = new DataUpateThread();
-                dataUpateThread.start();
+                timer.schedule(dataUpdateTask, 1000, INTERVAL);
                 graphPainter.schedule(dataSet, INTERVAL);
             }
         }
@@ -200,7 +196,7 @@ public class PingPangActivity extends AppCompatActivity {
         bindUI();
 
         Vector<String> labels = new Vector<String>();
-        labels.add("UNKNOWN");
+        labels.add("OTH");
         labels.add("2G");
         labels.add("3G");
         labels.add("LTE");
