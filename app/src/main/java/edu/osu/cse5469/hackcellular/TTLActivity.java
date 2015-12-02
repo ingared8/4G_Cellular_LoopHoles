@@ -58,6 +58,7 @@ public class TTLActivity extends AppCompatActivity  {
     private final static int PORTNUM = 5555;
     private final static int SERVER_MSG = 1;
     private final static int TTL_MSG = 2;
+    private final static int INTERVAL = 10000;
 
     /****************************** UI PART *********************************/
 
@@ -186,23 +187,10 @@ public class TTLActivity extends AppCompatActivity  {
             ttl_manual = ttlTime.getText().toString();
             volume_manual = volume.getText().toString();
 
-            if(bindPoint) { bindService();}
-            new SendFeedBackJob().execute();
-
-            while(bindPoint) {
-                try{
-                    graphPainter.schedule(dataService.getData(), 10000);
-                    bindPoint = false;
-                }
-                catch (Exception e) {
-                    e.printStackTrace();
-                    try {
-                        sleep(60000);
-                    } catch (InterruptedException e1) {
-                        e1.printStackTrace();
-                    }
-                }
+            if(bindPoint) {
+                bindService();
             }
+            new SendFeedBackJob().execute();
         }
     }
 
@@ -234,7 +222,7 @@ public class TTLActivity extends AppCompatActivity  {
             communicationSocket.flush();
             // Wait 3 seconds to avoid conflicting with the calling USSD code
             try {
-                sleep(3000);
+                sleep(INTERVAL/2);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -276,6 +264,30 @@ public class TTLActivity extends AppCompatActivity  {
             msg.obj = textViewShow;
             msg.what = SERVER_MSG;
             handler.sendMessage(msg);
+
+
+            // Start plot graph
+            while(bindPoint) {
+                try {
+                    sleep(INTERVAL);
+                } catch (InterruptedException e1) {
+                    e1.printStackTrace();
+                }
+                Log.d("Debug", "Start plotting");
+
+                if(dataService.getData().getLastData() != null) {
+                    Log.d("Debug", "Plotting");
+                    graphPainter.schedule(dataService.getData(), INTERVAL);
+                    bindPoint = false;
+                } else {
+                    Log.d("Debug", "Wait plotting");
+                    try {
+                        sleep(INTERVAL);
+                    } catch (InterruptedException e1) {
+                        e1.printStackTrace();
+                    }
+                }
+            }
 
             return null;
         }

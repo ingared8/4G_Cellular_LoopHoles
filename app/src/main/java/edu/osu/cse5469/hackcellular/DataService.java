@@ -22,6 +22,7 @@ import java.util.Vector;
 public class DataService extends Service {
     private final String AttQueryCode = "*3282#";
     private DataSet dataSet = new DataSet();
+    private DataSet totalData = new DataSet();
     DataServiceIBinder dataserviceIBinder = new DataServiceIBinder();
 
     /****************************** Getter PART *********************************/
@@ -66,14 +67,26 @@ public class DataService extends Service {
         long operatorData = (long) (Float.parseFloat(smsData.substring(smsData.indexOf("[You]:")+6,smsData.indexOf('\n',smsData.indexOf("[You]:"))-1).replace(",",""))*1024*1024);
         long localData = getLocalData();
 
+        operatorData = operatorData / 1024 / 1024;
+        localData = localData / 1024 / 1024;
+
+        DataUnit totalDataUnit = new DataUnit();
+        totalDataUnit.setTimeStamp(date.getTime());
+        totalDataUnit.addData("Operator Data", (float) operatorData);
+        totalDataUnit.addData("Local Data", (float) localData);
+        totalData.add(totalDataUnit);
 
         DataUnit dataUnit = new DataUnit();
-        dataUnit.setTimeStamp(date.getTime());
-        dataUnit.addData("Operator Data", (float) operatorData);
-        dataUnit.addData("Local Data", (float) localData);
+        dataUnit.setTimeStamp(totalDataUnit.getTimeStamp());
+        Float opAddedData = totalDataUnit.getData().get(0) - totalData.getData(0).getData().get(0);
+        Float loAddedData = totalDataUnit.getData().get(1) - totalData.getData(0).getData().get(1);
+        dataUnit.addData("Operator Data", opAddedData);
+        dataUnit.addData("Local Data", loAddedData);
         dataSet.add(dataUnit);
 
-        Log.d("usage raw", "localData：" + (float) localData / 1024 / 1024 + "     operatorData：" + (float) operatorData / 1024 / 1024);
+
+        Log.d("usage raw", "localData：" + (float) localData + "     operatorData：" + (float) operatorData);
+        Log.d("usage raw", "localAddedData：" + loAddedData+ "     operatorAddedData：" + opAddedData);
 
     }
 

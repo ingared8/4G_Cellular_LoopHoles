@@ -82,14 +82,14 @@ void echo_UDP(int server_socket)
 			/* Send the packet*/
 	
 			if ( size == 0) {
-	        	a = sendto(server_socket,bufin,MSS,0,(struct sockaddr *)&remote,len);
+	        	a = sendto(server_socket, bufin, 10, 0, (struct sockaddr *)&remote, len);
 			if ( a > 0) { printf("Server: Send packet to Android\n"); }
       		} else {
 				int file_size = 0;
 				if ( size > 10) { size = 10; }
 				while ( file_size < size*1000)
 				{
-					sendto(server_socket,bufin,MSS,0,(struct sockaddr *)&remote,len);
+					sendto(server_socket, bufin, MSS, 0, (struct sockaddr *)&remote, len);
 					file_size++;
 				}
 			}
