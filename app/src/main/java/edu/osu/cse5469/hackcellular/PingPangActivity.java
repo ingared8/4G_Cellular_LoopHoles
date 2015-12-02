@@ -209,7 +209,7 @@ public class PingPangActivity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_ping_pang, menu);
+        getMenuInflater().inflate(R.menu.menu_pingpong, menu);
         return true;
     }
 
@@ -227,4 +227,5 @@ public class PingPangActivity extends AppCompatActivity {
 
         return super.onOptionsItemSelected(item);
     }
+
 }
