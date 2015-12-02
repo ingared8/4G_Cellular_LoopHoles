@@ -1,5 +1,6 @@
 package edu.osu.cse5469.hackcellular;
 
+import android.app.ActionBar;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -14,9 +15,10 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Switch;
 import android.widget.TextView;
+import android.support.v7.app.AppCompatActivity;
 
 
-public class MainActivity extends Activity {
+public class MainActivity extends AppCompatActivity {
  
 //    private DataService dataService;
 
@@ -136,11 +138,16 @@ public class MainActivity extends Activity {
 
     }
 
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         buildUI();
         startattack(startAttack, attackSpinner);
+
+
+
     }
 
     @Override

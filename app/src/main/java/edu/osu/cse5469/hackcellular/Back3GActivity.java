@@ -27,6 +27,7 @@ import java.net.URL;
 import java.util.Date;
 import java.util.Timer;
 import java.util.TimerTask;
+import android.support.v7.app.AppCompatActivity;
 
 
 /**
@@ -35,7 +36,7 @@ import java.util.TimerTask;
 
 
 
-public class Back3GActivity extends Activity {
+public class Back3GActivity extends AppCompatActivity {
 
 
     // UI parameters
