@@ -1,7 +1,6 @@
 package edu.osu.cse5469.hackcellular;
 
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.net.TrafficStats;
@@ -65,7 +64,7 @@ public class Back3GActivity extends AppCompatActivity {
     }
 
     /****************************** Function PART *********************************/
-    TimerTask speedtask= new TimerTask(){
+    TimerTask speedTask = new TimerTask(){
         long RxIni=0;
         long TxIni=0;
         long tmpRx;
@@ -106,7 +105,7 @@ public class Back3GActivity extends AppCompatActivity {
                 downloadTask.execute("http://mirrors.koehn.com/ubuntureleases/14.04.3/ubuntu-14.04.3-desktop-amd64.iso");
                 if (bindPoint) {
                     bindPoint = false;
-                    timer.schedule(speedtask, 1000, INTERVAL);
+                    timer.schedule(speedTask, 1000, INTERVAL);
                 }
             }
         });
