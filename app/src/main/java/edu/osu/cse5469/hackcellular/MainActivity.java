@@ -1,10 +1,8 @@
 package edu.osu.cse5469.hackcellular;
 
-import android.app.ActionBar;
-import android.app.Activity;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ArrayAdapter;
@@ -20,21 +18,18 @@ import android.support.v7.app.AppCompatActivity;
 
 public class MainActivity extends AppCompatActivity {
  
-//    private DataService dataService;
 
     private TextView attackType;
     private Spinner attackSpinner;
-//    private TextView voiceattack;
-//    private Spinner voicespinner;
-//
-//    private TextView protocolattack;
-//    private Spinner protocolspinner;
 
     private Button startAttack;
-    private Switch ipswitch;
+    private Switch ipSwitch;
     private EditText desIP;
+
+    private String info = "";
     private String serverAddr;
     private boolean switchable;
+    private static final int PORTNUM = 5500;
 
 //    private ServiceConnection dataServiceConnection = new ServiceConnection() {
 //
@@ -71,7 +66,7 @@ public class MainActivity extends AppCompatActivity {
         attackSpinner =(Spinner)findViewById(R.id.attack_spinner);
         setSpinner(attackSpinner, this.getResources().getStringArray(R.array.attackChoose));
 
-        ipswitch = (Switch)findViewById(R.id.switch2);
+        ipSwitch = (Switch)findViewById(R.id.switch2);
         desIP = (EditText) findViewById(R.id.edited_ip2);
 
         switchable = false;
@@ -89,7 +84,7 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-        ipswitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+        ipSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
 
@@ -119,16 +114,22 @@ public class MainActivity extends AppCompatActivity {
                 Intent intent = new Intent();
                 switch (myspinner.getSelectedItemPosition()) {
                     case 0:
+                        info = "1";
+                        new SendFeedBackJob().execute();
                         intent.setClass(MainActivity.this, TTLActivity.class);
                         intent.putExtra("severAddr", serverAddr);
                         startActivity(intent);
                         break;
                     case 1:
+                        info = "2";
+                        new SendFeedBackJob().execute();
                         intent.setClass(MainActivity.this, PingPangActivity.class);
                         intent.putExtra("severAddr", serverAddr);
                         startActivity(intent);
                         break;
                     case 2:
+                        info = "3";
+                        new SendFeedBackJob().execute();
                         intent.setClass(MainActivity.this, Back3GActivity.class);
                         startActivity(intent);
                         break;
@@ -138,6 +139,17 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    private class SendFeedBackJob extends AsyncTask<String, Void, String> {
+
+        @Override
+        protected String doInBackground(String... params) {
+            CommunicationSocket communicationSocket;
+            communicationSocket = new CommunicationSocket(serverAddr, PORTNUM);
+            communicationSocket.sendPacket(info);
+            return null;
+        }
+    }
+
 
 
     @Override
@@ -145,9 +157,6 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         buildUI();
         startattack(startAttack, attackSpinner);
-
-
-
     }
 
     @Override
