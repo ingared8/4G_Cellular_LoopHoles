@@ -33,17 +33,21 @@ void echo_UDP(int server_socket)
 
     len = sizeof(remote);
     int a;
-
     while (1) {
 
       	// char ttl_pointer[4];
       	// char memory_size_pointer[2];
       	char *ttl_pointer;
       	char *memory_size_pointer;
-	
+
 		memset(bufin, 0, sizeof(bufin));
       	/* read a datagram from the socket (put result in bufin) */
       	n=recvfrom(server_socket,bufin,MSS,0,(struct sockaddr *)&remote,&len);
+
+      	if ( strcmp(bufin, "KILL")==0) {
+          	printf("Server: The value of input string is %s \n",bufin);
+            return;
+      	}
 
       	/* print out the address of the sender */
       	printf("Server: Got a datagram from %d port %d\n",inet_ntoa(remote.sin_addr), ntohs(remote.sin_port));
@@ -52,6 +56,7 @@ void echo_UDP(int server_socket)
         	perror("Error receiving data");
       	} else {
         	printf("GOT %d BYTES\n",n);
+
 
         	/* Got something, just send it back */
 			// strcpy(input, bufin);
@@ -66,7 +71,7 @@ void echo_UDP(int server_socket)
 			ttl = atoi(ttl_pointer);
 			size = atoi(memory_size_pointer);
 
-			
+
 			printf("Server: The value of TTL mentioned in the packet is %d\n", ttl);
 			printf("Server: The value of size mentioned in the packet is %d\n", size);
 
@@ -80,7 +85,7 @@ void echo_UDP(int server_socket)
 			}
 
 			/* Send the packet*/
-	
+
 			if ( size == 0) {
 	        	a = sendto(server_socket, bufin, 10, 0, (struct sockaddr *)&remote, len);
 			if ( a > 0) { printf("Server: Send packet to Android\n"); }
