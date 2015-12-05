@@ -188,7 +188,7 @@ public class TTLActivity extends AppCompatActivity  {
             volume_manual = volume.getText().toString();
 
             if(bindPoint) {
-                bindService();
+//                bindService();
             }
             new SendFeedBackJob().execute();
         }
@@ -265,30 +265,40 @@ public class TTLActivity extends AppCompatActivity  {
             msg.what = SERVER_MSG;
             handler.sendMessage(msg);
 
+//
+//            // Start plot graph
+//            while(bindPoint) {
+//                try {
+//                    sleep(INTERVAL);
+//                } catch (InterruptedException e1) {
+//                    e1.printStackTrace();
+//                }
+//                Log.d("Debug", "Start plotting");
+//
+//                if(dataService.getData().getLastData() != null) {
+//                    Log.d("Debug", "Plotting");
+//                    graphPainter.schedule(dataService.getData(), INTERVAL);
+//                    bindPoint = false;
+//                } else {
+//                    Log.d("Debug", "Wait plotting");
+//                    try {
+//                        sleep(INTERVAL);
+//                    } catch (InterruptedException e1) {
+//                        e1.printStackTrace();
+//                    }
+//                }
+//            }
 
-            // Start plot graph
-            while(bindPoint) {
-                try {
-                    sleep(INTERVAL);
-                } catch (InterruptedException e1) {
-                    e1.printStackTrace();
-                }
-                Log.d("Debug", "Start plotting");
+            return null;
+        }
+    }
 
-                if(dataService.getData().getLastData() != null) {
-                    Log.d("Debug", "Plotting");
-                    graphPainter.schedule(dataService.getData(), INTERVAL);
-                    bindPoint = false;
-                } else {
-                    Log.d("Debug", "Wait plotting");
-                    try {
-                        sleep(INTERVAL);
-                    } catch (InterruptedException e1) {
-                        e1.printStackTrace();
-                    }
-                }
-            }
+    private class stopJob extends AsyncTask<String, Void, String>{
 
+        @Override
+        protected String doInBackground(String... params) {
+            CommunicationSocket stopScoket = new CommunicationSocket(serverAddr, PORTNUM);
+            stopScoket.sendPacket("KILL");
             return null;
         }
     }
@@ -328,5 +338,12 @@ public class TTLActivity extends AppCompatActivity  {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        new stopJob().execute();
+        graphPainter.cancel();
     }
 }

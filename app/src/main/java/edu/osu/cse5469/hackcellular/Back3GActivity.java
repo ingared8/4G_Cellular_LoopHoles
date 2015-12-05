@@ -265,4 +265,10 @@ public class Back3GActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        speedTask.cancel();
+        graphPainter.cancel();
+    }
 }

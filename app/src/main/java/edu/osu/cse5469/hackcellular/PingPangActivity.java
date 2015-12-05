@@ -160,6 +160,16 @@ public class PingPangActivity extends AppCompatActivity {
         }
     }
 
+    private class stopJob extends AsyncTask<String, Void, String>{
+
+        @Override
+        protected String doInBackground(String... params) {
+            CommunicationSocket stopScoket = new CommunicationSocket(serverAddr, PORTNUM);
+            stopScoket.sendPacket("KILL");
+            return null;
+        }
+    }
+
     private class SendfeedbackJob extends AsyncTask<String, Void, String> {
 
         @Override
@@ -228,4 +238,11 @@ public class PingPangActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        new stopJob().execute();
+        graphPainter.cancel();
+        dataUpdateTask.cancel();
+    }
 }
