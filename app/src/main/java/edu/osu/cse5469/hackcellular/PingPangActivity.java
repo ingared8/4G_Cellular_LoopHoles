@@ -7,6 +7,7 @@ import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Handler;
 import android.os.Message;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -196,6 +197,12 @@ public class PingPangActivity extends AppCompatActivity {
         Intent intent = getIntent();
         serverAddr = intent.getStringExtra("severAddr");
         Log.d("debug", " " + serverAddr);
+
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.setLogo(R.mipmap.ohio);
+        actionBar.setDisplayUseLogoEnabled(true);
+        actionBar.setDisplayShowHomeEnabled(true);
+
     }
 
     /****************************** Lifecycle PART *********************************/

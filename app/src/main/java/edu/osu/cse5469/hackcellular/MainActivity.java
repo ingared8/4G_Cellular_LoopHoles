@@ -3,6 +3,7 @@ package edu.osu.cse5469.hackcellular;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v7.app.ActionBar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ArrayAdapter;
@@ -70,6 +71,15 @@ public class MainActivity extends AppCompatActivity {
         desIP = (EditText) findViewById(R.id.edited_ip2);
 
         switchable = false;
+
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.setLogo(R.mipmap.ohio);
+        actionBar.setDisplayUseLogoEnabled(true);
+        actionBar.setDisplayShowHomeEnabled(true);
+
+
+
+
 
 //        voiceattack = (TextView)findViewById(R.id.voice_attack);
 //        voicespinner =(Spinner)findViewById(R.id.voice_attack_spinner);

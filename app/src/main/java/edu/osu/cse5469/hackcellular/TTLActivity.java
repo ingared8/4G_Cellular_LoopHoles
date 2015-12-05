@@ -8,6 +8,7 @@ import android.os.AsyncTask;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.Editable;
@@ -75,6 +76,12 @@ public class TTLActivity extends AppCompatActivity  {
         switch1 = (Switch)findViewById(R.id.switch1);
         textHint = (TextView) findViewById(R.id.textHint);
         surfaceView = (SurfaceView) findViewById(R.id.surfaceView_TTL);
+
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.setLogo(R.mipmap.ohio);
+        actionBar.setDisplayUseLogoEnabled(true);
+        actionBar.setDisplayShowHomeEnabled(true);
+
 
         // Intent content bing
         Intent intent = getIntent();

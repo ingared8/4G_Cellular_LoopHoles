@@ -22,12 +22,13 @@
 
     <application
         android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@mipmap/ohio"
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
         <activity
             android:name=".MainActivity"
-            android:label="@string/app_name" >
+            android:label="@string/app_name"
+            android:icon="@mipmap/ohio">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -37,6 +38,7 @@
         <activity
             android:name=".TTLActivity"
             android:label="@string/title_activity_ttl"
+            android:icon="@mipmap/ohio"
             android:parentActivityName=".MainActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
@@ -52,6 +54,7 @@
         <activity
             android:name=".Back3GActivity"
             android:label="@string/title_activity_back_3g"
+            android:icon="@mipmap/ohio"
             android:parentActivityName=".MainActivity" >
 
             <meta-data
@@ -62,6 +65,7 @@
         <activity
             android:name=".PingPangActivity"
             android:label="@string/title_activity_ping_pang"
+            android:icon="@mipmap/ohio"
             android:parentActivityName=".MainActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"

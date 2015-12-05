@@ -4,10 +4,12 @@
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:paddingTop="@dimen/activity_vertical_margin"
         android:paddingBottom="@dimen/activity_vertical_margin"
         android:paddingLeft="@dimen/activity_horizontal_margin"
         android:paddingRight="@dimen/activity_horizontal_margin"
-        android:paddingTop="@dimen/activity_vertical_margin"
+
+
         tools:context=".MainActivity"
         android:id="@+id/Relativelayout">
 
@@ -15,10 +17,46 @@
         <TableLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_alignParentTop="true"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true"
+
+            android:layout_centerInParent="true"
+            android:layout_centerVertical="true"
+            android:layout_centerHorizontal="true"
             android:id="@+id/welcomelinear1">
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_horizontal"
+                >
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/apphint"
+                    android:id="@+id/hint"
+                    android:textColor="@drawable/red"
+                    android:textSize="40dp"
+                    android:textStyle="bold"
+                    />
+            </LinearLayout>
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_horizontal"
+                >
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="80dp"
+                    android:text="@string/apphint2"
+                    android:id="@+id/hint2"
+                    android:textColor="@drawable/red"
+                    android:textSize="45dp"
+                    android:textStyle="bold"/>
+            </LinearLayout>
+
 
             <TableRow
                 android:layout_width="match_parent"
@@ -29,8 +67,9 @@
                     android:layout_height="wrap_content"
                     android:text="@string/attack_hint"
                     android:id="@+id/attack_hint"
+                    android:textColor="@drawable/grey"
+                    android:textSize="20dp"
                     android:layout_column="0" />
-
             </TableRow>
 
             <TableRow
@@ -42,7 +81,10 @@
                     android:layout_height="wrap_content"
                     android:id="@+id/attack_spinner"
                     android:layout_weight="1"
-                    android:spinnerMode="dialog" />
+                    android:spinnerMode="dialog"
+                    android:textAlignment=""
+                    />
+
             </TableRow>
 
             <LinearLayout
@@ -51,8 +93,6 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentLeft="true"
                 android:layout_alignParentRight="true"
-                android:layout_below="@+id/welcomelinear1"
-
                 android:id="@+id/welcomelinear2">
 
                 <Switch
@@ -86,17 +126,20 @@
 
             </LinearLayout>
 
-            <TableRow
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
 
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_horizontal"
+                >
                 <Button
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/startattack"
                     android:id="@+id/startattack"
                     android:layout_column="0" />
-            </TableRow>
+            </LinearLayout>
 
         </TableLayout>
     </RelativeLayout>

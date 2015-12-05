@@ -8,6 +8,7 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.PowerManager;
+import android.support.v7.app.ActionBar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -61,6 +62,11 @@ public class Back3GActivity extends AppCompatActivity {
         DownloadButton = (Button) findViewById(R.id.button1_back3G);
         CallButton = (Button) findViewById(R.id.button2_back3G);
         surfaceView = (SurfaceView)findViewById(R.id.surfaceView_back3G);
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.setLogo(R.mipmap.ohio);
+        actionBar.setDisplayUseLogoEnabled(true);
+        actionBar.setDisplayShowHomeEnabled(true);
+
     }
 
     /****************************** Function PART *********************************/

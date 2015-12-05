@@ -16,9 +16,9 @@
     <string name="switch1">Default Attack</string>
 
     <string name="action_settings">Settings</string>
-    <string name="title_activity_ttl">TTLActivity</string>
-    <string name="title_activity_ping_pang">PingPangActivity</string>
-    <string name="title_activity_back_3g">Back3GActivity</string>
+    <string name="title_activity_ttl">TTL Attack</string>
+    <string name="title_activity_ping_pang">PingPang Attack</string>
+    <string name="title_activity_back_3g">Back3G Attack</string>
 
     <string name="set_ttl">SET</string>
 
@@ -30,7 +30,7 @@
     <string name="back3GHint2">Second, dial a call.</string>
     <string name="back3GButton2">CALL</string>
 
-    <string name="attack_hint">ATTACK TYPES</string>
+    <string name="attack_hint">Please choose an attack type:</string>
     <string-array name="attackChoose">
         <item>TTL ATTACK</item>
         <item>PING-PANG ATTACK</item>
@@ -49,8 +49,15 @@
         <!--<item>ATTACK 2</item>-->
     <!--</string-array>-->
 
-    <string name="startattack">START ATTACK</string>
+    <string name="startattack">START</string>
 
     <string name="hello_world">Hello world!</string>
+
+
+    <string name="back3g_hint">Please choose a type of attack</string>
+    <string name="pingpong_hint">Please choose a type of attack</string>
+
+    <string name="apphint">Welcome to</string>
+    <string name="apphint2">HackCellular</string>
 
 </resources>

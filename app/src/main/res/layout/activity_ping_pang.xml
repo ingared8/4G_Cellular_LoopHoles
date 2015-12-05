@@ -47,7 +47,8 @@
                     android:layout_height="wrap_content"
                     android:id="@+id/Hint_PingPang"
                     android:layout_weight="1"
-                    android:textSize="18dp"
+                    android:textColor="@drawable/grey"
+                    android:textSize="20dp"
                     android:text="@string/PingPangHint" />
 
                 <LinearLayout
@@ -76,13 +77,25 @@
 
             </LinearLayout>
 
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/pingpong_hint"
+                android:id="@+id/textHint_pingpong"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:layout_below="@+id/linear1_PingPang"
+                android:textColor="@drawable/grey"
+                android:textSize="20dp"
+                />
+
             <SurfaceView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:id="@+id/surfaceView_PingPang"
                 android:layout_alignParentRight="true"
                 android:layout_alignParentLeft="true"
-                android:layout_below="@+id/linear1_PingPang"
+                android:layout_below="@+id/textHint_pingpong"
                 android:layout_alignParentBottom="true"
                 />
 

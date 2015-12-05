@@ -3,6 +3,21 @@
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
         <!-- Customize your theme here. -->
+        <item name="actionBarStyle">@style/my_actionbar_style</item>
+
     </style>
+
+    <style name="my_actionbar_style" parent="Widget.AppCompat.ActionBar">
+        <item name="background">@drawable/red</item>
+        <item name="titleTextStyle">@style/AcBar_titleStyle</item>
+    </style>
+
+
+    <style name="AcBar_titleStyle">
+        <item name="android:textSize">20sp</item>
+        <item name="android:textColor">@drawable/white</item>
+    </style>
+
+
 
 </resources>
