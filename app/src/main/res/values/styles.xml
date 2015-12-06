@@ -4,6 +4,7 @@
     <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
         <!-- Customize your theme here. -->
         <item name="actionBarStyle">@style/my_actionbar_style</item>
+        <item name="colorAccent">@drawable/red</item>
 
     </style>
 

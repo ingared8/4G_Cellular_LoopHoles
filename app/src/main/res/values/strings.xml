@@ -11,9 +11,9 @@
     <string name="ttlText">30</string>
     <string name="volumeHint">AttackVolume</string>
     <string name="volumeText">3</string>
-    <string name="ttl_hint">Please choose a type of attack</string>
+    <string name="ttl_hint">Please choose a type of attack.</string>
     <string name="unit">MB</string>
-    <string name="switch1">Default Attack</string>
+    <string name="switch1">DEFAULT ATTACK</string>
 
     <string name="action_settings">Settings</string>
     <string name="title_activity_ttl">TTL Attack</string>
@@ -22,19 +22,19 @@
 
     <string name="set_ttl">SET</string>
 
-    <string name="PingPangHint">Click Attack button to start a attack</string>
+    <string name="PingPangHint">Click ATTACK button to start a attack.</string>
 
     <string name="back3GHint">START A BACK3G ATTACK:</string>
     <string name="back3GHint1">First, download a file;</string>
-    <string name="back3GButton1">DOWNLOAD</string>
+    <string name="back3GButton1">START</string>
     <string name="back3GHint2">Second, dial a call.</string>
-    <string name="back3GButton2">CALL</string>
+    <string name="back3GButton2">ATTACK</string>
 
-    <string name="attack_hint">Please choose an attack type:</string>
+    <string name="attack_hint">Please choose a type of attack.</string>
     <string-array name="attackChoose">
-        <item>TTL ATTACK</item>
-        <item>PING-PANG ATTACK</item>
-        <item>BACK-3G ATTACK</item>
+        <item>TTL Attack</item>
+        <item>PingPong Attack</item>
+        <item>Back3G Attack</item>
     </string-array>
 
     <!--<string name="voice_attack">2. VOICE ATTACK</string>-->
@@ -54,10 +54,12 @@
     <string name="hello_world">Hello world!</string>
 
 
-    <string name="back3g_hint">Please choose a type of attack</string>
+    <string name="back3g_hint">Click START button to download a file.</string>
     <string name="pingpong_hint">Please choose a type of attack</string>
 
     <string name="apphint">Welcome to</string>
     <string name="apphint2">HackCellular</string>
+
+    <string name="home">HOME</string>
 
 </resources>

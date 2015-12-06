@@ -32,24 +32,12 @@
                 android:id="@+id/linear1_PingPang">
 
                 <EditText
-                    android:layout_height="wrap_content"
-                    android:layout_width="match_parent"
-                    android:hint="@string/ip"
-                    android:id="@+id/ip_pingpang" />
-                <EditText
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="@string/phone"
                     android:id="@+id/phone_pingpang"/>
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/Hint_PingPang"
-                    android:layout_weight="1"
-                    android:textColor="@drawable/grey"
-                    android:textSize="20dp"
-                    android:text="@string/PingPangHint" />
+
 
                 <LinearLayout
                     android:orientation="horizontal"
@@ -59,19 +47,42 @@
                     android:layout_alignParentRight="true"
                     android:layout_alignParentStart="true"
                     android:layout_alignParentTop="true"
-                    android:id="@+id/linear_button">
+                    android:paddingTop="@dimen/activity_horizontal_margin"
+                    android:paddingBottom="@dimen/activity_horizontal_margin">
                     <Button
+
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:id="@+id/startAttack_pingpang"
                         android:layout_weight="1"
-                        android:text="@string/send" />
+                        android:text="@string/send"
+                        android:textColor="@drawable/white"
+                        android:background="@drawable/red"
+                        android:textSize="20dp"/>
+
+
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentRight="true"
+                    android:layout_alignParentStart="true"
+                    android:layout_alignParentTop="true">
+
+
                     <Button
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:id="@+id/stopAttack_pingpang"
                         android:layout_weight="1"
-                        android:text="@string/end" />
+                        android:text="@string/end"
+                        android:textColor="@drawable/white"
+                        android:background="@drawable/red"
+                        android:textSize="20dp"/>
 
                 </LinearLayout>
 
@@ -80,13 +91,15 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/pingpong_hint"
+                android:text="@string/PingPangHint"
                 android:id="@+id/textHint_pingpong"
                 android:layout_alignParentLeft="true"
                 android:layout_alignParentStart="true"
                 android:layout_below="@+id/linear1_PingPang"
                 android:textColor="@drawable/grey"
-                android:textSize="20dp"
+                android:textSize="18dp"
+                android:paddingTop="@dimen/activity_horizontal_margin"
+                android:paddingBottom="@dimen/activity_horizontal_margin"
                 />
 
             <SurfaceView

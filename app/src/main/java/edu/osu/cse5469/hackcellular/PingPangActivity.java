@@ -191,7 +191,7 @@ public class PingPangActivity extends AppCompatActivity {
         startAttack = (Button) findViewById(R.id.startAttack_pingpang);
         stopAttack = (Button) findViewById(R.id.stopAttack_pingpang);
         phoneNum = (EditText) findViewById(R.id.phone_pingpang);
-        textInfo = (TextView) findViewById(R.id.Hint_PingPang);
+        textInfo = (TextView) findViewById(R.id.textHint_pingpong);
 
         // Intent content bing
         Intent intent = getIntent();
