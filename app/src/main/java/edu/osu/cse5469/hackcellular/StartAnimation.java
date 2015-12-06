@@ -13,7 +13,7 @@ import android.view.animation.Animation;
 import android.view.animation.Animation.AnimationListener;
 import android.widget.ImageView;
 
-public class StartAnimation extends AppCompatActivity {
+public class StartAnimation extends Activity {
     private ImageView welcomeImg = null;
 
     @Override

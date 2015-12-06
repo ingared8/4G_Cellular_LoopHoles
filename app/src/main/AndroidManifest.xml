@@ -29,7 +29,7 @@
         <activity
             android:name=".StartAnimation"
             android:label="@string/app_name"
-            android:icon="@mipmap/ohio_white">
+            android:icon="@mipmap/ohio">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -42,11 +42,7 @@
             android:name=".MainActivity"
             android:label="@string/home"
             android:icon="@mipmap/ohio_white">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
 
         <activity
