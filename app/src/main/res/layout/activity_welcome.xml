@@ -82,7 +82,7 @@
                     android:id="@+id/attack_spinner"
                     android:layout_weight="1"
                     android:spinnerMode="dialog"
-                    android:textAlignment=""
+
                     />
 
             </TableRow>
