@@ -2,69 +2,148 @@ __author__ = 'ingared'
 
 import socket
 import sys
+import os
 from SkypeCalling import SkypeCallAttack
 import select
+from subprocess import call
+global codeList
+
+codeList= []
+Code_A = "2"
+Code_B = "1"
+
+import threading
+import subprocess
+
+class SkpyeCall(threading.Thread):
+    def __init__(self):
+        self.stdout = None
+        self.stderr = None
+        threading.Thread.__init__(self)
+        self.__stop = threading.Event()
+
+    def run(self):
+        p = subprocess.call(["Python","/home/ingared/MLCH/StartAttack.py"],
+                             shell=False)
+        self.stdout, self.stderr = p.communicate()
+
+class TTL(threading.Thread):
+    def __init__(self):
+        self.stdout = None
+        self.stderr = None
+        threading.Thread.__init__(self)
+
+    def run(self):
+        p = subprocess.call(["./EchoAndAttack"],
+                             shell=False)
+
+        self.stdout, self.stderr = p.communicate()
+
 
 def createServerSocket():
 
     s= socket.socket(socket.AF_INET,type=socket.SOCK_DGRAM)
 
     HOST = ''    # Symbolic name, meaning all available interfaces
-    PORT = 5502  # Arbitrary non-privileged port
+    PORT = 5500  # Arbitrary non-privileged port
 
-    print 'Socket created'
+    print 'Server: Socket created'
 
     #Bind socket to local host and port
     try:
         s.bind((HOST, PORT))
     except socket.error as msg:
-        print 'Bind failed. Error Code : ' + str(msg[0]) + ' Message ' + msg[1]
+        print 'Server: Bind failed. Error Code : ' + str(msg[0]) + ' Message ' + msg[1]
         sys.exit()
 
-    print 'Socket bind complete'
+    print 'Server: Socket bind complete'
     return s
 
+def actionA(addr):
+
+    """
+    Script for attack A
+
+    Check for whether the port is able to listen on 5502
+    Start for the StartAttack.py
+
+    """
+    print "Script for Skpe Call Attack " , addr
+
+    try:
+         call(["sudo", "fuser", "-n","udp","-k" ,"5502"])
+    except:
+        pass
+
+    print " All processes on port no 5502 are suspended for SkpyeCall Attack"
+
+    call(["python","StartAttack.py"])
+
+    print " The Skype Attack Server got suspended due to Activity"
+
+
+def actionB(addr):
+
+    """
+    Script for attack A
+
+    Check for whether the port is able to listen on 5502
+    Start for the StartAttack.py
+
+    """
+    print "Script for TTL Attack ", addr
+
+    try:
+         call(["sudo", "fuser", "-n","udp","-k" ,"5555"])
+    except:
+        pass
+
+    call(["./EchoAndAttack"])
+
+    print " The TTl Attack Server got suspended."
+
+def actionC(addr):
+
+    """
+    Script for attack A
+
+    Check for whether the port is able to listen on 5502
+    Start for the StartAttack.py
+
+    """
+    print "Script for action C" + addr
+
+
 # Initialize the connection to start the attack
-attack = SkypeCallAttack()
+s = createServerSocket()
+print 'Server: Socket now listening'
 
+s.setblocking(0)
+
+# Keep on listening
 while (True):
-    s = createServerSocket()
-    print 'Socket now listening'
+    ready = select.select([s], [], [], 1)
+    if ready[0]:
+        # Initialize the connection to stop the attack
+        data, addr = s.recvfrom(1024)
+        print 'Server: Received packet from ' + addr[0] + ':' + str(addr[1])
+        s.sendto(data, addr)
 
-    data, addr  = s.recvfrom(100)
+        if (data == Code_A ):
 
-    if (data == "KILL"):
-        print "AT MAIN --> KILLING THE SKPE SEREVR"
-        exit(0)
+            try:
+                actionA(addr)
+            except :
+                print " Exception in A"
 
-    if ( data != "STOP"):
-        print 'Received packet from ' + addr[0] + ':' + str(addr[1])
-        print data
-        s.sendto('Starting',addr)
+        elif (data == Code_B ):
+            try:
+                actionB(addr)
+            except:
+                print " Exception in B"
 
-        # Initialize the skype
-        count = 0
-        max_attack = 10
-        s.setblocking(0)
-        while (count < max_attack):
-            ready = select.select([s], [], [], 1)
-            if ready[0]:
-                # Initialize the connection to stop the attack
-                data, addr = s.recvfrom(1024)
-                if ( data == "KILL"):
-                    print "IN BETWEEN--> KILLING THE SKPE SEREVR"
-                    exit(0)
-                elif( data == "STOP"):
-                    print 'Received packet from ' + addr[0] + ':' + str(addr[1])
-                    s.sendto("Stopping", addr)
-                    break
-                else:
-                    print("Unknown code message received is " , )
-            else:
-                count = attack.skypeAttack(data,count)
+        else :
+            print ("Server: Improper attack request")
 
-        print "Closing the socket"
-        s.close()
-    else:
-        print "Closing the socket"
-        s.close()
+print "Closing the socket"
+s.close()
