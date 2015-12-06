@@ -32,7 +32,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/apphint"
+                    android:text="@string/appHint"
                     android:id="@+id/hint"
                     android:textColor="@drawable/red"
                     android:textSize="40dp"
@@ -50,7 +50,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/apphint2"
+                    android:text="@string/appHint2"
                     android:id="@+id/hint2"
                     android:textColor="@drawable/red"
                     android:textSize="45dp"
@@ -106,7 +106,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="55dp"
                     android:layout_weight="1"
-                    android:text="@string/switch1"
+                    android:text="@string/switch2"
                     android:id="@+id/switch2"
                     android:checked="false"
                     android:textSize="20dp"
@@ -152,7 +152,7 @@
 
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/startattack"
+                    android:text="@string/startAttack"
                     android:id="@+id/startattack"
                     android:layout_column="0"
                     android:textColor="@drawable/white"

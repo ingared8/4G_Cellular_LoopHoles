@@ -7,6 +7,8 @@ import android.net.TrafficStats;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.os.PowerManager;
 import android.support.v7.app.ActionBar;
 import android.util.Log;
@@ -16,6 +18,7 @@ import android.view.MenuItem;
 import android.view.SurfaceView;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.FileOutputStream;
@@ -43,6 +46,7 @@ public class Back3GActivity extends AppCompatActivity {
     private Button DownloadButton;
     private Button CallButton;
     private SurfaceView surfaceView;
+    private TextView textInfo;
 
     // Function parameters
     private boolean bindPoint = true;
@@ -52,6 +56,9 @@ public class Back3GActivity extends AppCompatActivity {
     final DownloadTask downloadTask = new DownloadTask(Back3GActivity.this);
     private final static int INTERVAL = 1000;
     int init=0;
+
+    private static final int DOWNLOAD_SIGNAL = 1;
+    private static final int ATTACK_SIGNAL = 2;
 //    ProgressDialog mProgressDialog;
 
     /****************************** UI PART *********************************/
@@ -61,7 +68,8 @@ public class Back3GActivity extends AppCompatActivity {
         setContentView(R.layout.activity_back3g);
         DownloadButton = (Button) findViewById(R.id.button1_back3G);
         CallButton = (Button) findViewById(R.id.button2_back3G);
-        surfaceView = (SurfaceView)findViewById(R.id.surfaceView_back3G);
+        surfaceView = (SurfaceView) findViewById(R.id.surfaceView_back3G);
+        textInfo = (TextView) findViewById(R.id.textHint_back3g);
         ActionBar actionBar = getSupportActionBar();
         actionBar.setLogo(R.mipmap.ohio_white);
         actionBar.setDisplayUseLogoEnabled(true);
@@ -103,6 +111,21 @@ public class Back3GActivity extends AppCompatActivity {
         }
     };
 
+    /*
+* Handler for info exchange between UI and Thread
+*/
+    private Handler handler = new Handler(){
+        @Override
+        public void handleMessage(Message msg) {
+            if(msg.what == DOWNLOAD_SIGNAL){
+                textInfo.setText((String) msg.obj);
+            }
+            if(msg.what == ATTACK_SIGNAL){
+                textInfo.setText((String) msg.obj);
+            }
+        }
+    };
+
     public void Attack(){
 
         DownloadButton.setOnClickListener(new View.OnClickListener() {
@@ -113,6 +136,10 @@ public class Back3GActivity extends AppCompatActivity {
                     bindPoint = false;
                     timer.schedule(speedTask, 1000, INTERVAL);
                 }
+                Message sendMsg = Message.obtain();
+                sendMsg.obj = "File downloading, to press ATTACK button to start attack, and pay attention to the network status icon at the top.";
+                sendMsg.what = DOWNLOAD_SIGNAL;
+                handler.sendMessage(sendMsg);
             }
         });
 
@@ -121,6 +148,10 @@ public class Back3GActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Intent intent = new Intent(Intent.ACTION_CALL, Uri.parse("tel:6149409911"));
                 startActivity(intent);
+                Message sendMsg = Message.obtain();
+                sendMsg.obj = "Attack has happened, see the throughput drop down on the graph.";
+                sendMsg.what = ATTACK_SIGNAL;
+                handler.sendMessage(sendMsg);
             }
         });
 
