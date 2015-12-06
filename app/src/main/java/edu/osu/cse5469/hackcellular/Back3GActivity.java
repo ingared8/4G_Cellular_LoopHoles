@@ -131,15 +131,15 @@ public class Back3GActivity extends AppCompatActivity {
         DownloadButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                downloadTask.execute("http://mirrors.koehn.com/ubuntureleases/14.04.3/ubuntu-14.04.3-desktop-amd64.iso");
                 if (bindPoint) {
                     bindPoint = false;
+                    downloadTask.execute("http://mirrors.koehn.com/ubuntureleases/14.04.3/ubuntu-14.04.3-desktop-amd64.iso");
                     timer.schedule(speedTask, 1000, INTERVAL);
+                    Message sendMsg = Message.obtain();
+                    sendMsg.obj = "File downloading, to press ATTACK button to start attack, and pay attention to the network status icon at the top.";
+                    sendMsg.what = DOWNLOAD_SIGNAL;
+                    handler.sendMessage(sendMsg);
                 }
-                Message sendMsg = Message.obtain();
-                sendMsg.obj = "File downloading, to press ATTACK button to start attack, and pay attention to the network status icon at the top.";
-                sendMsg.what = DOWNLOAD_SIGNAL;
-                handler.sendMessage(sendMsg);
             }
         });
 
@@ -149,7 +149,7 @@ public class Back3GActivity extends AppCompatActivity {
                 Intent intent = new Intent(Intent.ACTION_CALL, Uri.parse("tel:6149409911"));
                 startActivity(intent);
                 Message sendMsg = Message.obtain();
-                sendMsg.obj = "Attack has happened, see the throughput drop down on the graph.";
+                sendMsg.obj = "Attack has happened, see the throughput drop down on the graph. Press ATTACK button to start another attack";
                 sendMsg.what = ATTACK_SIGNAL;
                 handler.sendMessage(sendMsg);
             }
