@@ -78,7 +78,7 @@ public class TTLActivity extends AppCompatActivity  {
         surfaceView = (SurfaceView) findViewById(R.id.surfaceView_TTL);
 
         ActionBar actionBar = getSupportActionBar();
-        actionBar.setLogo(R.mipmap.ohio);
+        actionBar.setLogo(R.mipmap.ohio_white);
         actionBar.setDisplayUseLogoEnabled(true);
         actionBar.setDisplayShowHomeEnabled(true);
 

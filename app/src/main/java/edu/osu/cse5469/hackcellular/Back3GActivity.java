@@ -63,7 +63,7 @@ public class Back3GActivity extends AppCompatActivity {
         CallButton = (Button) findViewById(R.id.button2_back3G);
         surfaceView = (SurfaceView)findViewById(R.id.surfaceView_back3G);
         ActionBar actionBar = getSupportActionBar();
-        actionBar.setLogo(R.mipmap.ohio);
+        actionBar.setLogo(R.mipmap.ohio_white);
         actionBar.setDisplayUseLogoEnabled(true);
         actionBar.setDisplayShowHomeEnabled(true);
 

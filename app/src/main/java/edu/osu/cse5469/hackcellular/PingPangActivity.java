@@ -199,7 +199,7 @@ public class PingPangActivity extends AppCompatActivity {
         Log.d("debug", " " + serverAddr);
 
         ActionBar actionBar = getSupportActionBar();
-        actionBar.setLogo(R.mipmap.ohio);
+        actionBar.setLogo(R.mipmap.ohio_white);
         actionBar.setDisplayUseLogoEnabled(true);
         actionBar.setDisplayShowHomeEnabled(true);
 

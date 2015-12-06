@@ -73,7 +73,7 @@ public class MainActivity extends AppCompatActivity {
         switchable = false;
 
         ActionBar actionBar = getSupportActionBar();
-        actionBar.setLogo(R.mipmap.ohio);
+        actionBar.setLogo(R.mipmap.ohio_white);
         actionBar.setDisplayUseLogoEnabled(true);
         actionBar.setDisplayShowHomeEnabled(true);
 
