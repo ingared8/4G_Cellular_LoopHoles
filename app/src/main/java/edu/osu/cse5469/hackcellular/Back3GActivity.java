@@ -280,6 +280,7 @@ public class Back3GActivity extends AppCompatActivity {
 
 
 
+
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         MenuInflater inflater = getMenuInflater();
@@ -305,6 +306,7 @@ public class Back3GActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        downloadTask.cancel(true);
         speedTask.cancel();
         graphPainter.cancel();
     }
