@@ -179,6 +179,7 @@ public class GraphPainter {
             for(int i=1;i<6;i++) {
                 canvas.drawText(String.format("%.2f", (float) largestData/5 * i), 2 * offsetAxis + textLength, offsetAxis+lengthYAxis-i*lengthYAxis/5+offsetAxis, textPaint);
             }
+            if(largestData==0)largestData=1;
         }
         else {
             largestData = (float) yTicks;
