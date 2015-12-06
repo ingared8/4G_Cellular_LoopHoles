@@ -23,7 +23,7 @@ class SkpyeCall(threading.Thread):
         self.__stop = threading.Event()
 
     def run(self):
-        p = subprocess.call(["Python","/home/ingared/MLCH/StartAttack.py"],
+        p = subprocess.call(["Python","StartAttack.py"],
                              shell=False)
         self.stdout, self.stderr = p.communicate()
 

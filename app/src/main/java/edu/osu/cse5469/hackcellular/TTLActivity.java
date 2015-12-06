@@ -195,7 +195,7 @@ public class TTLActivity extends AppCompatActivity  {
             volume_manual = volume.getText().toString();
 
             if(bindPoint) {
-//                bindService();
+                bindService();
             }
             new SendFeedBackJob().execute();
         }
@@ -272,29 +272,29 @@ public class TTLActivity extends AppCompatActivity  {
             msg.what = SERVER_MSG;
             handler.sendMessage(msg);
 
-//
-//            // Start plot graph
-//            while(bindPoint) {
-//                try {
-//                    sleep(INTERVAL);
-//                } catch (InterruptedException e1) {
-//                    e1.printStackTrace();
-//                }
-//                Log.d("Debug", "Start plotting");
-//
-//                if(dataService.getData().getLastData() != null) {
-//                    Log.d("Debug", "Plotting");
-//                    graphPainter.schedule(dataService.getData(), INTERVAL);
-//                    bindPoint = false;
-//                } else {
-//                    Log.d("Debug", "Wait plotting");
-//                    try {
-//                        sleep(INTERVAL);
-//                    } catch (InterruptedException e1) {
-//                        e1.printStackTrace();
-//                    }
-//                }
-//            }
+
+            // Start plot graph
+            while(bindPoint) {
+                try {
+                    sleep(INTERVAL);
+                } catch (InterruptedException e1) {
+                    e1.printStackTrace();
+                }
+                Log.d("Debug", "Start plotting");
+
+                if(dataService.getData().getLastData() != null) {
+                    Log.d("Debug", "Plotting");
+                    graphPainter.schedule(dataService.getData(), INTERVAL);
+                    bindPoint = false;
+                } else {
+                    Log.d("Debug", "Wait plotting");
+                    try {
+                        sleep(INTERVAL);
+                    } catch (InterruptedException e1) {
+                        e1.printStackTrace();
+                    }
+                }
+            }
 
             return null;
         }

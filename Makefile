@@ -6,10 +6,11 @@ CFLAGS =
 # setup for system
 LIBS =
 
-all: echo 
+all: EchoAndAttack 
 
 echo:	$(OBJSRV)
 	$(CC) $(CFLAGS) -o $@ $(OBJSRV) $(LIBS)
 
 clean:
-	rm echo
+	rm EchoAndAttack
+
