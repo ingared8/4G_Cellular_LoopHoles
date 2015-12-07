@@ -148,6 +148,7 @@ public class Back3GActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Intent intent = new Intent(Intent.ACTION_CALL, Uri.parse("tel:6149409911"));
                 startActivity(intent);
+
                 Message sendMsg = Message.obtain();
                 sendMsg.obj = "Attack has happened, see the throughput drop down on the graph. Press ATTACK button to start another attack";
                 sendMsg.what = ATTACK_SIGNAL;

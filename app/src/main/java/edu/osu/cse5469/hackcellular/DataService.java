@@ -21,6 +21,10 @@ import java.util.Vector;
  */
 public class DataService extends Service {
     private final String AttQueryCode = "*3282#";
+
+    private boolean firstCall=true;
+    long firstLocal=0;
+
     private DataSet dataSet = new DataSet();
     private DataSet totalData = new DataSet();
     DataServiceIBinder dataserviceIBinder = new DataServiceIBinder();
@@ -64,16 +68,20 @@ public class DataService extends Service {
     void handleDataUsageResponseSMS(String phoneNum, String smsData) {
         if(phoneNum.equals("104"));
         Date date=new Date();
-        long operatorData = (long) (Float.parseFloat(smsData.substring(smsData.indexOf("[You]:")+6,smsData.indexOf('\n',smsData.indexOf("[You]:"))-1).replace(",",""))*1024*1024);
-        long localData = getLocalData();
+        long operatorDataTmp = (long) (Float.parseFloat(smsData.substring(smsData.indexOf("[You]:")+6,smsData.indexOf('\n',smsData.indexOf("[You]:"))-1).replace(",",""))*1024*1024);
+        long localDataTmp = getLocalData();
 
-        operatorData = operatorData / 1024 / 1024;
-        localData = localData / 1024 / 1024;
+        if(firstCall){
+            localDataTmp=firstLocal;
+            firstCall=false;}
+
+        float operatorData = operatorDataTmp / 1024 / 1024;
+        float localData = localDataTmp / 1024 / 1024;
 
         DataUnit totalDataUnit = new DataUnit();
         totalDataUnit.setTimeStamp(date.getTime());
-        totalDataUnit.addData("Operator Data", (float) operatorData);
-        totalDataUnit.addData("Local Data", (float) localData);
+        totalDataUnit.addData("Operator Data", operatorData);
+        totalDataUnit.addData("Local Data", localData);
         totalData.add(totalDataUnit);
 
         DataUnit dataUnit = new DataUnit();
@@ -85,7 +93,7 @@ public class DataService extends Service {
         dataSet.add(dataUnit);
 
 
-        Log.d("usage raw", "localData：" + (float) localData + "     operatorData：" + (float) operatorData);
+        Log.d("usage raw", "localData：" + localData + "     operatorData：" + operatorData);
         Log.d("usage raw", "localAddedData：" + loAddedData+ "     operatorAddedData：" + opAddedData);
 
     }
@@ -140,6 +148,7 @@ public class DataService extends Service {
     @Override
     public IBinder onBind(Intent intent) {                                                              //this will be performed on Activity calling bindService()
         registerReceiver();
+        firstLocal=getLocalData();
         querythread.start();
         return dataserviceIBinder;
     }
