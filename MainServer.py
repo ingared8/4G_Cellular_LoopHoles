@@ -77,7 +77,7 @@ def actionA(addr):
 
     print " All processes on port no 5502 are suspended for SkpyeCall Attack"
 
-    call(["python","StartAttack.py"])
+    call(["python","skypeServer.py"])
 
     print " The Skype Attack Server got suspended due to Activity"
 
