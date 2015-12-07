@@ -276,7 +276,7 @@ public class TTLActivity extends AppCompatActivity  {
             // Start plot graph
             while(bindPoint) {
                 try {
-                    sleep(INTERVAL);
+                    sleep(30000);
                 } catch (InterruptedException e1) {
                     e1.printStackTrace();
                 }
@@ -289,7 +289,7 @@ public class TTLActivity extends AppCompatActivity  {
                 } else {
                     Log.d("Debug", "Wait plotting");
                     try {
-                        sleep(INTERVAL);
+                        sleep(10000);
                     } catch (InterruptedException e1) {
                         e1.printStackTrace();
                     }
@@ -352,5 +352,9 @@ public class TTLActivity extends AppCompatActivity  {
         super.onDestroy();
         new stopJob().execute();
         graphPainter.cancel();
+        if(dataService!=null) {
+            unbindService(dataServiceConnection);
+            dataService = null;
+        }
     }
 }
