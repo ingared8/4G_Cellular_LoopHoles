@@ -59,7 +59,7 @@ public class TTLActivity extends AppCompatActivity  {
     private final static int PORTNUM = 5555;
     private final static int SERVER_MSG = 1;
     private final static int TTL_MSG = 2;
-    private final static int INTERVAL = 10000;
+    private final static int INTERVAL = 1000;
 
     /****************************** UI PART *********************************/
 

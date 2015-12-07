@@ -44,7 +44,7 @@ public class PingPangActivity extends AppCompatActivity {
     private Timer timer = new Timer();
 
 
-    private static final int INTERVAL = 5000;
+    private static final int INTERVAL = 3000;
     private static final int PORTNUM = 5502;
     private static final int START_SIGNAL = 1;
     private static final int STOP_SIGNAL = 2;
