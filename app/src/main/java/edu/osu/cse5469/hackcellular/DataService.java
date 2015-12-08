@@ -167,6 +167,7 @@ public class DataService extends Service {
 
     public void onDestroy() {
         super.onDestroy();
+        querythread.stop();
         unregisterReceiver(SMSReceiver);
     }
 
