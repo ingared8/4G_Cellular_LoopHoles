@@ -52,6 +52,7 @@ public class TTLActivity extends AppCompatActivity  {
 
     // Function parameters
     private boolean bindPoint = true;
+    private boolean bindPlot = true;
     private CommunicationSocket communicationSocket;
     private GraphPainter graphPainter;
     private DataService dataService;
@@ -196,6 +197,7 @@ public class TTLActivity extends AppCompatActivity  {
 
             if(bindPoint) {
                 bindService();
+                bindPoint = false;
             }
             new SendFeedBackJob().execute();
         }
@@ -227,9 +229,9 @@ public class TTLActivity extends AppCompatActivity  {
             }
 
             communicationSocket.flush();
-            // Wait 3 seconds to avoid conflicting with the calling USSD code
+            // Wait 5 seconds to avoid conflicting with the calling USSD code
             try {
-                sleep(INTERVAL/2);
+                sleep(5000);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -274,7 +276,7 @@ public class TTLActivity extends AppCompatActivity  {
 
 
             // Start plot graph
-            while(bindPoint) {
+            while(bindPlot) {
                 try {
                     sleep(30000);
                 } catch (InterruptedException e1) {
@@ -285,7 +287,7 @@ public class TTLActivity extends AppCompatActivity  {
                 if(dataService.getData().getLastData() != null) {
                     Log.d("Debug", "Plotting");
                     graphPainter.schedule(dataService.getData(), INTERVAL);
-                    bindPoint = false;
+                    bindPlot = false;
                 } else {
                     Log.d("Debug", "Wait plotting");
                     try {
@@ -352,9 +354,11 @@ public class TTLActivity extends AppCompatActivity  {
         super.onDestroy();
         new stopJob().execute();
         graphPainter.cancel();
+        bindPlot = true;
         if(dataService!=null) {
             unbindService(dataServiceConnection);
             dataService = null;
+            bindPoint = true;
         }
     }
 }
