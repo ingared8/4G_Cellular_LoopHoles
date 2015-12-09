@@ -98,24 +98,30 @@ public class DataService extends Service {
 
     }
 
-    // Thread to query data usage in local and operator
-    Thread querythread = new Thread(new Runnable() {
+    class QThread implements Runnable{
+        boolean flag=true;
+
+        public synchronized void cancel(){
+            flag=false;
+        }
 
         @Override
-        public void  run() {
-            while (true) {
+        public synchronized void run() {
+            while (flag) {
                 getOperatorData();
-                synchronized(this){
                     try {
                         Thread.sleep(60000);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
-                }
-
             }
         }
-    });
+    }
+
+
+    // Thread to query data usage in local and operator
+    QThread queryRunnable=new QThread();
+    Thread querythread = new Thread(queryRunnable);
 
     private void registerReceiver(){                                                                  //Register SMS broadcast receiver in the service
         IntentFilter SmsIntent = new IntentFilter("android.provider.Telephony.SMS_RECEIVED");
@@ -167,7 +173,7 @@ public class DataService extends Service {
 
     public void onDestroy() {
         super.onDestroy();
-        querythread.stop();
+        queryRunnable.cancel();
         unregisterReceiver(SMSReceiver);
     }
 
