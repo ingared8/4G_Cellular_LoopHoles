@@ -23,6 +23,7 @@ public class DataService extends Service {
     private final String AttQueryCode = "*3282#";
 
     private boolean firstCall=true;
+    private boolean queryIndicator = true;
     long firstLocal=0;
 
     private DataSet dataSet = new DataSet();
@@ -103,7 +104,7 @@ public class DataService extends Service {
 
         @Override
         public void  run() {
-            while (true) {
+            while (queryIndicator) {
                 getOperatorData();
                 synchronized(this){
                     try {
@@ -167,7 +168,7 @@ public class DataService extends Service {
 
     public void onDestroy() {
         super.onDestroy();
-        querythread.stop();
+        queryIndicator = false;
         unregisterReceiver(SMSReceiver);
     }
 

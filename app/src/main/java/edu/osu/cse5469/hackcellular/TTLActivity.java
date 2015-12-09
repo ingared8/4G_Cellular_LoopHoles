@@ -229,9 +229,9 @@ public class TTLActivity extends AppCompatActivity  {
             }
 
             communicationSocket.flush();
-            // Wait 5 seconds to avoid conflicting with the calling USSD code
+            // Wait 7 seconds to avoid conflicting with the calling USSD code
             try {
-                sleep(5000);
+                sleep(7000);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
