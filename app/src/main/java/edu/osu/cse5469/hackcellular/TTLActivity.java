@@ -350,12 +350,6 @@ public class TTLActivity extends AppCompatActivity  {
     }
 
     @Override
-    public void onBackPressed() {
-        onDestroy();
-        super.onBackPressed();
-    }
-
-    @Override
     protected void onDestroy() {
         super.onDestroy();
         new stopJob().execute();

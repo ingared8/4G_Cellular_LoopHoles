@@ -46,7 +46,7 @@ public class CommunicationSocket {
 
     // Flush memory, return true if there is anything in the receive memory, otherwise return false
     public boolean flush() {
-        int timeout = 500;
+        int timeout = 1000;
         boolean result = false;
         while(true) {
             String receiveInfo = receivePacket(timeout);
