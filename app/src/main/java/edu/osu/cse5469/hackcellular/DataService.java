@@ -22,7 +22,7 @@ import java.util.Vector;
 public class DataService extends Service {
     private final String AttQueryCode = "*3282#";
 
-    private boolean firstCall=true;
+    private boolean firstCall = true;
     private boolean queryIndicator = true;
     long firstLocal=0;
 
