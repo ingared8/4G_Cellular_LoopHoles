@@ -99,10 +99,11 @@ public class GraphPainter {
             Paint dataPaint2 = new Paint();
             dataPaint2.setColor(Color.argb(255, 0, 0, 255));
             dataPaint2.setStrokeWidth(3);
+            dataPaint1.setStyle(Paint.Style.STROKE);
 
             Paint barPaint2 = new Paint();
             barPaint2.setColor(Color.argb(180, 0, 0, 255));
-            barPaint2.setStrokeWidth(3);
+            barPaint2.setStrokeWidth(5);
 
             this.paint.get(1).add(dataPaint2);
             this.paint.get(1).add(barPaint2);
@@ -189,7 +190,7 @@ public class GraphPainter {
         for (int k=0; k<dimension; k++){
             Vector<Float> FinalDraw=new Vector<Float>();
             for(int i=(dataSet.size()-xTicks)>0?(dataSet.size()-xTicks):0; i<dataSet.size(); i++) {
-               float usage = dataSet.getData(i).getData().get(k);
+                float usage = dataSet.getData(i).getData().get(k);
                 FinalDraw.add(usage);
             }
 
@@ -199,12 +200,32 @@ public class GraphPainter {
                 float tmpy = offsetAxis+lengthYAxis-((float)FinalDraw.get(i)/(float)largestData)*lengthYAxis;
 
                 canvas.drawCircle(tmpx, tmpy, 5, paint.get(k).get(0));
-                if(i!=0 && paint.get(k).get(1)!=null) canvas.drawLine(tmpx, offsetAxis+lengthYAxis, tmpx, tmpy, paint.get(k).get(1));
-                if(i!=0 && paint.get(k).get(2)!=null) canvas.drawLine(lastx,lasty,tmpx,tmpy,paint.get(k).get(2));
+                if(i!=0 && paint.get(k).get(1)!=null) canvas.drawLine(lastx,lasty,tmpx,tmpy,paint.get(k).get(1));                           // Second type of data
+                if(i!=0 && paint.get(k).get(2)!=null) canvas.drawLine(lastx,lasty,tmpx,tmpy,paint.get(k).get(2));                           // First type of data
                 lastx=tmpx;
                 lasty=tmpy;
             }
+
+            drawLegend(canvas, k, dataSet.getLastData().getDataType().get(k));
         }
+    }
+
+    private void drawLegend(Canvas canvas, int num, String legend) {
+        int length = legend.length()/5;
+
+        float tmp_x1 = offsetAxis+lengthXAxis/xTicks*(xTicks-3-2*length)+textLength;
+        float tmp_x2 = offsetAxis+lengthXAxis/xTicks*(xTicks-2-2*length)+textLength;
+        float tmp_legend = offsetAxis+lengthXAxis/xTicks*(xTicks-2*((float) legend.length()/5))+textLength;
+
+        float tmp_y = offsetAxis+num*offsetAxis*(3/2);
+
+        canvas.drawCircle(tmp_x1, tmp_y, 5, paint.get(num).get(0));
+        canvas.drawCircle(tmp_x2, tmp_y, 5, paint.get(num).get(0));
+
+        if(paint.get(num).get(1)!=null) canvas.drawLine(tmp_x1,tmp_y,tmp_x2,tmp_y,paint.get(num).get(1));                           // Second type of data
+        if(paint.get(num).get(2)!=null) canvas.drawLine(tmp_x1,tmp_y,tmp_x2,tmp_y,paint.get(num).get(2));                           // First type of data
+
+        canvas.drawText(legend, tmp_legend, tmp_y+offsetAxis/2, textPaint);
     }
 
     private synchronized void draw(){
