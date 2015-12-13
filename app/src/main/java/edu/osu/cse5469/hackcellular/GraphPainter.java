@@ -200,8 +200,8 @@ public class GraphPainter {
                 float tmpy = offsetAxis+lengthYAxis-((float)FinalDraw.get(i)/(float)largestData)*lengthYAxis;
 
                 canvas.drawCircle(tmpx, tmpy, 5, paint.get(k).get(0));
-                if(i!=0 && paint.get(k).get(1)!=null) canvas.drawLine(lastx,lasty,tmpx,tmpy,paint.get(k).get(1));                           // Second type of data
-                if(i!=0 && paint.get(k).get(2)!=null) canvas.drawLine(lastx,lasty,tmpx,tmpy,paint.get(k).get(2));                           // First type of data
+                if(i!=0 && paint.get(k).get(1)!=null) canvas.drawLine(lastx,lasty,tmpx,tmpy,paint.get(k).get(1));                   // For default second type of data or other custom painter type
+                if(i!=0 && paint.get(k).get(2)!=null) canvas.drawLine(lastx,lasty,tmpx,tmpy,paint.get(k).get(2));                   // For default first type of data
                 lastx=tmpx;
                 lasty=tmpy;
             }
@@ -222,8 +222,8 @@ public class GraphPainter {
         canvas.drawCircle(tmp_x1, tmp_y, 5, paint.get(num).get(0));
         canvas.drawCircle(tmp_x2, tmp_y, 5, paint.get(num).get(0));
 
-        if(paint.get(num).get(1)!=null) canvas.drawLine(tmp_x1,tmp_y,tmp_x2,tmp_y,paint.get(num).get(1));                           // Second type of data
-        if(paint.get(num).get(2)!=null) canvas.drawLine(tmp_x1,tmp_y,tmp_x2,tmp_y,paint.get(num).get(2));                           // First type of data
+        if(paint.get(num).get(1)!=null) canvas.drawLine(tmp_x1,tmp_y,tmp_x2,tmp_y,paint.get(num).get(1));                           // For default second type of data or other custom painter type
+        if(paint.get(num).get(2)!=null) canvas.drawLine(tmp_x1,tmp_y,tmp_x2,tmp_y,paint.get(num).get(2));                           // For default first type of data
 
         canvas.drawText(legend, tmp_legend, tmp_y+offsetAxis/2, textPaint);
     }
