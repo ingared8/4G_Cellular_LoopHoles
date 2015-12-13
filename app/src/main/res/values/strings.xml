@@ -6,6 +6,7 @@
     <string name="port">5555</string>
     <string name="phone">Your Phone Number</string>
     <string name="send">Attack</string>
+    <string name="reset">Reset Graph</string>>
     <string name="end">Stop</string>
     <string name="ttlHint">TTL</string>
     <string name="ttlText">30</string>

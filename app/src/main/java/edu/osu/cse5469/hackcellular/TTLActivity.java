@@ -36,6 +36,7 @@ public class TTLActivity extends AppCompatActivity  {
 
     // UI parameters
     private Button sendSocketButton;
+    private Button resetGraphButton;
     private EditText ttlTime;
     private EditText volume;
     private Switch switch1;
@@ -72,6 +73,7 @@ public class TTLActivity extends AppCompatActivity  {
 
         // UI bind
         sendSocketButton = (Button) findViewById(R.id.sendButton);
+        resetGraphButton = (Button) findViewById(R.id.reset_TTL);
         ttlTime = (EditText) findViewById(R.id.edited_ttl);
         volume = (EditText)findViewById(R.id.edited_volume);
         switch1 = (Switch)findViewById(R.id.switch1);
@@ -204,6 +206,19 @@ public class TTLActivity extends AppCompatActivity  {
     }
 
     /*
+     * Reset graph listener
+     */
+    class ResetClickListener implements View.OnClickListener {
+
+        @Override
+        public void onClick(View v) {
+            if(dataService != null) {
+                dataService.resetDataSet();
+            }
+        }
+    }
+
+    /*
      * To protect prevent the error of network operating on main thread.
      */
     private class SendFeedBackJob extends AsyncTask<String, Void, String>{
@@ -325,6 +340,7 @@ public class TTLActivity extends AppCompatActivity  {
 
         // TTL activity communication protocol: "TTL, Attack Volume"
         sendSocketButton.setOnClickListener(new AttackClickListener());
+        resetGraphButton.setOnClickListener(new ResetClickListener());
     }
 
     @Override

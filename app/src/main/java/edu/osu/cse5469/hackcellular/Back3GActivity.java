@@ -43,8 +43,9 @@ public class Back3GActivity extends AppCompatActivity {
 
 
     // UI parameters
-    private Button DownloadButton;
-    private Button CallButton;
+    private Button downloadButton;
+    private Button callButton;
+    private Button resetGraphButton;
     private SurfaceView surfaceView;
     private TextView textInfo;
 
@@ -59,15 +60,15 @@ public class Back3GActivity extends AppCompatActivity {
 
     private static final int DOWNLOAD_SIGNAL = 1;
     private static final int ATTACK_SIGNAL = 2;
-//    ProgressDialog mProgressDialog;
 
     /****************************** UI PART *********************************/
 
 
     private void bindUI(){
         setContentView(R.layout.activity_back3g);
-        DownloadButton = (Button) findViewById(R.id.button1_back3G);
-        CallButton = (Button) findViewById(R.id.button2_back3G);
+        downloadButton = (Button) findViewById(R.id.button1_back3G);
+        callButton = (Button) findViewById(R.id.button2_back3G);
+        resetGraphButton = (Button) findViewById(R.id.reset_Back3G);
         surfaceView = (SurfaceView) findViewById(R.id.surfaceView_back3G);
         textInfo = (TextView) findViewById(R.id.textHint_back3g);
         ActionBar actionBar = getSupportActionBar();
@@ -112,8 +113,8 @@ public class Back3GActivity extends AppCompatActivity {
     };
 
     /*
-* Handler for info exchange between UI and Thread
-*/
+     * Handler for info exchange between UI and Thread
+     */
     private Handler handler = new Handler(){
         @Override
         public void handleMessage(Message msg) {
@@ -128,7 +129,7 @@ public class Back3GActivity extends AppCompatActivity {
 
     public void Attack(){
 
-        DownloadButton.setOnClickListener(new View.OnClickListener() {
+        downloadButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (bindPoint) {
@@ -143,7 +144,7 @@ public class Back3GActivity extends AppCompatActivity {
             }
         });
 
-        CallButton.setOnClickListener(new View.OnClickListener() {
+        callButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(Intent.ACTION_CALL, Uri.parse("tel:6149409911"));
@@ -175,22 +176,16 @@ public class Back3GActivity extends AppCompatActivity {
             PowerManager pm = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
             mWakeLock = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, getClass().getName());
             mWakeLock.acquire();
-            //  mProgressDialog.show();
         }
 
         @Override
         protected void onProgressUpdate(Integer... progress) {
             super.onProgressUpdate(progress);
-            // if we get here, length is known, now set indeterminate to false
-            //  mProgressDialog.setIndeterminate(false);
-            //  mProgressDialog.setMax(100);
-            //  mProgressDialog.setProgress(progress[0]);
         }
 
         @Override
         protected void onPostExecute(String result) {
             mWakeLock.release();
-            //   mProgressDialog.dismiss();
             if (result != null)
                 Toast.makeText(context, "Download error: " + result, Toast.LENGTH_LONG).show();
             else
@@ -254,6 +249,20 @@ public class Back3GActivity extends AppCompatActivity {
         }
     }
 
+    /*
+     * Reset graph listener
+     */
+    class ResetClickListener implements View.OnClickListener {
+
+        @Override
+        public void onClick(View v) {
+            if(dataSet.getLastData() != null) {
+                DataUnit lastData = dataSet.getLastData();
+                dataSet.clear();
+                dataSet.add(lastData);
+            }
+        }
+    }
 
     /****************************** Lifecycle PART *********************************/
 
@@ -262,20 +271,7 @@ public class Back3GActivity extends AppCompatActivity {
         bindUI();
         graphPainter = new GraphPainter(surfaceView, "KBps", null);
         Attack();
-
-//        mProgressDialog = new ProgressDialog(Back3GActivity.this);
-//        mProgressDialog.setMessage("A message");
-//        mProgressDialog.setIndeterminate(true);
-//        mProgressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
-//        mProgressDialog.setCancelable(true);
-//        mProgressDialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
-//            @Override
-//            public void onCancel(DialogInterface dialog) {
-//                downloadTask.cancel(true);
-//            }
-//        });
-//        downloadTask.execute("http://web.cse.ohio-state.edu/~kannan/cse3461-5461/Cse3461.E.LAN.10-01-2014-part1.pdf");
-
+        resetGraphButton.setOnClickListener(new ResetClickListener());
     }
 
 

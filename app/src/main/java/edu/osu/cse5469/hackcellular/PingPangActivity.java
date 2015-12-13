@@ -29,6 +29,7 @@ public class PingPangActivity extends AppCompatActivity {
     // UI parameters
     private Button startAttack;
     private Button stopAttack;
+    private Button resetGraphButton;
     private EditText phoneNum;
     private TextView textInfo;
     private SurfaceView surfaceView;
@@ -161,6 +162,21 @@ public class PingPangActivity extends AppCompatActivity {
         }
     }
 
+    /*
+     * Reset graph listener
+     */
+    class ResetClickListener implements View.OnClickListener {
+
+        @Override
+        public void onClick(View v) {
+            if(dataSet.getLastData() != null) {
+                DataUnit lastData = dataSet.getLastData();
+                dataSet.clear();
+                dataSet.add(lastData);
+            }
+        }
+    }
+
     private class stopJob extends AsyncTask<String, Void, String>{
 
         @Override
@@ -190,6 +206,7 @@ public class PingPangActivity extends AppCompatActivity {
         surfaceView = (SurfaceView) findViewById(R.id.surfaceView_PingPang);
         startAttack = (Button) findViewById(R.id.startAttack_pingpang);
         stopAttack = (Button) findViewById(R.id.stopAttack_pingpang);
+        resetGraphButton = (Button) findViewById(R.id.reset_PingPang);
         phoneNum = (EditText) findViewById(R.id.phone_pingpang);
         textInfo = (TextView) findViewById(R.id.textHint_pingpong);
 
@@ -221,6 +238,7 @@ public class PingPangActivity extends AppCompatActivity {
         graphPainter = new GraphPainter(surfaceView, labels, null);
         startAttack.setOnClickListener(new AttackClickListener());
         stopAttack.setOnClickListener(new StopClickListener());
+        resetGraphButton.setOnClickListener(new ResetClickListener());
     }
 
     @Override

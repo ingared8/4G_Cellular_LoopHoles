@@ -159,6 +159,7 @@ public class GraphPainter {
         for (int i=0; i<xTicks; i++){
             canvas.drawLine(xstart + lengthXAxis / xTicks * i, ystart, xstart + lengthXAxis / xTicks * i, ystart - offsetAxis, axisPaint);
         }
+        canvas.drawText("Time", xstart + lengthXAxis / xTicks * (xTicks - 1) - offsetAxis, ystart - offsetAxis, textPaint);
 
 
     }

@@ -38,9 +38,6 @@
                     android:id="@+id/switch1"
                     android:checked="true"
                     android:textSize="20dp"
-
-
-
                     android:textColor="@drawable/black"
                     />
 
@@ -54,8 +51,6 @@
                 android:orientation="horizontal"
                 android:layout_alignParentLeft="true"
                 android:layout_alignParentRight="true"
-                android:paddingBottom="@dimen/activity_horizontal_margin"
-                android:paddingTop="@dimen/activity_horizontal_margin"
                 android:layout_below="@+id/linear2"
 
                 android:id="@+id/linear3">
@@ -113,22 +108,38 @@
 
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
                 android:layout_alignParentLeft="true"
                 android:layout_alignParentRight="true"
                 android:gravity="center_horizontal"
                 android:layout_below="@+id/linear3"
+                android:id="@+id/linear4"
 
-                android:id="@+id/linear4">
+                android:paddingTop="@dimen/activity_horizontal_margin">
+
+                <Button
+                    android:id="@+id/reset_TTL"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="@string/reset"
+                    android:layout_weight="1"
+                    android:textColor="@drawable/white"
+                    android:background="@drawable/red"
+                    android:textSize="20dp" />
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.1" />
 
                 <Button
                     android:id="@+id/sendButton"
-                    android:layout_width="match_parent"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:text="@string/send"
+                    android:layout_weight="1"
                     android:textColor="@drawable/white"
                     android:background="@drawable/red"
-                    android:textSize="20dp"/>
+                    android:textSize="20dp" />
 
             </LinearLayout>
 

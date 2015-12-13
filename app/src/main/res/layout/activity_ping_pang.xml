@@ -47,8 +47,8 @@
                     android:layout_alignParentRight="true"
                     android:layout_alignParentStart="true"
                     android:layout_alignParentTop="true"
-                    android:paddingTop="@dimen/activity_horizontal_margin"
-                    android:paddingBottom="@dimen/activity_horizontal_margin">
+
+                    android:paddingTop="@dimen/activity_horizontal_margin">
                     <Button
 
                         android:layout_width="match_parent"
@@ -71,11 +71,26 @@
                     android:layout_alignParentLeft="true"
                     android:layout_alignParentRight="true"
                     android:layout_alignParentStart="true"
-                    android:layout_alignParentTop="true">
-
+                    android:layout_alignParentTop="true"
+                    android:paddingTop="@dimen/activity_horizontal_margin">
 
                     <Button
-                        android:layout_width="match_parent"
+                        android:id="@+id/reset_PingPang"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:text="@string/reset"
+                        android:layout_weight="1"
+                        android:textColor="@drawable/white"
+                        android:background="@drawable/red"
+                        android:textSize="20dp" />
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="0.1" />
+
+                    <Button
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:id="@+id/stopAttack_pingpang"
                         android:layout_weight="1"

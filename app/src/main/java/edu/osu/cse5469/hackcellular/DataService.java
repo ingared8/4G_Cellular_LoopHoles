@@ -81,8 +81,8 @@ public class DataService extends Service {
 
         DataUnit totalDataUnit = new DataUnit();
         totalDataUnit.setTimeStamp(date.getTime());
-        totalDataUnit.addData("Operator Data", operatorData);
-        totalDataUnit.addData("Local Data", localData);
+        totalDataUnit.addData("Operator Total Data", operatorData);
+        totalDataUnit.addData("Local Total Data", localData);
         totalData.add(totalDataUnit);
 
         DataUnit dataUnit = new DataUnit();
@@ -141,6 +141,24 @@ public class DataService extends Service {
     // Get data usage from local
     private long getLocalData() {
         return (TrafficStats.getMobileTxBytes() + TrafficStats.getMobileRxBytes());
+    }
+
+    // Reset Data Set
+    public void resetDataSet() {
+        if(dataSet.getLastData() != null) {
+            DataUnit lastData = totalData.getLastData();
+            totalData.clear();
+            totalData.add(lastData);
+
+            dataSet.clear();
+            DataUnit dataUnit = new DataUnit();
+            dataUnit.setTimeStamp(lastData.getTimeStamp());
+            Float opAddedData = new Float(0);
+            Float loAddedData = new Float(0);
+            dataUnit.addData("Operator Data", opAddedData);
+            dataUnit.addData("Local Data", loAddedData);
+            dataSet.add(dataUnit);
+        }
     }
 
 

@@ -33,4 +33,8 @@ public class DataSet {
         else return null;
     }
 
+    public void clear() {
+        list.clear();
+    }
+
 }
