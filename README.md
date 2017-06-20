@@ -10,3 +10,5 @@
 
   The project explains the implementation and evaluated results of these attacks.
   More info can be found in the report titled "Security Loopholes in Wireless Networks.pdf".
+  
+  Alternatively more info can be reached here. http://peng.cse.ohio-state.edu/hackcellular.html
